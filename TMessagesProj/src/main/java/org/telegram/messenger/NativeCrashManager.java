@@ -23,9 +23,9 @@ public class NativeCrashManager {
         String[] filenames = searchForDumpFiles();
         for (String dumpFilename : filenames) {
             String logFilename = createLogFile();
-            if (logFilename != null) {
-                uploadDumpAndLog(activity, BuildVars.HOCKEY_APP_HASH, dumpFilename, logFilename);
-            }
+//            if (logFilename != null) {
+//                uploadDumpAndLog(activity, BuildVars.HOCKEY_APP_HASH, dumpFilename, logFilename);
+//            }
         }
     }
 
