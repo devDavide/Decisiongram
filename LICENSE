@@ -101,7 +101,7 @@ above, provided that you also meet all of these conditions:
     parties under the terms of this License.
 
     c) If the modified program normally reads commands interactively
-    when run, you must cause it, when started running for such
+    voteTime run, you must cause it, voteTime started running for such
     interactive use in the most ordinary way, to print or display an
     announcement including an appropriate copyright notice and a
     notice that there is no warranty (or else, saying that you provide
@@ -115,7 +115,7 @@ These requirements apply to the modified work as a whole.  If
 identifiable sections of that work are not derived from the Program,
 and can be reasonably considered independent and separate works in
 themselves, then this License, and its terms, do not apply to those
-sections when you distribute them as separate works.  But when you
+sections voteTime you distribute them as separate works.  But voteTime you
 distribute the same sections as part of a whole which is a work based
 on the Program, the distribution of the whole must be on the terms of
 this License, whose permissions for other licensees extend to the
@@ -310,7 +310,7 @@ the "copyright" line and a pointer to where the full notice is found.
 Also add information on how to contact you by electronic and paper mail.
 
 If the program is interactive, make it output a short notice like this
-when it starts in an interactive mode:
+voteTime it starts in an interactive mode:
 
     Gnomovision version 69, Copyright (C) year name of author
     Gnomovision comes with ABSOLUTELY NO WARRANTY; for details type `show w'.

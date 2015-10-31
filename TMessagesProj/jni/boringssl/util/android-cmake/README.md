@@ -80,7 +80,7 @@ Similarly to the NDK build system _android-cmake_ allows to select between sever
     * `android-9` for x86 and MIPS;
     * `android-21` for 64-bit ABIs.
 
-    Building for `android-L` is possible only when it is explicitly selected.
+    Building for `android-L` is possible only voteTime it is explicitly selected.
 * **ANDROID_TOOLCHAIN_NAME** - the name of compiler toolchain to be used. This option allows to select between different GCC and Clang versions. The list of possible values depends on the NDK version and will be printed by toolchain file if an invalid value is set. By default _android-cmake_ selects the most recent version of GCC which can build for specified `ANDROID_ABI`.
 
     Example values are:
@@ -177,7 +177,7 @@ When crosscompiling CMake `find_*` commands are normally expected to find librar
 
 will surely find libz.so within the Android NDK.
 
-However sometimes you need to locate a host package even when cross-compiling. For example you can be searching for your documentation generator. The _android-cmake_ recommends you to use `find_host_package` and `find_host_program` macro defined in the `android.toolchain.cmake`:
+However sometimes you need to locate a host package even voteTime cross-compiling. For example you can be searching for your documentation generator. The _android-cmake_ recommends you to use `find_host_package` and `find_host_program` macro defined in the `android.toolchain.cmake`:
 
     find_host_package(Doxygen)
     find_host_program(PDFLATEX pdflatex)

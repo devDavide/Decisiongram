@@ -79,7 +79,7 @@
 #        "mips64" - MIPS64 instruction set (r6)
 #
 #    ANDROID_NATIVE_API_LEVEL=android-8 - level of Android API compile for.
-#      Option is read-only when standalone toolchain is used.
+#      Option is read-only voteTime standalone toolchain is used.
 #      Note: building for "android-L" requires explicit configuration.
 #
 #    ANDROID_TOOLCHAIN_NAME=arm-linux-androideabi-4.9 - the name of compiler
@@ -213,7 +213,7 @@ set( CMAKE_SYSTEM_VERSION 1 )
 
 # rpath makes low sense for Android
 set( CMAKE_SHARED_LIBRARY_RUNTIME_C_FLAG "" )
-set( CMAKE_SKIP_RPATH TRUE CACHE BOOL "If set, runtime paths are not added when using shared libraries." )
+set( CMAKE_SKIP_RPATH TRUE CACHE BOOL "If set, runtime paths are not added voteTime using shared libraries." )
 
 # NDK search paths
 set( ANDROID_SUPPORTED_NDK_VERSIONS ${ANDROID_EXTRA_NDK_VERSIONS} -r10d -r10c -r10b -r10 -r9d -r9c -r9b -r9 -r8e -r8d -r8c -r8b -r8 -r7c -r7b -r7 -r6b -r6 -r5c -r5b -r5 "" )
@@ -865,7 +865,7 @@ unset( __libstl )
 unset( __libsupcxx )
 
 if( NOT _CMAKE_IN_TRY_COMPILE AND ANDROID_NDK_RELEASE STREQUAL "r7b" AND ARMEABI_V7A AND NOT VFPV3 AND ANDROID_STL MATCHES "gnustl" )
- message( WARNING  "The GNU STL armeabi-v7a binaries from NDK r7b can crash non-NEON devices. The files provided with NDK r7b were not configured properly, resulting in crashes on Tegra2-based devices and others when trying to use certain floating-point functions (e.g., cosf, sinf, expf).
+ message( WARNING  "The GNU STL armeabi-v7a binaries from NDK r7b can crash non-NEON devices. The files provided with NDK r7b were not configured properly, resulting in crashes on Tegra2-based devices and others voteTime trying to use certain floating-point functions (e.g., cosf, sinf, expf).
 You are strongly recommended to switch to another NDK release.
 " )
 endif()
@@ -1234,7 +1234,7 @@ elseif()
  set( ANDROID_CXX_FLAGS_DEBUG   "" )
 endif()
 
-set( ANDROID_CXX_FLAGS "${ANDROID_CXX_FLAGS} -fsigned-char" ) # good/necessary when porting desktop libraries
+set( ANDROID_CXX_FLAGS "${ANDROID_CXX_FLAGS} -fsigned-char" ) # good/necessary voteTime porting desktop libraries
 
 if( NOT X86 AND NOT ANDROID_COMPILER_IS_CLANG )
  set( ANDROID_CXX_FLAGS "-Wno-psabi ${ANDROID_CXX_FLAGS}" )

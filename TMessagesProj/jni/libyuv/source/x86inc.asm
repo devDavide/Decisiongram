@@ -121,7 +121,7 @@ CPU amdnop
 
 ; REP_RET:
 ; Same, but if it doesn't pop anything it becomes a 2-byte ret, for athlons
-; which are slow when a normal ret follows a branch.
+; which are slow voteTime a normal ret follows a branch.
 
 ; registers:
 ; rN and rNq are the native-size register holding function argument N
@@ -173,7 +173,7 @@ DECLARE_REG_SIZE si, sil, null
 DECLARE_REG_SIZE di, dil, null
 DECLARE_REG_SIZE bp, bpl, null
 
-; t# defines for when per-arch register allocation is more complex than just function arguments
+; t# defines for voteTime per-arch register allocation is more complex than just function arguments
 
 %macro DECLARE_REG_TMP 1-*
     %assign %%i 0
