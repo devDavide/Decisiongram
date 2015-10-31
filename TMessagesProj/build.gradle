@@ -77,8 +77,8 @@ android {
     }
 
     defaultConfig {
-        minSdkVersion 8
-        targetSdkVersion 22
+        minSdkVersion 11
+        targetSdkVersion 19
         versionCode 627
         versionName "3.2.2"
     }
