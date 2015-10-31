@@ -17,17 +17,17 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.ImageLoader;
-import org.telegram.messenger.MediaController;
-import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
+import org.telegram.messenger.ImageLoader;
+import org.telegram.messenger.MediaController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.UserConfig;
+import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.LaunchActivity;
 import org.telegram.ui.PhotoAlbumPickerActivity;
 import org.telegram.ui.PhotoCropActivity;
-import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.PhotoViewer;
 
 import java.io.File;

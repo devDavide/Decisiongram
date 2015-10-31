@@ -37,11 +37,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import org.pollgram.decision.adapter.ChoiceAdapter;
-import org.pollgram.decision.dao.DecisionDAO;
-import org.pollgram.decision.dao.DecisionDAOImpl;
-import org.pollgram.decision.data.Choice;
+import org.pollgram.decision.adapter.VoteListAdapter;
+import org.pollgram.decision.dao.PollgramDAO;
+import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PolgramUtils;
@@ -54,31 +52,32 @@ import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.Collection;
-import java.util.List;
 
-public class ChoicesManagerTabsFragment extends Fragment {
+public class VotesManagerTabsFragment extends Fragment {
 
     static final String LOG_TAG = "SlidingTabs";
 
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
 
-    private DecisionDAO decisionDAO;
-    private List<Vote> votes;
+    private PollgramDAO pollgramDAO;
     private UsersDecisionVotes usersDecisionVotes;
+    private int currentUserId;
 
-    public ChoicesManagerTabsFragment() {
+    private ViewGroup optionTableViewContainer;
+
+    public VotesManagerTabsFragment() {
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        decisionDAO = new DecisionDAOImpl();
-        long decisionId = getArguments().getLong(ChoicesManagerFragment.PAR_DECISION_ID);
-        votes = decisionDAO.getUserVoteForDecision(decisionId, UserConfig.getCurrentUser().id);
-        int[] participantsUserIds = getArguments().getIntArray(ChoicesManagerFragment.PAR_PARTICIPANT_IDS);
-        usersDecisionVotes = new DecisionDAOImpl().getUsersDecisionVotes(decisionId, participantsUserIds);
+        pollgramDAO = PollgramDAO.getInstance();
+        long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
+        int[] participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
+        usersDecisionVotes = pollgramDAO.getUsersDecisionVotes(decisionId, participantsUserIds);
+        currentUserId = UserConfig.getCurrentUser().id;
     }
 
     /**
@@ -100,6 +99,9 @@ public class ChoicesManagerTabsFragment extends Fragment {
         slidingTabLayout.setViewPager(viewPager);
     }
 
+    private boolean areThereNoOptions(){
+        return usersDecisionVotes.getOptions().size() == 0;
+    }
 
     /**
      * PagerAdapter for decisions
@@ -154,18 +156,24 @@ public class ChoicesManagerTabsFragment extends Fragment {
         public Object instantiateItem(ViewGroup container, int position) {
             View rootView = null;
             LayoutInflater inflater = getActivity().getLayoutInflater();
-            switch (position) {
-                case OPTION_ID: {
-                    rootView = getOptionsListView(container, inflater);
-                    break;
+            if (areThereNoOptions()) {
+                rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
+            } else {
+                switch (position) {
+                    case OPTION_ID: {
+                        rootView = getOptionsListView(container, inflater);
+                        break;
+                    }
+                    case TABLE_VIEW_ID: {
+                        optionTableViewContainer = new LinearLayout(getContext());
+                        updateOptionsTableView(optionTableViewContainer, inflater);
+                        rootView = optionTableViewContainer;
+                        break;
+                    }
+                    default:
+                        rootView = null;
+                        break;
                 }
-                case TABLE_VIEW_ID: {
-                    rootView = getOptionsTable(container, inflater);
-                    break;
-                }
-                default:
-                    rootView = null;
-                    break;
             }
             container.addView(rootView);
             return rootView;
@@ -185,24 +193,38 @@ public class ChoicesManagerTabsFragment extends Fragment {
     @NonNull
     private View getOptionsListView(ViewGroup container, LayoutInflater inflater) {
         View rootView;
-        rootView = inflater.inflate(R.layout.decision_option_list, container, false);
+        rootView = inflater.inflate(R.layout.votes_manager_list_tab, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.decision_option_lw_options);
-        final ChoiceAdapter adapter = new ChoiceAdapter(getActivity(), votes);
+        final VoteListAdapter adapter = new VoteListAdapter(getActivity(), usersDecisionVotes.getVotes(currentUserId));
         listView.setAdapter(adapter);
         final Button btnSaveOption = (Button) rootView.findViewById(R.id.decision_option_btn_save_votes);
         btnSaveOption.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(View view) {
 
-                Collection<Vote> votest2save = adapter.getNewVoteSet();
-                Log.i(LOG_TAG, "saving votes[" + votest2save + "]");
-                decisionDAO.save(votest2save);
+                Collection<Vote> votes2Save = adapter.getNewVoteSet();
+                Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
+                for (Vote v : votes2Save) {
+                    // update persistence
+                    Vote saved = pollgramDAO.save(v);
+
+                    // update data structure
+                    Option option = usersDecisionVotes.getOption(v.getOptionId());
+                    usersDecisionVotes.setVote(currentUserId, option, saved);
+                }
+                // set new sorted  votes in the adapter
+                adapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
+                adapter.notifyDataSetChanged();
+
+                // Update table user interface
+                optionTableViewContainer.removeAllViews();
+                updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+
                 Toast.makeText(getContext(), R.string.voteSaved, Toast.LENGTH_SHORT).show();
-                ;
             }
         });
 
-        adapter.setOnVoteChageListener(new ChoiceAdapter.OnVoteChangeListener() {
+        adapter.setOnVoteChageListener(new VoteListAdapter.OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
                 if (areThereChangesToSave)
@@ -215,8 +237,8 @@ public class ChoicesManagerTabsFragment extends Fragment {
     }
 
     @NonNull
-    private View getOptionsTable(ViewGroup container, LayoutInflater inflater) {
-        View rootView = inflater.inflate(R.layout.decision_option_table, container,false);
+    private View updateOptionsTableView(ViewGroup container, LayoutInflater inflater) {
+        View rootView = inflater.inflate(R.layout.votes_manager_table_tab, container, false);
 
         TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.scrollable_part);
         TableLayout fixedColumn = (TableLayout) rootView.findViewById(R.id.fixed_column);
@@ -227,50 +249,43 @@ public class ChoicesManagerTabsFragment extends Fragment {
             TableRow row = newRow();
             // first cell is empty
             TextView emptyCell = new TextView(getContext());
-
-            //add2Row(row, emptyCell,-1);
-            for (int j = 0; j < usersDecisionVotes.getChoices().size(); j++) {
-                Choice c = usersDecisionVotes.getChoices().get(j);
+            for (Option option : usersDecisionVotes.getOptions()) {
                 TextView tvChoice = new TextView(getContext());
-                tvChoice.setText(c.getTitle());
+                tvChoice.setText(option.getTitle());
                 tvChoice.setGravity(Gravity.CENTER);
                 tvChoice.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
                 tvChoice.setTypeface(tvChoice.getTypeface(), Typeface.BOLD);
                 tvChoice.setEllipsize(TextUtils.TruncateAt.END);
                 tvChoice.setLines(1);
                 tvChoice.setWidth(AndroidUtilities.dp(80));
-                add2Row(row, tvChoice,firstRowHeight);
+                add2Row(row, tvChoice, firstRowHeight);
             }
             tableLayout.addView(row);
-            fixedColumn.addView(emptyCell,ViewGroup.LayoutParams.WRAP_CONTENT, firstRowHeight);
+            fixedColumn.addView(emptyCell, ViewGroup.LayoutParams.WRAP_CONTENT, firstRowHeight);
         }
         // build second row
         {
             int secondRowHeight = AndroidUtilities.dp(33);
-
             TextView emptyCell = new TextView(getContext());
-//            add2Row(row, emptyCell, -1);
 
             TableRow row = newRow();
-            for (int j = 0; j < usersDecisionVotes.getChoices().size(); j++) {
-                Choice c = usersDecisionVotes.getChoices().get(j);
+            for (Option option : usersDecisionVotes.getOptions()) {
                 TextView tvVoteCount = new TextView(getContext());
                 tvVoteCount.setTextSize(18);
                 tvVoteCount.setGravity(Gravity.CENTER);
-                tvVoteCount.setText(Integer.toString(c.getPositiveVoteCount()));
+                tvVoteCount.setText(Integer.toString(usersDecisionVotes.getPositiveVoteCount(option)));
                 tvVoteCount.setHeight(secondRowHeight);
-                add2Row(row, tvVoteCount,secondRowHeight);
+                add2Row(row, tvVoteCount, secondRowHeight);
             }
             tableLayout.addView(row);
-            fixedColumn.addView(emptyCell,ViewGroup.LayoutParams.WRAP_CONTENT, secondRowHeight);
+            fixedColumn.addView(emptyCell, ViewGroup.LayoutParams.WRAP_CONTENT, secondRowHeight);
         }
 
         int otherRowHeight = AndroidUtilities.dp(33);
 
         // build other row row
-        for(int i=0; i < usersDecisionVotes.getUsers().size() ;i++){
+        for (final TLRPC.User user : usersDecisionVotes.getUsers()) {
             TableRow row = newRow();
-            TLRPC.User user = usersDecisionVotes.getUsers().get(i);
 
             LinearLayout usernameLayout = new LinearLayout(getContext());
             usernameLayout.setOrientation(LinearLayout.HORIZONTAL);
@@ -285,7 +300,7 @@ public class ChoicesManagerTabsFragment extends Fragment {
                 AvatarDrawable avatarDrawable = new AvatarDrawable(user);
                 avatarImageView.setImage(newPhoto, "20_20", avatarDrawable);
                 int imageSize = otherRowHeight - 3;
-                usernameLayout.addView(avatarImageView, LayoutHelper.createFrame(30, 30,Gravity.CENTER,10,0,10,0));
+                usernameLayout.addView(avatarImageView, LayoutHelper.createFrame(30, 30, Gravity.CENTER, 10, 0, 10, 0));
             }
 
             {
@@ -295,7 +310,7 @@ public class ChoicesManagerTabsFragment extends Fragment {
                 userNameTv.setPadding(15, 0, 0, 0);
                 userNameTv.setEllipsize(TextUtils.TruncateAt.END);
                 userNameTv.setText(PolgramUtils.asString(user));
-                int maxWith = AndroidUtilities.dp(105);
+                int maxWith = AndroidUtilities.dp(115);
                 userNameTv.setMaxWidth(maxWith);
                 userNameTv.setMaxLines(1);
                 userNameTv.setGravity(Gravity.CENTER_VERTICAL);
@@ -307,39 +322,52 @@ public class ChoicesManagerTabsFragment extends Fragment {
             Button remindButton = new Button(getContext());
             remindButton.setBackgroundResource(R.drawable.ic_smiles_bell_active);
             remindButton.setGravity(Gravity.LEFT);
+            remindButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    String message = getContext().getString(R.string.remindToUserSent,PolgramUtils.asString(user));
+                    Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+                    // TODO implement
+                }
+            });
+
             usernameLayout.addView(remindButton, LayoutHelper.createFrame(35, 35, Gravity.LEFT, 0, 3, 0, 0));
             usernameLayout.setBackgroundResource(R.drawable.cell_normal);
             fixedColumn.addView(usernameLayout, ViewGroup.LayoutParams.WRAP_CONTENT, otherRowHeight);
-            //   add2Row(row, linearLayout);
 
             boolean atLeastOneIsNull = false;
-            for (int j = 0; j < usersDecisionVotes.getChoices().size(); j++) {
-                Vote v = usersDecisionVotes.getVote(i, j);
+            for (Option option : usersDecisionVotes.getOptions()) {
+                Vote v = usersDecisionVotes.getVotes(user.id, option);
                 View item;
-                if (v.isVote() != null) {
-                    ImageView vote = new ImageView(getContext());
-                    if (v.isVote()) {
-                        vote.setImageResource(R.drawable.checkbig);
-                        vote.setBackgroundResource(R.drawable.cell_vote_positive);
-                        add2Row(row, vote, otherRowHeight,R.drawable.cell_vote_positive);
-                    } else
-                        add2Row(row, vote, otherRowHeight, R.drawable.cell_vote_negative);
-                } else {
+                if (v.isVote() == null)
                     atLeastOneIsNull = true;
-                    TextView noVoteTv = new TextView(getContext());
-                    noVoteTv.setText(R.string.no_vote_desc);
-                    noVoteTv.setTypeface(noVoteTv.getTypeface(), Typeface.BOLD);
-                    noVoteTv.setGravity(Gravity.CENTER);
-                    noVoteTv.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
-                    add2Row(row, noVoteTv, otherRowHeight,R.drawable.cell_vote_notpresent);
-                }
+                add2Row(row, newVoteView(v), otherRowHeight);
             }
             if (!atLeastOneIsNull)
                 remindButton.setVisibility(View.INVISIBLE);
 
             tableLayout.addView(row);
         }
+        container.addView(rootView, ViewGroup.LayoutParams.MATCH_PARENT,
+                ViewGroup.LayoutParams.MATCH_PARENT);
         return rootView;
+    }
+
+    private ImageView newVoteView(Vote v) {
+        ImageView voteImageView = new ImageView(getContext());
+        if (v.isVote() != null) {
+            if (v.isVote()) {
+                voteImageView.setImageResource(R.drawable.checkbig);
+                voteImageView.setBackgroundResource(R.drawable.cell_vote_positive);
+            } else {
+                voteImageView.setImageResource(0);
+                voteImageView.setBackgroundResource(R.drawable.cell_vote_negative);
+            }
+        } else {
+            voteImageView.setImageResource(R.drawable.unknown_vote);
+            voteImageView.setBackgroundResource(R.drawable.cell_vote_notpresent);
+        }
+        return voteImageView;
     }
 
 
@@ -351,16 +379,12 @@ public class ChoicesManagerTabsFragment extends Fragment {
     }
 
 
-    private void add2Row(TableRow row, View view, int height, int drawableBackGround){
+    private void add2Row(TableRow row, View view, int height){
         view.setPadding(11,11,11,11);
-        view.setBackgroundResource(drawableBackGround);
         view.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT,
                 height, Gravity.RIGHT));
         row.addView(view, ViewGroup.LayoutParams.WRAP_CONTENT, height);
     }
 
-    private void add2Row(TableRow row, View view, int heigth) {
-        add2Row(row, view, heigth, R.drawable.cell_normal);
-    }
 
 }

@@ -8,12 +8,12 @@
 
 package org.telegram.ui.ActionBar;
 
-import android.app.Activity;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentActivity;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -195,7 +195,7 @@ public class BaseFragment {
         return parentLayout != null && parentLayout.presentFragment(fragment, removeLast, forceWithoutAnimation, true);
     }
 
-    public Activity getParentActivity() {
+    public FragmentActivity getParentActivity() {
         if (parentLayout != null) {
             return parentLayout.parentActivity;
         }

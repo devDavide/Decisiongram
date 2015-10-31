@@ -1177,7 +1177,7 @@ public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * This is for internal use. Not necessarily the child closest to start but the first child
-     * we find that matches the criteria.
+     * we getOptions that matches the criteria.
      * This method does not do any sorting based on child's start coordinate, instead, it uses
      * children order.
      */
@@ -1208,7 +1208,7 @@ public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager {
 
     /**
      * This is for internal use. Not necessarily the child closest to bottom but the first child
-     * we find that matches the criteria.
+     * we getOptions that matches the criteria.
      * This method does not do any sorting based on child's end coordinate, instead, it uses
      * children order.
      */
@@ -1932,7 +1932,7 @@ public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager {
         }
 
         mPrimaryOrientation.offsetChildren(-totalScroll);
-        // always reset this if we scroll for a proper save instance state
+        // always reset this if we scroll for a proper insert instance state
         mLastLayoutFromEnd = mShouldReverseLayout;
         return totalScroll;
     }
@@ -1950,7 +1950,7 @@ public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager {
     /**
      * Finds the first View that can be used as an anchor View.
      *
-     * @return Position of the View or 0 if it cannot find any such View.
+     * @return Position of the View or 0 if it cannot getOptions any such View.
      */
     private int findFirstReferenceChildPosition(int itemCount) {
         final int limit = getChildCount();
@@ -1967,7 +1967,7 @@ public class StaggeredGridLayoutManager extends RecyclerView.LayoutManager {
     /**
      * Finds the last View that can be used as an anchor View.
      *
-     * @return Position of the View or 0 if it cannot find any such View.
+     * @return Position of the View or 0 if it cannot getOptions any such View.
      */
     private int findLastReferenceChildPosition(int itemCount) {
         for (int i = getChildCount() - 1; i >= 0; i--) {

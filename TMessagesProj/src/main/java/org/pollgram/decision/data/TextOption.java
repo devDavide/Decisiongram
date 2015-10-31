@@ -3,29 +3,28 @@ package org.pollgram.decision.data;
 /**
  * Created by davide on 01/10/15.
  */
-public class TextOption extends Choice {
+public class TextOption extends Option {
 
-    private final Decision decision;
+    private final long decisionId;
 
     // icon/image will be retrived externally by url or file
 
     private String title;
     private String longDescription;
 
-    public TextOption(long id, int positiveVoteCount, int negativeVoteCount, Decision decision) {
-        super(id, positiveVoteCount, negativeVoteCount);
-        this.decision = decision;
-    }
-
-    public TextOption(long id, int positiveVoteCount, int negativeVoteCount, Decision decision, String title, String longDescription) {
-        super(id, positiveVoteCount, negativeVoteCount);
+    public TextOption(String title, String longDescription, long decisionId) {
         this.title = title;
-        this.decision = decision;
+        this.decisionId = decisionId;
         this.longDescription = longDescription;
     }
 
-    public Decision getDecision() {
-        return decision;
+    public TextOption(long id, String title, String longDescription, long decisionId) {
+        this(title,longDescription,decisionId);
+        setId(id);
+    }
+
+    public long getDecisionId() {
+        return decisionId;
     }
 
     @Override
@@ -43,21 +42,6 @@ public class TextOption extends Choice {
 
     public void setLongDescription(String longDescription) {
         this.longDescription = longDescription;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TextOption textOption = (TextOption) o;
-
-        return id == textOption.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
     }
 
     @Override

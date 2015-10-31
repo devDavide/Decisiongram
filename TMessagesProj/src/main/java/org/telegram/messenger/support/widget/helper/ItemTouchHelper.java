@@ -559,7 +559,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
                 final int swipeDir = prevActionState == ACTION_STATE_DRAG ? 0
                         : swipeIfNecessary(prevSelected);
                 releaseVelocityTracker();
-                // find where we should animate to
+                // getOptions where we should animate to
                 final float targetTranslateX, targetTranslateY;
                 int animationType;
                 switch (swipeDir) {
@@ -780,7 +780,7 @@ public class ItemTouchHelper extends RecyclerView.ItemDecoration
             }
             final ViewHolder otherVh = mRecyclerView.getChildViewHolder(other);
             if (mCallback.canDropOver(mRecyclerView, mSelected, otherVh)) {
-                // find the index to add
+                // getOptions the index to add
                 final int dx = Math.abs(centerX - (other.getLeft() + other.getRight()) / 2);
                 final int dy = Math.abs(centerY - (other.getTop() + other.getBottom()) / 2);
                 final int dist = dx * dx + dy * dy;

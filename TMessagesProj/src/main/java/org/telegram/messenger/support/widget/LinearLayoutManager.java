@@ -54,7 +54,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
 
 
     /**
-     * While trying to find next view to focus, LayoutManager will not try to scroll more
+     * While trying to getOptions next view to focus, LayoutManager will not try to scroll more
      * than this factor times the total space of the list. If layout is vertical, total space is the
      * height minus padding, if layout is horizontal, total space is the width minus padding.
      */
@@ -437,7 +437,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     @Override
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         // layout algorithm:
-        // 1) by checking children and other variables, find an anchor coordinate and an anchor
+        // 1) by checking children and other variables, getOptions an anchor coordinate and an anchor
         //  item position.
         // 2) fill towards start, stacking from bottom
         // 3) fill towards end, stacking from top
@@ -573,7 +573,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
         if (getChildCount() > 0) {
             // because layout from end may be changed by scroll to position
             // we re-calculate it.
-            // find which side we should check for gaps.
+            // getOptions which side we should check for gaps.
             if (mShouldReverseLayout ^ mStackFromEnd) {
                 int fixOffset = fixLayoutEndGap(endOffset, recycler, state, true);
                 startOffset += fixOffset;
@@ -620,7 +620,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
      */
     private void layoutForPredictiveAnimations(RecyclerView.Recycler recycler,
             RecyclerView.State state, int startOffset,  int endOffset) {
-        // If there are scrap children that we did not layout, we need to find where they did go
+        // If there are scrap children that we did not layout, we need to getOptions where they did go
         // and layout them accordingly so that animations can work as expected.
         // This case may happen if new views are added or an existing view expands and pushes
         // another view out of bounds.
@@ -1462,7 +1462,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * Convenience method to find the child closes to start. Caller should check it has enough
+     * Convenience method to getOptions the child closes to start. Caller should check it has enough
      * children.
      *
      * @return The child closes to start of the layout from user's perspective.
@@ -1472,7 +1472,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * Convenience method to find the child closes to end. Caller should check it has enough
+     * Convenience method to getOptions the child closes to end. Caller should check it has enough
      * children.
      *
      * @return The child closes to end of the layout from user's perspective.
@@ -1482,7 +1482,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * Convenience method to find the visible child closes to start. Caller should check if it has
+     * Convenience method to getOptions the visible child closes to start. Caller should check if it has
      * enough children.
      *
      * @param completelyVisible Whether child should be completely visible or not
@@ -1500,7 +1500,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
     }
 
     /**
-     * Convenience method to find the visible child closes to end. Caller should check if it has
+     * Convenience method to getOptions the visible child closes to end. Caller should check if it has
      * enough children.
      *
      * @param completelyVisible Whether child should be completely visible or not
@@ -1523,7 +1523,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
      * closest to the end of the layout.
      * <p>
      * Due to ambiguous adapter updates or children being removed, some children's positions may be
-     * invalid. This method is a best effort to find a position within adapter bounds if possible.
+     * invalid. This method is a best effort to getOptions a position within adapter bounds if possible.
      * <p>
      * It also prioritizes children that are within the visible bounds.
      * @return A View that can be used an an anchor View.
@@ -1539,7 +1539,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
      * closest to the start of the layout.
      * <p>
      * Due to ambiguous adapter updates or children being removed, some children's positions may be
-     * invalid. This method is a best effort to find a position within adapter bounds if possible.
+     * invalid. This method is a best effort to getOptions a position within adapter bounds if possible.
      * <p>
      * It also prioritizes children that are within the visible bounds.
      *
@@ -1717,7 +1717,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
         if (referenceChild == null) {
             if (DEBUG) {
                 Log.d(TAG,
-                        "Cannot find a child with a valid position to be used for focus search.");
+                        "Cannot getOptions a child with a valid position to be used for focus search.");
             }
             return null;
         }
@@ -1922,7 +1922,7 @@ public class LinearLayoutManager extends RecyclerView.LayoutManager implements
 
         /**
          * When LLM needs to layout particular views, it sets this list in which case, LayoutState
-         * will only return views from this list and return null if it cannot find an item.
+         * will only return views from this list and return null if it cannot getOptions an item.
          */
         List<RecyclerView.ViewHolder> mScrapList = null;
 

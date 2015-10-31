@@ -224,7 +224,7 @@ abstract public class LinearSmoothScroller extends RecyclerView.SmoothScroller {
      * @see #computeScrollVectorForPosition(int)
      */
     protected void updateActionForInterimTarget(Action action) {
-        // find an interim target position
+        // getOptions an interim target position
         PointF scrollVector = computeScrollVectorForPosition(getTargetPosition());
         if (scrollVector == null || (scrollVector.x == 0 && scrollVector.y == 0)) {
             Log.e(TAG, "To support smooth scrolling, you should override \n"

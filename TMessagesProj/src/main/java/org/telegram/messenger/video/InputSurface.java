@@ -66,7 +66,7 @@ public class InputSurface {
         int[] numConfigs = new int[1];
         if (!EGL14.eglChooseConfig(mEGLDisplay, attribList, 0, configs, 0, configs.length,
                 numConfigs, 0)) {
-            throw new RuntimeException("unable to find RGB888+recordable ES2 EGL config");
+            throw new RuntimeException("unable to getOptions RGB888+recordable ES2 EGL config");
         }
 
         int[] attrib_list = {

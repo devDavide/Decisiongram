@@ -2,13 +2,12 @@ package org.pollgram.decision.dao;
 
 import android.support.annotation.Nullable;
 
-import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.Decision;
+import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.telegram.tgnet.TLRPC;
 
-import java.util.Collection;
 import java.util.List;
 
 /**
@@ -16,9 +15,19 @@ import java.util.List;
  */
 public abstract class PollgramDAO {
 
+    public abstract Decision insert(Decision d);
+
+    public abstract void update(Decision d);
+
     public abstract Decision getDecision(long decisionId);
 
     public abstract List<Decision> getDecisions(@Nullable Boolean open);
+
+    public abstract Option insert(Option o);
+
+    public abstract void update(Option o);
+
+    public abstract Option getOption(long optionId);
 
     public abstract List<Option> getOptions(Decision decision);
 
@@ -28,7 +37,7 @@ public abstract class PollgramDAO {
 
     public abstract List<Vote> getUserVoteForDecision(long decisionId, int userId);
 
-    public abstract void save(Collection<Vote> votest2save);
+    public abstract Vote save(Vote vote);
 
     public abstract UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds);
 
@@ -40,7 +49,7 @@ public abstract class PollgramDAO {
             synchronized (PollgramDAO.class) {
                 localInstance = Instance;
                 if (localInstance == null) {
-                    Instance = localInstance = new PollgramDAOStubImpl();
+                    Instance = localInstance = new PollgramDAODBImpl();
                 }
             }
         }

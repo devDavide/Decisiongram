@@ -1,6 +1,61 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/decision_list_layout"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
 
-</LinearLayout>
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="Group name"
+        android:id="@+id/decision_list_tv_title"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
+        android:layout_toRightOf="@+id/decision_icon_container"
+        android:layout_toEndOf="@+id/decision_icon_container" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="normal Text"
+        android:id="@+id/decision_list_tv_subtitle"
+        android:layout_below="@+id/decision_list_tv_title"
+        android:layout_toRightOf="@+id/decision_icon_container"
+        android:layout_toEndOf="@+id/decision_icon_container" />
+    />
+
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id = "@+id/decision_icon_container"
+        android:layout_above="@+id/decision_list_list_view"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:paddingBottom="5dp"/>
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/decision_list_list_view"
+        android:layout_below="@+id/textPadding"
+        android:layout_alignRight="@+id/decision_list_tv_title"
+        android:layout_alignEnd="@+id/decision_list_tv_title" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text=""
+        android:id="@+id/textPadding"
+        android:layout_below="@+id/decision_list_tv_subtitle"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true" />
+
+
+</RelativeLayout>

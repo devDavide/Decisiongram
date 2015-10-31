@@ -1095,7 +1095,7 @@ public class FastDatePrinter implements DatePrinter, Serializable {
     /**
      * <p>Gets the time zone display name, using a cache for performance.</p>
      *
-     * @param tz       the zone to query
+     * @param tz       the zone to getDecisions
      * @param daylight true if daylight savings
      * @param style    the style to use {@code TimeZone.LONG} or {@code TimeZone.SHORT}
      * @param locale   the locale to use

@@ -1,0 +1,49 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/sample_main_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <!--
+    <ViewAnimator
+          android:id="@+id/sample_output"
+          android:layout_width="match_parent"
+          android:layout_height="0px"
+
+              android:layout_weight="1">
+            <ScrollView
+                  style="@style/Widget.SampleMessageTile"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent">
+    -->
+    <TextView
+        android:id="@+id/decision_detail_top_title"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="Title"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
+    <!--
+            </ScrollView>
+
+            <fragment
+                  android:name="com.example.android.common.logger.LogFragment"
+                  android:id="@+id/log_fragment"
+                  android:layout_width="match_parent"
+                  android:layout_height="match_parent" />
+
+        </ViewAnimator>
+-->
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray" />
+
+    <FrameLayout
+        android:id="@+id/sample_content_fragment"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_weight="2" />
+
+</LinearLayout>

@@ -29,30 +29,7 @@
     <string name="CancelRegistration">Cancel registration</string>
     <!--chats view-->
     <string name="Settings">Settings</string>
-    <string name="
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    ">Contacts</string>
+    <string name="Contacts">Contacts</string>
     <string name="NewGroup">New Group</string>
     <string name="Yesterday">yesterday</string>
     <string name="NoResult">No results</string>
@@ -93,7 +70,7 @@
     <string name="ChannelUsernamePlaceholder">link</string>
     <string name="ChannelPrivateLinkHelp">People can join your channel by following this link. You can revoke the link any time.</string>
     <string name="DescriptionPlaceholder">Description</string>
-    <string name="DescriptionInfo">You can provide an optional description for your channel.</string>
+    <string name="DescriptionInfo">You can provide an optional title for your channel.</string>
     <string name="ChannelPublic">Public Channel</string>
     <string name="ChannelPublicInfo">Public channels can be found in search, anyone can join them.</string>
     <string name="ChannelPrivate">Private Channel</string>
@@ -445,8 +422,8 @@
     <string name="LedColor">LED Color</string>
     <string name="PopupNotification">Popup Notifications</string>
     <string name="NoPopup">No popup</string>
-    <string name="OnlyWhenScreenOn">Only when screen \"on\"</string>
-    <string name="OnlyWhenScreenOff">Only when screen \"off\"</string>
+    <string name="OnlyWhenScreenOn">Only voteTime screen \"on\"</string>
+    <string name="OnlyWhenScreenOff">Only voteTime screen \"off\"</string>
     <string name="AlwaysShowPopup">Always show popup</string>
     <string name="BadgeNumber">Badge Counter</string>
     <string name="Short">Short</string>
@@ -580,7 +557,7 @@
     <!--password view-->
     <string name="TwoStepVerification">Two-Step Verification</string>
     <string name="SetAdditionalPassword">Set Additional Password</string>
-    <string name="SetAdditionalPasswordInfo">You can set a password that will be required when you log in on a new device in addition to the code you get in the SMS.</string>
+    <string name="SetAdditionalPasswordInfo">You can set a password that will be required voteTime you log in on a new device in addition to the code you get in the SMS.</string>
     <string name="YourPassword">Your Password</string>
     <string name="PleaseEnterCurrentPassword">Please enter your password</string>
     <string name="PleaseEnterFirstPassword">Enter a password</string>
@@ -609,7 +586,7 @@
     <string name="PasswordAsHintError">Hint must be different from your password</string>
     <string name="PasswordEmailInvalid">Invalid e-mail</string>
     <string name="RestorePasswordNoEmailTitle">Sorry</string>
-    <string name="RestorePasswordNoEmailText">Since you haven\'t provided a recovery e-mail when setting up your password, your remaining options are either to remember your password or to reset your account.</string>
+    <string name="RestorePasswordNoEmailText">Since you haven\'t provided a recovery e-mail voteTime setting up your password, your remaining options are either to remember your password or to reset your account.</string>
     <string name="RestoreEmailSent">We have sent a recovery code to the e-mail you provided:\n\n%1$s</string>
     <string name="RestoreEmailSentInfo">Please check your e-mail and enter the 6-digit code we have sent here.</string>
     <string name="RestoreEmailTrouble">Having trouble accessing your e-mail %1$s?</string>
@@ -974,4 +951,25 @@
     <!--update text-->
     <string name="updateText">Telegram for Android has been updated. New in version 3.2.0:\n\n- Introducing Channels – a great new way to broadcast your messages to unlimited audiences (replaces old Broadcasts).\n\nRead more: https://telegram.org/blog/channels</string>
     <string name="updateBuild">614</string>
+
+    <!-- START of Pollgram text -->
+
+    <string name="howManyMemberVote">%1$d members on %2$d have voted yet</string>
+    <string name="groupDecision">Group decisions</string>
+    <string name="decisionsCount">%1$d open decision, %2$d closed decisions</string>
+
+    <string name="viewCloseDecision">View closed decision</string>
+    <string name="hideCloseDecision">Hide closed decision</string>
+
+    <string name="decisionDetailSummarizeTitle">%1$d members on %2$d have already voted!</string>
+    <string name="optionTabName">Options</string>
+    <string name="tableViewTabName">Table View</string>
+    <string name="saveVotes">Save votes</string>
+    <string name="voteSaved">Vote saved</string>
+    <string name="no_vote_desc">\?</string>
+    <string name="noOptionPresent">There are no option\n for this decision</string>
+    <string name="remindToUserSent">remind sent to user %1$s (TODO IT MUST BE IMPLENTED)</string>
+    <!-- END of Pollgram text -->
+
+
 </resources>

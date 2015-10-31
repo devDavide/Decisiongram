@@ -19,6 +19,7 @@ import org.telegram.messenger.R;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -26,12 +27,12 @@ import java.util.Set;
 /**
  * Created by davide on 04/10/15.
  */
-public class OptionAdapter extends ArrayAdapter<Vote> {
+public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     private static final String LOG_TAG = "ChoiceAdapter";
 
-    private static final int LAYOUT_RES_ID = R.layout.option_choice;
-    private final List<Vote> votes;
+    private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
+    private List<Vote> votes;
     private final List<Boolean> originalVotes;
     private final Set<Vote> newVoteSet;
     private OnVoteChangeListener onVoteChageListener;
@@ -40,8 +41,8 @@ public class OptionAdapter extends ArrayAdapter<Vote> {
         void voteChanges(boolean areThereChangesToSave);
     }
 
-    public OptionAdapter(Context context, List<Vote> votes) {
-        super(context, LAYOUT_RES_ID, votes.toArray(new Vote[votes.size()]));
+    public VoteListAdapter(Context context, List<Vote> votes) {
+        super(context, LAYOUT_RES_ID);
         this.votes = votes;
         this.newVoteSet = new HashSet<>();
         this.originalVotes = new ArrayList<>();
@@ -53,6 +54,25 @@ public class OptionAdapter extends ArrayAdapter<Vote> {
             public void voteChanges(boolean areThereChangesToSave) {
             }
         };
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    @Override
+    public int getCount() {
+        return votes.size();
+    }
+
+    @Override
+    public Vote getItem(int position) {
+        return votes.get(position);
+    }
+
+    @Override
+    public int getPosition(Vote item) {
+        return votes.indexOf(item);
     }
 
     public void setOnVoteChageListener(OnVoteChangeListener onVoteChageListener){
@@ -79,6 +99,7 @@ public class OptionAdapter extends ArrayAdapter<Vote> {
             @Override
             public void onClick(View v) {
                 vote.setVote(optionCheckBox.isChecked());
+                vote.setVoteTime(new Date());
                 if (vote.isVote() != null && vote.isVote().equals(originalVotes.get(position))){
                     newVoteSet.remove(vote);;
                 } else {
@@ -93,7 +114,7 @@ public class OptionAdapter extends ArrayAdapter<Vote> {
         optionTitle.setText(o.getTitle());
         optionSubtitle.setText(o.getLongDescription());
         // TODO optionView
-        optionCheckBox.setChecked(vote.isVote());
+        optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
         return rowView;
     }

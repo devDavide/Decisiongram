@@ -106,7 +106,7 @@ public class BaseLocationAdapter extends BaseFragmentAdapter {
             searching = true;
             String url = String.format(Locale.US, "https://api.foursquare.com/v2/venues/search/?v=%s&locale=en&limit=25&client_id=%s&client_secret=%s&ll=%s", BuildVars.FOURSQUARE_API_VERSION, BuildVars.FOURSQUARE_API_ID, BuildVars.FOURSQUARE_API_KEY,  String.format(Locale.US, "%f,%f", coordinate.getLatitude(), coordinate.getLongitude()));
             if (query != null && query.length() > 0) {
-                url += "&query=" + URLEncoder.encode(query, "UTF-8");
+                url += "&getDecisions=" + URLEncoder.encode(query, "UTF-8");
             }
             JsonObjectRequest jsonObjReq = new JsonObjectRequest(Request.Method.GET, url, null,
                     new Response.Listener<JSONObject>() {

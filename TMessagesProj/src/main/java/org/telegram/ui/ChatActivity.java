@@ -30,6 +30,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
@@ -50,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.pollgram.decision.ui.DecisionsListFragment;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationCompat.AnimatorListenerAdapterProxy;
 import org.telegram.messenger.AnimationCompat.AnimatorSetProxy;
@@ -127,7 +129,6 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.concurrent.Semaphore;
 
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.MessagesActivityDelegate,
@@ -620,13 +621,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             MessagesController.getInstance().startShortPoll(currentChat.id, true);
         }
     }
-
-    public static void addTab2ActionBar(ActionBar actionBar, String tag, Class<?> clazz, int title,
-                                        int icon, List<Integer> handledRequestCode) {
-    }
-
     @Override
-    public View createView(Context context) {
+    public View createView(final Context context) {
 
         for (int a = 0; a < 8; a++) {
             chatMessageCellsCache.add(new ChatMessageCell(context));
@@ -644,7 +640,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         ResourceLoader.loadRecources(context);
 
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
-        // AAA
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(final int id) {
@@ -906,11 +901,30 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         });
 
+        /// uuuuu add button
+        boolean isChannel = ChatObject.isChannel(currentChat);
+        Log.i("AAAZZZ","isChannel = "+isChannel);
+        if (currentChat != null && !isChannel) { // only incase of a group chat
+            ImageView aNewButton = new ImageView(context);
+            aNewButton.setScaleType(ImageView.ScaleType.CENTER);
+            aNewButton.setBackgroundResource(R.drawable.decision);
+            aNewButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    DecisionsListFragment fragment = new DecisionsListFragment();
+                    fragment.setChatInfo(info);
+                    presentFragment(fragment);
+                }
+            });
+            actionBar.addView(aNewButton, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.RIGHT | Gravity.TOP, 56, 28, 42, 0));
+        }
+
         avatarContainer = new FrameLayoutFixed(context);
         avatarContainer.setBackgroundResource(R.drawable.bar_selector);
         avatarContainer.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
-        // AAA
-        actionBar.addView(avatarContainer, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 56, 0, 40, 0));
+        actionBar.addView(avatarContainer, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
+                Gravity.TOP | Gravity.LEFT, 56, 0, 40, 0));
         avatarContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -1044,7 +1058,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             searchItem.getSearchField().requestFocus();
                             AndroidUtilities.showKeyboard(searchItem.getSearchField());
                         }
-                    }, 300); //TODO find a better way to open keyboard
+                    }, 300); //TODO getOptions a better way to open keyboard
                 }
 
                 @Override
@@ -1078,7 +1092,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         if (channelMessagesImportant == 0) {
             headerItem.addSubItem(clear_history, LocaleController.getString("ClearHistory", R.string.ClearHistory), 0);
             if (currentChat != null && !isBroadcast) {
-                // Group chat menu ??
                 headerItem.addSubItem(delete_chat, LocaleController.getString("DeleteAndExit", R.string.DeleteAndExit), 0);
             } else {
                 headerItem.addSubItem(delete_chat, LocaleController.getString("DeleteChatUser", R.string.DeleteChatUser), 0);
@@ -1258,7 +1271,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         };
 
         SizeNotifierFrameLayout contentView = (SizeNotifierFrameLayout) fragmentView;
-
         contentView.setBackgroundImage(ApplicationLoader.getCachedWallpaper());
 
         emptyViewContainer = new FrameLayout(context);
@@ -5151,7 +5163,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     @Override
-    public void onConfigurationChanged(android.content.res.Configuration newConfig) {
+    public void onConfigurationChanged(Configuration newConfig) {
         fixLayout(false);
     }
 

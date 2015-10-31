@@ -112,7 +112,7 @@ class OpReorderer {
             return;
         }
 
-        // now find out the new locations for move actions
+        // now getOptions out the new locations for move actions
         if (moveIsBackwards) {
             if (extraRm != null) {
                 if (moveOp.positionStart > extraRm.positionStart) {

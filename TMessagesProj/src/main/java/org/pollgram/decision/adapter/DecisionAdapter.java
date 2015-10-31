@@ -10,7 +10,6 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pollgram.decision.data.Decision;
-import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.R;
 
 import java.util.List;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public class DecisionAdapter extends ArrayAdapter<Decision> {
 
-    private static final int LAYOUT_RES_ID = R.layout.item_decision;
+    private static final int LAYOUT_RES_ID = R.layout.item_decision_list;
     private final int groupMemberCount;
 
     public DecisionAdapter(Context context,  List<Decision> items, int groupMemberCount) {
@@ -40,9 +39,8 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
 
         // put data
         Decision decision = getItem(position);
-        decisionTitle.setText(decision.getDescription());
-        String subTitle = LocaleController.formatString(R.string.howManyMemberVote+"",
-                R.string.howManyMemberVote, decision.getVoteCount(),groupMemberCount);
+        decisionTitle.setText(decision.getTitle());
+        String subTitle = getContext().getString(R.string.howManyMemberVote, decision.getUsersThatVoteCount(),groupMemberCount);
         decisionSubtitle.setText(subTitle);
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);

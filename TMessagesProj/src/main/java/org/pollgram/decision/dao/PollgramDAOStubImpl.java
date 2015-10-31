@@ -1,10 +1,9 @@
 package org.pollgram.decision.dao;
 
 import android.support.annotation.Nullable;
-import android.util.Log;
 
-import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.Decision;
+import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
@@ -12,14 +11,14 @@ import org.telegram.messenger.MessagesController;
 import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
 /**
  * Created by davide on 03/10/15.
  */
-public class PollgramDAOStubImpl extends PollgramDAO {
+@Deprecated
+class PollgramDAOStubImpl extends PollgramDAO {
 
     private static final String LOG_TAG = "DecisionDAOImpl";
 
@@ -33,15 +32,26 @@ public class PollgramDAOStubImpl extends PollgramDAO {
         /// just for test
         int chatId = 39379118;
         int creatorId = 23483618;
-        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?",true, 1));
-        decisions.add(new Decision(id++,chatId, creatorId,"Where do we go ?",true, 0));
-        decisions.add(new Decision(id++,chatId, creatorId,"When will the party be ?",true, 0));
-        decisions.add(new Decision(id++,chatId, creatorId,"Do we add Slomp to the group ?",false, 0));
+        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+"huge bla bla bla" ,true ,1));
+        decisions.add(new Decision(id++, chatId, creatorId, "Where do we go ?", id + "huge bla bla bla", true, 0));
+        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", id + "huge bla bla bla", true, 0));
+        decisions.add(new Decision(id++, chatId, creatorId, "Do we add Slomp to the group ?", id + "huge bla bla bla", false, 0));
 
-        choiches.add(new TextOption(id++, 5,2, decisions.get(0),"Ski","They cost 385EUR i saw them at the corner shop"));
-        choiches.add(new TextOption(id++, 3,4, decisions.get(0),"Phone","The new StonexOne is AWESOME !!!"));
-        choiches.add(new TextOption(id++,2,5, decisions.get(0), "Trip", "Yeah a trip trought Europe can be a nice idea"));
-        choiches.add(new TextOption(id++,2,5, decisions.get(0), "A stupid idea", "it is late and i have no more ideas ;-/"));
+        choiches.add(new TextOption(id++,"Ski","They cost 385EUR i saw them at the corner shop",decisions.get(0).getId()));
+        choiches.add(new TextOption(id++,"Phone","The new StonexOne is AWESOME !!!",decisions.get(0).getId()));
+        choiches.add(new TextOption(id++,"Trip", "Yeah a trip trought Europe can be a nice idea",decisions.get(0).getId()));
+        choiches.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/",decisions.get(0).getId()));
+
+    }
+
+    @Override
+    public Decision insert(Decision d) {
+        decisions.add(d);
+        return d;
+    }
+
+    @Override
+    public void update(Decision d) {
 
     }
 
@@ -63,6 +73,10 @@ public class PollgramDAOStubImpl extends PollgramDAO {
         return outList;
     }
 
+    @Override
+    public Option getOption(long optionId) {
+        return null;
+    }
 
     @Override
     public List<Option> getOptions(Decision decision) {
@@ -83,15 +97,17 @@ public class PollgramDAOStubImpl extends PollgramDAO {
         Decision decision = getDecision(decisionId);
         List<TLRPC.User> usersForDecision = getUsers(participantIds);
         List<Option> choichesForDecision= getOptions(decision) ;
-        UsersDecisionVotes udv = new UsersDecisionVotes(decision, usersForDecision, choichesForDecision);
+        List<Vote> votes = new ArrayList<>();
         for (int i = 0; i < usersForDecision.size(); i++) {
             for (int j = 0; j < choichesForDecision.size(); j++) {
                 Vote vote = getVote(usersForDecision.get(i).id, choichesForDecision.get(j));
-                udv.setVote(i,j,vote);
-                if (i == 0)
+                votes.add(vote);
+                if (i == 0) {
                     vote.setVote(null);
+                }
             }
         }
+        UsersDecisionVotes udv = new UsersDecisionVotes(decision, usersForDecision, choichesForDecision, votes);
         return udv;
     }
 
@@ -99,7 +115,7 @@ public class PollgramDAOStubImpl extends PollgramDAO {
         // TODO so stub
         long stubId = option.getId()*17;
         Boolean voteValue = option.getId()%2 ==0 ? true : (option.getId()%3 ==0 ? null : false);
-        return new Vote(stubId, option,userId, voteValue, new Date());
+        return new Vote(stubId, voteValue, new Date(), userId, option.getId());
     }
 
 
@@ -121,10 +137,19 @@ public class PollgramDAOStubImpl extends PollgramDAO {
         return votes;
     }
 
+    @Override
+    public Option insert(Option o) {
+        return null;
+    }
 
     @Override
-    public void save(Collection<Vote> votest2save) {
-        Log.e(LOG_TAG, "save not yet implemnted :-(");
+    public void update(Option o) {
+
+    }
+
+    @Override
+    public Vote save(Vote vote) {
+        return null;
     }
 }
 

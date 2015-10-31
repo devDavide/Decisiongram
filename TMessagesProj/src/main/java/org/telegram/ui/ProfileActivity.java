@@ -1263,7 +1263,7 @@ public class ProfileActivity extends BaseFragment implements NotificationCenter.
                 }
             });
         } catch (Exception e) {
-            FileLog.e("tmessages", e); //TODO find crash
+            FileLog.e("tmessages", e); //TODO getOptions crash
         }
 
         if (listView != null) {

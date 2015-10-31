@@ -234,7 +234,7 @@ public class GridLayoutManager extends LinearLayoutManager {
     /**
      * Sets the source to get the number of spans occupied by each item in the adapter.
      *
-     * @param spanSizeLookup {@link SpanSizeLookup} instance to be used to query number of spans
+     * @param spanSizeLookup {@link SpanSizeLookup} instance to be used to getDecisions number of spans
      *                       occupied by each item
      */
     public void setSpanSizeLookup(SpanSizeLookup spanSizeLookup) {
@@ -346,10 +346,10 @@ public class GridLayoutManager extends LinearLayoutManager {
         final int adapterPosition = recycler.convertPreLayoutPositionToPostLayout(viewPosition);
         if (adapterPosition == -1) {
             if (DEBUG) {
-                throw new RuntimeException("Cannot find span group index for position "
+                throw new RuntimeException("Cannot getOptions span group index for position "
                         + viewPosition);
             }
-            Log.w(TAG, "Cannot find span size for pre layout position. " + viewPosition);
+            Log.w(TAG, "Cannot getOptions span size for pre layout position. " + viewPosition);
             return 0;
         }
         return mSpanSizeLookup.getSpanGroupIndex(adapterPosition, mSpanCount);
@@ -366,10 +366,10 @@ public class GridLayoutManager extends LinearLayoutManager {
         final int adapterPosition = recycler.convertPreLayoutPositionToPostLayout(pos);
         if (adapterPosition == -1) {
             if (DEBUG) {
-                throw new RuntimeException("Cannot find span index for pre layout position. It is"
+                throw new RuntimeException("Cannot getOptions span index for pre layout position. It is"
                         + " not cached, not in the adapter. Pos:" + pos);
             }
-            Log.w(TAG, "Cannot find span size for pre layout position. It is"
+            Log.w(TAG, "Cannot getOptions span size for pre layout position. It is"
                     + " not cached, not in the adapter. Pos:" + pos);
             return 0;
         }
@@ -387,10 +387,10 @@ public class GridLayoutManager extends LinearLayoutManager {
         final int adapterPosition = recycler.convertPreLayoutPositionToPostLayout(pos);
         if (adapterPosition == -1) {
             if (DEBUG) {
-                throw new RuntimeException("Cannot find span size for pre layout position. It is"
+                throw new RuntimeException("Cannot getOptions span size for pre layout position. It is"
                         + " not cached, not in the adapter. Pos:" + pos);
             }
-            Log.w(TAG, "Cannot find span size for pre layout position. It is"
+            Log.w(TAG, "Cannot getOptions span size for pre layout position. It is"
                     + " not cached, not in the adapter. Pos:" + pos);
             return 1;
         }

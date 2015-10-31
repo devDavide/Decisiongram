@@ -197,7 +197,7 @@ class ChildHelper {
     }
 
     /**
-     * This can be used to find a disappearing view by position.
+     * This can be used to getOptions a disappearing view by position.
      *
      * @param position The adapter position of the item.
      * @param type     View type, can be {@link RecyclerView#INVALID_TYPE}.

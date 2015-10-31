@@ -6,9 +6,13 @@ import android.util.TypedValue;
 import android.view.Gravity;
 import android.widget.TextView;
 
+import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.R;
+import org.telegram.messenger.UserObject;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.Components.FrameLayoutFixed;
 import org.telegram.ui.Components.LayoutHelper;
@@ -52,5 +56,24 @@ public class PolgramUtils {
 
         return actionBar;
     }
+
+    public static String asString(TLRPC.User currentUser){
+        if (currentUser.id / 1000 != 777 && currentUser.id / 1000 != 333 && ContactsController.getInstance().contactsDict.get(currentUser.id) == null && (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {
+            if (currentUser.phone != null && currentUser.phone.length() != 0) {
+                return PhoneFormat.getInstance().format("+" + currentUser.phone);
+            } else {
+                return UserObject.getUserName(currentUser);
+            }
+        } else {
+            return UserObject.getUserName(currentUser);
+        }
+    }
+//
+//    public static String resize(String str, int maxLenght){
+//        if (str == null || str.length() < maxLenght)
+//            return str;
+//        else
+//            return str.substring(0,maxLenght -3) + "...";
+//    }
 
 }

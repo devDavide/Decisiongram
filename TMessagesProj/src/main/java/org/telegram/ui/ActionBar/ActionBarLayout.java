@@ -16,6 +16,7 @@ import android.graphics.Paint;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Handler;
+import android.support.v4.app.FragmentActivity;
 import android.view.Gravity;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -28,11 +29,11 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.R;
 import org.telegram.messenger.AnimationCompat.AnimatorListenerAdapterProxy;
 import org.telegram.messenger.AnimationCompat.AnimatorSetProxy;
 import org.telegram.messenger.AnimationCompat.ObjectAnimatorProxy;
 import org.telegram.messenger.AnimationCompat.ViewProxy;
+import org.telegram.messenger.R;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;
@@ -136,13 +137,13 @@ public class ActionBarLayout extends FrameLayout {
     private String titleOverlayText;
 
     private ActionBarLayoutDelegate delegate = null;
-    protected Activity parentActivity = null;
+    protected FragmentActivity parentActivity = null;
 
     public ArrayList<BaseFragment> fragmentsStack = null;
 
     public ActionBarLayout(Context context) {
         super(context);
-        parentActivity = (Activity) context;
+        parentActivity = (FragmentActivity) context;
 
         if (layerShadowDrawable == null) {
             layerShadowDrawable = getResources().getDrawable(R.drawable.layer_shadow);
@@ -155,7 +156,7 @@ public class ActionBarLayout extends FrameLayout {
         fragmentsStack = stack;
         containerViewBack = new LinearLayoutContainer(parentActivity);
         addView(containerViewBack);
-        FrameLayout.LayoutParams layoutParams = (FrameLayout.LayoutParams) containerViewBack.getLayoutParams();
+        LayoutParams layoutParams = (LayoutParams) containerViewBack.getLayoutParams();
         layoutParams.width = LayoutHelper.MATCH_PARENT;
         layoutParams.height = LayoutHelper.MATCH_PARENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;
@@ -163,7 +164,7 @@ public class ActionBarLayout extends FrameLayout {
 
         containerView = new LinearLayoutContainer(parentActivity);
         addView(containerView);
-        layoutParams = (FrameLayout.LayoutParams) containerView.getLayoutParams();
+        layoutParams = (LayoutParams) containerView.getLayoutParams();
         layoutParams.width = LayoutHelper.MATCH_PARENT;
         layoutParams.height = LayoutHelper.MATCH_PARENT;
         layoutParams.gravity = Gravity.TOP | Gravity.LEFT;

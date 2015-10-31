@@ -25,6 +25,7 @@ import android.os.Parcelable;
 import android.provider.Browser;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
+import android.support.v4.app.FragmentActivity;
 import android.view.ActionMode;
 import android.view.Gravity;
 import android.view.KeyEvent;
@@ -76,7 +77,7 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Map;
 
-public class LaunchActivity extends Activity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.MessagesActivityDelegate {
+public class LaunchActivity extends FragmentActivity implements ActionBarLayout.ActionBarLayoutDelegate, NotificationCenter.NotificationCenterDelegate, DialogsActivity.MessagesActivityDelegate {
 
     private boolean finished;
     private String videoPath;

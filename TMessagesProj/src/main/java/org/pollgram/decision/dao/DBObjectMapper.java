@@ -6,7 +6,12 @@ import android.database.Cursor;
 /**
  * Created by davide on 27/10/15.
  */
-public interface DBObjectMapper<T> {
+interface DBObjectMapper<T> {
+
+    String getTableName();
+
+    String getIdFiledName();
+
     T from(Cursor c);
     ContentValues toCV(T t);
 }

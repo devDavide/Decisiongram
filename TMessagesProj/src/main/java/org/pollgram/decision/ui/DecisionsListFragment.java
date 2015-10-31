@@ -19,7 +19,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pollgram.decision.adapter.DecisionAdapter;
-import org.pollgram.decision.dao.DecisionDAOImpl;
+import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.utils.PolgramUtils;
 import org.telegram.messenger.AndroidUtilities;
@@ -52,24 +52,20 @@ public class DecisionsListFragment extends BaseFragment {
     private Context context;
 
     private boolean hideCloseDecision;
-    private DecisionDAOImpl decisionDAO;
+    private PollgramDAO decisionDAO;
     private int[] participantsUserIds;
     private TextView tvSubtitle;
 
     public DecisionsListFragment(){
-
     }
 
     public DecisionsListFragment(Bundle bundle) {
         super(bundle);
     }
-    // Since this is an object collection, use a FragmentStatePagerAdapter,
-// and NOT a FragmentPagerAdapter.
-
 
     @Override
     public boolean onFragmentCreate() {
-        decisionDAO = new DecisionDAOImpl();
+        decisionDAO = PollgramDAO.getInstance();
         hideCloseDecision = true;
         return true;
     }
@@ -126,15 +122,10 @@ public class DecisionsListFragment extends BaseFragment {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Decision decision = (Decision) parent.getAdapter().getItem(position);
-//                Intent intent = new Intent(getParentActivity(), DecisionDetailFragment.class);
-//                intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//                intent.putExtra(DecisionDetailFragment.PAR_DECISION_ID, decision.getId());
-//                intent.putExtra(DecisionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
-//                getParentActivity().startActivity(intent);
                 Bundle bundle = new Bundle();
-                bundle.putLong(DecisionDetailFragment.PAR_DECISION_ID, decision.getId());
-                bundle.putIntArray(DecisionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
-                presentFragment(new DecisionDetailFragment(bundle));
+                bundle.putLong(VotesManagerFragment.PAR_DECISION_ID, decision.getId());
+                bundle.putIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
+                presentFragment(new VotesManagerFragment(bundle));
 
             }
         });
@@ -175,7 +166,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     private void updateResult() {
         Boolean queryPar = hideCloseDecision ? true : null;
-        List<Decision> allDecisions = decisionDAO.find(null);
+        List<Decision> allDecisions = decisionDAO.getDecisions(null);
         List<Decision> filterDecision = new ArrayList<>();
         int openCount = 0 ;
         for (Decision d : allDecisions){
@@ -186,7 +177,7 @@ public class DecisionsListFragment extends BaseFragment {
                 filterDecision.add(d);
         }
 
-        tvSubtitle.setText(context.getString(R.string.decisionsCount,openCount, allDecisions.size()));
+        tvSubtitle.setText(context.getString(R.string.decisionsCount,openCount, allDecisions.size() - openCount));
         decisionsListView.setAdapter(new DecisionAdapter(context, filterDecision, currentChat.participants_count));
     }
 

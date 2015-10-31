@@ -3,39 +3,36 @@ package org.pollgram.decision.data;
 /**
  * Created by davide on 01/10/15.
  */
-public class Decision {
+public class Decision extends  DBBean {
 
-    private final long id;
+    private String title;
+    private final String longDescription;
     private final int fullChatId;
     private final long userCreatorId;
-
-    private String description;
     private boolean open;
-    private int voteCount;
+    private int userThatVoteCount;
 
     // icon/image will be retrived externally by url or file.
     // Like the file containing the decision image can be named like decisio_<id>.png, and cached on the fs
 
-    public Decision(long id, int fullChatId, long userCreatorId) {
-        this.id = id;
+    public Decision(int fullChatId, long userCreatorId, String title, String longDescription,
+                    boolean open, int userThatVoteCount) {
         this.fullChatId = fullChatId;
         this.userCreatorId = userCreatorId;
-    }
-
-    public Decision(long id, int fullChatId, long userCreatorId, String description, boolean open, int voteCount) {
-        this.id = id;
-        this.fullChatId = fullChatId;
-        this.userCreatorId = userCreatorId;
-        this.description = description;
+        this.title = title;
+        this.longDescription = longDescription;
         this.open = open;
-        this.voteCount = voteCount;
+        this.userThatVoteCount = userThatVoteCount;
     }
 
-    public long getId() {
-        return id;
+    public Decision(long id, int fullChatId, long userCreatorId, String title, String longDescription,
+                    boolean open, int userThatVoteCount) {
+        this(fullChatId,userCreatorId,title, longDescription, open, userThatVoteCount);
+        setId(id);
+
     }
 
-    /**
+    /*
      * @return the id of an TLRPC.ChatFull
      */
     public int getFullChatId() {
@@ -50,43 +47,47 @@ public class Decision {
         return userCreatorId;
     }
 
-    public String getDescription() {
-        return description;
+    public String getTitle() {
+        return title;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public boolean isOpen() {
         return open;
     }
 
+    public String getLongDescription() {
+        return longDescription;
+    }
+
+    public int getUserThatVoteCount() {
+        return userThatVoteCount;
+    }
+
     public void setOpen(boolean open) {
         this.open = open;
     }
 
-    public int getVoteCount() {
-        return voteCount;
+    public int getUsersThatVoteCount() {
+        return userThatVoteCount;
     }
 
-    public void setVoteCount(int voteCount) {
-        this.voteCount = voteCount;
-    }
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Decision decision = (Decision) o;
-
-        return id == decision.id;
+    public void setUserThatVoteCount(int userThatVoteCount) {
+        this.userThatVoteCount = userThatVoteCount;
     }
 
     @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+    public String toString() {
+        return "Decision{" +
+                "fullChatId=" + fullChatId +
+                ", userCreatorId=" + userCreatorId +
+                ", longDescription='" + longDescription + '\'' +
+                ", title='" + title + '\'' +
+                ", open=" + open +
+                ", userThatVoteCount=" + userThatVoteCount +
+                '}';
     }
-
 }

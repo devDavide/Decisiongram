@@ -117,10 +117,10 @@ public class SortedList<T> {
      * reference to the old item and puts the new item into the backing array even if
      * {@link Callback#areContentsTheSame(Object, Object)} returns false.
      * <p>
-     * If the sorting criteria of the item is changed, SortedList won't be able to find
+     * If the sorting criteria of the item is changed, SortedList won't be able to getOptions
      * its duplicate in the list which will result in having a duplicate of the Item in the list.
      * If you need to update sorting criteria of an item that already exists in the list,
-     * use {@link #updateItemAt(int, Object)}. You can find the index of the item using
+     * use {@link #updateItemAt(int, Object)}. You can getOptions the index of the item using
      * {@link #indexOf(Object)} before you update the object.
      *
      * @param item The item to be added into the list.
@@ -522,7 +522,7 @@ public class SortedList<T> {
      *     mSortedList.recalculatePositionOfItemAt(position);
      * </pre>
      * In the example above, because the sorting criteria of the item has been changed,
-     * mSortedList.indexOf(item) will not be able to find the item. This is why the code above
+     * mSortedList.indexOf(item) will not be able to getOptions the item. This is why the code above
      * first
      * gets the position before editing the item, edits it and informs the SortedList that item
      * should be repositioned.
@@ -569,7 +569,7 @@ public class SortedList<T> {
     /**
      * Returns the position of the provided item.
      *
-     * @param item The item to query for position.
+     * @param item The item to getDecisions for position.
      *
      * @return The position of the provided item or {@link #INVALID_POSITION} if item is not in the
      * list.

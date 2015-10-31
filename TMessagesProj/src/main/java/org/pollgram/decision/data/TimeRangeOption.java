@@ -9,7 +9,7 @@ import java.util.Date;
 /**
  * Created by davide on 03/10/15.
  */
-public class TimeRangeOption extends Choice {
+public class TimeRangeOption extends Option {
 
     private final DateFormat DAY_DF = new SimpleDateFormat("yyyy/MM/dd");
     private final DateFormat DAY_TIME_DF = new SimpleDateFormat("yyyy/MM/dd hh:mm:ss");
@@ -22,17 +22,17 @@ public class TimeRangeOption extends Choice {
         DAY, HOUR;
     }
 
-    public TimeRangeOption(long id, int positiveVoteCount, int negativeVoteCount, long id1, Date from, Date to, Accuracy accuracy) {
-        super(id, positiveVoteCount, negativeVoteCount);
-        id = id1;
+    public TimeRangeOption(Date from, Date to, Accuracy accuracy) {
         this.from = from;
         this.to = to;
         this.accuracy = accuracy;
     }
 
-    @Override
-    public long getId() {
-        return id;
+
+    public TimeRangeOption(long id, Date from, Date to, Accuracy accuracy) {
+        this(from, to,accuracy);
+        setId(id);
+
     }
 
     public Date getFrom() {
@@ -48,17 +48,9 @@ public class TimeRangeOption extends Choice {
     }
 
     @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        TimeRangeOption that = (TimeRangeOption) o;
-        return id == that.id;
-    }
-
-    @Override
-    public int hashCode() {
-        return (int) (id ^ (id >>> 32));
+    public String getTitle() {
+        // TODO
+        return from + " - " + to;
     }
 
     @Override
