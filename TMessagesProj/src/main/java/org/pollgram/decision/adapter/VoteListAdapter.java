@@ -33,8 +33,8 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
     private List<Vote> votes;
-    private final List<Boolean> originalVotes;
-    private final Set<Vote> newVoteSet;
+    private List<Boolean> originalVotes;
+    private Set<Vote> newVoteSet;
     private OnVoteChangeListener onVoteChageListener;
 
     public interface OnVoteChangeListener {
@@ -43,12 +43,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     public VoteListAdapter(Context context, List<Vote> votes) {
         super(context, LAYOUT_RES_ID);
-        this.votes = votes;
-        this.newVoteSet = new HashSet<>();
-        this.originalVotes = new ArrayList<>();
-        for (Vote v : votes){
-            originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
-        }
+        setVotes(votes);
         this.onVoteChageListener = new OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
@@ -58,6 +53,15 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     public void setVotes(List<Vote> votes) {
         this.votes = votes;
+        this.newVoteSet = new HashSet<>();
+        this.originalVotes = new ArrayList<>();
+        for (Vote v : votes){
+            originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
+        }
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
     }
 
     @Override
@@ -122,4 +126,5 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     public Collection<Vote> getNewVoteSet() {
         return newVoteSet;
     }
+
 }

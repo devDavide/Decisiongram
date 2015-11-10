@@ -220,8 +220,14 @@ class PollgramDAODBImpl extends PollgramDAO {
 
     @Override
     public UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds) {
-        Decision decision = getDecision(decisionId);
         List<TLRPC.User> users = getUsers(participantIds);
+        return getUsersDecisionVotes(decisionId,users);
+
+    }
+
+    @Override
+    public UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users) {
+        Decision decision = getDecision(decisionId);
         List<Option> options = getOptions(decisionId);
         List<Vote> votes = getVote(decisionId, null);
         UsersDecisionVotes udv = new UsersDecisionVotes(decision, users, options, votes);

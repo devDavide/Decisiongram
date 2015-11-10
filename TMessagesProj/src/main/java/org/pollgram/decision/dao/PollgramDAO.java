@@ -41,6 +41,8 @@ public abstract class PollgramDAO {
 
     public abstract UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds);
 
+    public abstract UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users);
+
     private static volatile PollgramDAO Instance = null;
 
     public static PollgramDAO getInstance() {

@@ -52,6 +52,7 @@ import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.Collection;
+import java.util.Date;
 
 public class VotesManagerTabsFragment extends Fragment {
 
@@ -201,17 +202,29 @@ public class VotesManagerTabsFragment extends Fragment {
         btnSaveOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Collection<Vote> votes2Save;
+                if (usersDecisionVotes.atLeastOneIsNull(currentUserId)) {
+                    votes2Save = adapter.getVotes();
+                    // set to false null votes
+                    for(Vote v : votes2Save){
+                        if (v.isVote() == null) {
+                            v.setVote(false);
+                            v.setVoteTime(new Date());
+                        }
+                    }
+                } else
+                    votes2Save = adapter.getNewVoteSet();
 
-                Collection<Vote> votes2Save = adapter.getNewVoteSet();
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
                 for (Vote v : votes2Save) {
                     // update persistence
                     Vote saved = pollgramDAO.save(v);
 
-                    // update data structure
-                    Option option = usersDecisionVotes.getOption(v.getOptionId());
-                    usersDecisionVotes.setVote(currentUserId, option, saved);
                 }
+                usersDecisionVotes = pollgramDAO.getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
+                        usersDecisionVotes.getUsers());
+                btnSaveOption.setVisibility(View.GONE);
+
                 // set new sorted  votes in the adapter
                 adapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
                 adapter.notifyDataSetChanged();
@@ -335,12 +348,9 @@ public class VotesManagerTabsFragment extends Fragment {
             usernameLayout.setBackgroundResource(R.drawable.cell_normal);
             fixedColumn.addView(usernameLayout, ViewGroup.LayoutParams.WRAP_CONTENT, otherRowHeight);
 
-            boolean atLeastOneIsNull = false;
+            boolean atLeastOneIsNull = usersDecisionVotes.atLeastOneIsNull(user.id);
             for (Option option : usersDecisionVotes.getOptions()) {
                 Vote v = usersDecisionVotes.getVotes(user.id, option);
-                View item;
-                if (v.isVote() == null)
-                    atLeastOneIsNull = true;
                 add2Row(row, newVoteView(v), otherRowHeight);
             }
             if (!atLeastOneIsNull)

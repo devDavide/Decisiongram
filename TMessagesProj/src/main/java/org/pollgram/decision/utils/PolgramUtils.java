@@ -49,10 +49,10 @@ public class PolgramUtils {
         txtTitle.setTypeface(AndroidUtilities.getTypeface("fonts/rmedium.ttf"));
         txtTitle.setText(title);
         pollIconContainer.addView(txtTitle, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT,
-                Gravity.LEFT | Gravity.BOTTOM, 54, 0, 0, 22));
+                Gravity.LEFT | Gravity.BOTTOM, 48, 0, 0, 22));
 
         actionBar.addView(pollIconContainer,  LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
-                Gravity.TOP | Gravity.LEFT, 56, 0, 40, 0));
+                Gravity.TOP | Gravity.LEFT, 36, 0, 40, 0));
 
         return actionBar;
     }

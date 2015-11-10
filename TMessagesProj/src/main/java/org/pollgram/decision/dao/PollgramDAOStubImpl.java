@@ -118,6 +118,10 @@ class PollgramDAOStubImpl extends PollgramDAO {
         return new Vote(stubId, voteValue, new Date(), userId, option.getId());
     }
 
+    @Override
+    public UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users) {
+        return null;
+    }
 
     @Override
     public List<TLRPC.User> getUsers(int[] usersIds) {
