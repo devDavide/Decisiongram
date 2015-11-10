@@ -10,7 +10,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pollgram.decision.data.Decision;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 
 import java.util.List;
 

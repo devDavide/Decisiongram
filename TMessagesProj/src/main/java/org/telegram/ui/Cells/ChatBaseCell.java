@@ -32,7 +32,7 @@ import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.ui.Components.AvatarDrawable;

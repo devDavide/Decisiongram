@@ -14,7 +14,7 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Cells.EmptyCell;
 import org.telegram.ui.Cells.GreySectionCell;

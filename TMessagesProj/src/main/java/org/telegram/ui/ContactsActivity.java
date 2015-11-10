@@ -46,7 +46,7 @@ import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.FileLog;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.NotificationCenter;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.messenger.Utilities;
 import org.telegram.ui.Adapters.BaseSectionsAdapter;
 import org.telegram.ui.Adapters.ContactsAdapter;

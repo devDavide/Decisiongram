@@ -7,6 +7,7 @@
  */
 
 package org.telegram.messenger;
+import org.pollgram.R;
 
 import android.graphics.drawable.BitmapDrawable;
 

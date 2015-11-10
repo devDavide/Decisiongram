@@ -31,7 +31,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.support.widget.LinearLayoutManager;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.ui.Adapters.PhotoAttachAdapter;
 import org.telegram.ui.Cells.PhotoAttachPhotoCell;
 import org.telegram.ui.ChatActivity;

@@ -23,7 +23,7 @@ import android.view.View;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 
 import java.util.ArrayList;
 

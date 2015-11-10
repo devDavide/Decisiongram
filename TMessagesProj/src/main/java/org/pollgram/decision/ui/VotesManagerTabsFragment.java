@@ -37,6 +37,7 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.pollgram.R;
 import org.pollgram.decision.adapter.VoteListAdapter;
 import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Option;
@@ -44,7 +45,6 @@ import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PolgramUtils;
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.AvatarDrawable;

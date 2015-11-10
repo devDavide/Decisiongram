@@ -7,6 +7,7 @@
  */
 
 package org.telegram.messenger;
+import org.pollgram.R;
 
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;

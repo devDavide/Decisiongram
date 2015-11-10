@@ -7,6 +7,7 @@
  */
 
 package org.telegram.messenger;
+import org.pollgram.R;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;

@@ -10,12 +10,12 @@ import android.widget.CheckBox;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.pollgram.R;
 import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
-import org.telegram.messenger.R;
 
 import java.util.ArrayList;
 import java.util.Collection;

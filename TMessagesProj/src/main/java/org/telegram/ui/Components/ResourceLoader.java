@@ -11,7 +11,7 @@ package org.telegram.ui.Components;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import org.telegram.messenger.R;
+import org.pollgram.R;
 
 public class ResourceLoader {
 

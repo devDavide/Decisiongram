@@ -12,7 +12,7 @@ import android.content.Context;
 import android.view.Gravity;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.FrameLayoutFixed;

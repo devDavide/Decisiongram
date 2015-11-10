@@ -25,7 +25,7 @@ import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.FileLog;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.ui.Components.LinkPath;
 import org.telegram.ui.Components.ResourceLoader;
 import org.telegram.ui.Components.TypefaceSpan;

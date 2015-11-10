@@ -74,6 +74,13 @@ public class UsersDecisionVotes {
         return options;
     }
 
+    public boolean atLeastOneIsNull(int userId){
+        for (Option o : options){
+            if (getVotes(userId,o).isVote() == null)
+                return true;
+        }
+        return false;
+    }
 
     public List<Vote> getVotes(int userID){
         List<Vote> votes = new ArrayList<>();

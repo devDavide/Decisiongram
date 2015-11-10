@@ -10,7 +10,7 @@ import android.widget.TextView;
 import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.utils.PolgramUtils;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;

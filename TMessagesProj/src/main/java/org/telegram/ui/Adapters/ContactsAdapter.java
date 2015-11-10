@@ -18,7 +18,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.R;
+import org.pollgram.R;
 import org.telegram.messenger.AnimationCompat.ViewProxy;
 import org.telegram.ui.Cells.DividerCell;
 import org.telegram.ui.Cells.GreySectionCell;
