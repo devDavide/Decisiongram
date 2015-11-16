@@ -968,7 +968,9 @@
     <string name="voteSaved">Vote saved</string>
     <string name="no_vote_desc">\?</string>
     <string name="noOptionPresent">There are no option\n for this decision</string>
-    <string name="remindToUserSent">remind sent to user %1$s (TODO IT MUST BE IMPLENTED)</string>
+    <string name="remindToUserSent">Remind sent to %1$s</string>
+
+    <string name="remindMessage">Hey %1$s can you please for decision:\n\"%2$s\"\nThank you :-)</string>
     <!-- END of Pollgram text -->
 
 

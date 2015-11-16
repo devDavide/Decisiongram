@@ -39,11 +39,13 @@ import android.widget.Toast;
 
 import org.pollgram.R;
 import org.pollgram.decision.adapter.VoteListAdapter;
-import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
-import org.pollgram.decision.utils.PolgramUtils;
+import org.pollgram.decision.service.PollgramDAO;
+import org.pollgram.decision.service.PollgramService;
+import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
@@ -62,10 +64,12 @@ public class VotesManagerTabsFragment extends Fragment {
     private ViewPager viewPager;
 
     private PollgramDAO pollgramDAO;
+    private PollgramService pollgramService;
     private UsersDecisionVotes usersDecisionVotes;
-    private int currentUserId;
 
+    private int currentUserId;
     private ViewGroup optionTableViewContainer;
+    private long groupChatId;
 
     public VotesManagerTabsFragment() {
     }
@@ -74,10 +78,12 @@ public class VotesManagerTabsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pollgramDAO = PollgramDAO.getInstance();
+        pollgramDAO = PollgramServiceFactory.getPollgramDAO();
+        pollgramService = PollgramServiceFactory.getPollgramService();
+        groupChatId = getArguments().getLong(VotesManagerFragment.PAR_GROUP_CHAT_ID);
         long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
         int[] participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
-        usersDecisionVotes = pollgramDAO.getUsersDecisionVotes(decisionId, participantsUserIds);
+        usersDecisionVotes = pollgramService.getUsersDecisionVotes(decisionId, participantsUserIds);
         currentUserId = UserConfig.getCurrentUser().id;
     }
 
@@ -221,8 +227,9 @@ public class VotesManagerTabsFragment extends Fragment {
                     Vote saved = pollgramDAO.save(v);
 
                 }
-                usersDecisionVotes = pollgramDAO.getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
-                        usersDecisionVotes.getUsers());
+                usersDecisionVotes = PollgramServiceFactory.getPollgramService().
+                        getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
+                                usersDecisionVotes.getUsers());
                 btnSaveOption.setVisibility(View.GONE);
 
                 // set new sorted  votes in the adapter
@@ -322,7 +329,7 @@ public class VotesManagerTabsFragment extends Fragment {
                 userNameTv.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
                 userNameTv.setPadding(15, 0, 0, 0);
                 userNameTv.setEllipsize(TextUtils.TruncateAt.END);
-                userNameTv.setText(PolgramUtils.asString(user));
+                userNameTv.setText(PollgramUtils.asString(user));
                 int maxWith = AndroidUtilities.dp(115);
                 userNameTv.setMaxWidth(maxWith);
                 userNameTv.setMaxLines(1);
@@ -338,9 +345,9 @@ public class VotesManagerTabsFragment extends Fragment {
             remindButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    String message = getContext().getString(R.string.remindToUserSent,PolgramUtils.asString(user));
+                    pollgramService.remindUserToVote(user, groupChatId, usersDecisionVotes.getDecision());
+                    String message = getContext().getString(R.string.remindToUserSent, PollgramUtils.asString(user));
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
-                    // TODO implement
                 }
             });
 
@@ -353,7 +360,7 @@ public class VotesManagerTabsFragment extends Fragment {
                 Vote v = usersDecisionVotes.getVotes(user.id, option);
                 add2Row(row, newVoteView(v), otherRowHeight);
             }
-            if (!atLeastOneIsNull)
+            if (!atLeastOneIsNull || user.id == currentUserId)
                 remindButton.setVisibility(View.INVISIBLE);
 
             tableLayout.addView(row);

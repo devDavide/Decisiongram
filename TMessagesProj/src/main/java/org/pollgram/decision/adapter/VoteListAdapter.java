@@ -11,11 +11,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pollgram.R;
-import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
+import org.pollgram.decision.service.PollgramServiceFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -86,7 +86,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final Vote vote = getItem(position);
-        final Option c = PollgramDAO.getInstance().getOption(vote.getOptionId());
+        final Option c = PollgramServiceFactory.getPollgramDAO().getOption(vote.getOptionId());
         if (c instanceof TimeRangeOption){
             Log.e("ChoiceAdapter", "TimeRangeOption not supported yet");
             return null;

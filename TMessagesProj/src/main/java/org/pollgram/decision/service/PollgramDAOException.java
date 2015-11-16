@@ -1,4 +1,4 @@
-package org.pollgram.decision.dao;
+package org.pollgram.decision.service;
 
 /**
  * Created by davide on 27/10/15.

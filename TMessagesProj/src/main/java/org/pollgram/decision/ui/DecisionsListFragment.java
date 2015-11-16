@@ -18,14 +18,15 @@ import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.pollgram.R;
 import org.pollgram.decision.adapter.DecisionAdapter;
-import org.pollgram.decision.dao.PollgramDAO;
 import org.pollgram.decision.data.Decision;
-import org.pollgram.decision.utils.PolgramUtils;
+import org.pollgram.decision.service.PollgramDAO;
+import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
-import org.pollgram.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -65,7 +66,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        decisionDAO = PollgramDAO.getInstance();
+        decisionDAO = PollgramServiceFactory.getPollgramDAO();
         hideCloseDecision = true;
         return true;
     }
@@ -76,7 +77,7 @@ public class DecisionsListFragment extends BaseFragment {
 
         // set up action bar
 
-        PolgramUtils.init(actionBar, R.string.groupDecision, 22, R.drawable.decision);
+        PollgramUtils.init(actionBar, R.string.groupDecision, 22, R.drawable.decision);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         // Create menu
         ActionBarMenu menu = actionBar.createMenu();
@@ -123,6 +124,7 @@ public class DecisionsListFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Decision decision = (Decision) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
+                bundle.putLong(VotesManagerFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
                 bundle.putLong(VotesManagerFragment.PAR_DECISION_ID, decision.getId());
                 bundle.putIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
                 presentFragment(new VotesManagerFragment(bundle));

@@ -1,4 +1,4 @@
-package org.pollgram.decision.dao;
+package org.pollgram.decision.service;
 
 import android.content.ContentValues;
 import android.database.Cursor;

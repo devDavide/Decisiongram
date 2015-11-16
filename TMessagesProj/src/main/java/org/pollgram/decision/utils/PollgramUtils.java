@@ -20,7 +20,9 @@ import org.telegram.ui.Components.LayoutHelper;
 /**
  * Created by davide on 08/10/15.
  */
-public class PolgramUtils {
+public class PollgramUtils {
+
+    public static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
 
     public static ActionBar init(ActionBar actionBar, int title,int titleFontSize, int drawableIcon){
         return init(actionBar, ApplicationLoader.applicationContext.getString(title), titleFontSize,drawableIcon);
@@ -57,23 +59,18 @@ public class PolgramUtils {
         return actionBar;
     }
 
-    public static String asString(TLRPC.User currentUser){
-        if (currentUser.id / 1000 != 777 && currentUser.id / 1000 != 333 && ContactsController.getInstance().contactsDict.get(currentUser.id) == null && (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {
-            if (currentUser.phone != null && currentUser.phone.length() != 0) {
-                return PhoneFormat.getInstance().format("+" + currentUser.phone);
+    public static String asString(TLRPC.User user){
+        if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
+                ContactsController.getInstance().contactsDict.get(user.id) == null &&
+                (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {
+            if (user.phone != null && user.phone.length() != 0) {
+                return PhoneFormat.getInstance().format("+" + user.phone);
             } else {
-                return UserObject.getUserName(currentUser);
+                return UserObject.getUserName(user);
             }
         } else {
-            return UserObject.getUserName(currentUser);
+            return UserObject.getUserName(user);
         }
     }
-//
-//    public static String resize(String str, int maxLenght){
-//        if (str == null || str.length() < maxLenght)
-//            return str;
-//        else
-//            return str.substring(0,maxLenght -3) + "...";
-//    }
 
 }

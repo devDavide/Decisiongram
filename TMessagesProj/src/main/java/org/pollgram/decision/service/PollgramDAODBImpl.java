@@ -1,21 +1,15 @@
-package org.pollgram.decision.dao;
+package org.pollgram.decision.service;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.Nullable;
 import android.util.Log;
 
-import org.pollgram.decision.dao.PGSqlLiteHelper.T_Decision;
-import org.pollgram.decision.dao.PGSqlLiteHelper.T_TextOption;
-import org.pollgram.decision.dao.PGSqlLiteHelper.T_Vote;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
-import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
-import org.telegram.messenger.MessagesController;
-import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -24,7 +18,7 @@ import java.util.List;
 /**
  * Created by davide on 18/10/15.
  */
-class PollgramDAODBImpl extends PollgramDAO {
+class PollgramDAODBImpl implements PollgramDAO {
 
     private static final String LOG_TAG = "PGDBDAO";
     private final PGSqlLiteHelper helper;
@@ -45,7 +39,7 @@ class PollgramDAODBImpl extends PollgramDAO {
         decisions.add(new Decision(chatId, creatorId, "Where do we go ?", "huge bla bla bla", true, 0));
         decisions.add(new Decision(chatId, creatorId, "When will the party be ?", "huge bla bla bla", true, 0));
         decisions.add(new Decision(chatId, creatorId, "Do we add Slomp to the group ?", "huge bla bla bla", false, 0));
-        helper.getWritableDatabase().execSQL("DELETE FROM " + T_Decision.TABLE_NAME);
+        helper.getWritableDatabase().execSQL("DELETE FROM " + PGSqlLiteHelper.T_Decision.TABLE_NAME);
         for (Decision d : decisions) {
             Decision newD = insert(d);
             Log.i(LOG_TAG, "inserted decision id:" + newD.getId());
@@ -71,7 +65,7 @@ class PollgramDAODBImpl extends PollgramDAO {
         options.add(new TextOption("Phone", "The new StonexOne is AWESOME !!!", decision1.getId()));
         options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
         options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
-        helper.getWritableDatabase().execSQL("DELETE FROM " + T_TextOption.TABLE_NAME);
+        helper.getWritableDatabase().execSQL("DELETE FROM " + PGSqlLiteHelper.T_TextOption.TABLE_NAME);
         for(TextOption te : options){
             Option newOpt = insert(te);
             Log.i(LOG_TAG, "inserted TextOption id:" + newOpt.getId());
@@ -109,7 +103,7 @@ class PollgramDAODBImpl extends PollgramDAO {
         if (open == null)
             return helper.query(helper.DECISION_MAPPER, null, null);
         else
-            return helper.query(helper.DECISION_MAPPER, T_Decision.OPEN + "= ?",
+            return helper.query(helper.DECISION_MAPPER, PGSqlLiteHelper.T_Decision.OPEN + "= ?",
                     new String[]{PGSqlLiteHelper.toString(open)});
     }
 
@@ -146,7 +140,7 @@ class PollgramDAODBImpl extends PollgramDAO {
     @Override
     public List<Option> getOptions(long decisionId) {
         List<TextOption> textOptions = helper.query(helper.TEXT_OPTION_MAPPER,
-                T_TextOption.FK_DECISION + "= ?",
+                PGSqlLiteHelper.T_TextOption.FK_DECISION + "= ?",
                 new String[]{Long.toString(decisionId)});
         // TODO eventually query time range options
 
@@ -156,18 +150,8 @@ class PollgramDAODBImpl extends PollgramDAO {
     }
 
     @Override
-    public List<TLRPC.User> getUsers(int[] usersIds) {
-        List<TLRPC.User> users = new ArrayList<>();
-        for (int i = 0 ; i< usersIds.length ; i++){
-            users.add(MessagesController.getInstance().getUser(usersIds[i]));
-        }
-        return users;
-    }
-
-
-    @Override
     public List<Vote> getUserVoteForDecision(long decisionId, int userId) {
-        return getVote(decisionId, userId);
+        return getVotes(decisionId, userId);
     }
 
     /**
@@ -177,14 +161,14 @@ class PollgramDAODBImpl extends PollgramDAO {
      * @param userId userId, if null it means all user
      * @return
      */
-    private List<Vote> getVote(long decisionId, @Nullable Integer userId) {
+    public List<Vote> getVotes(long decisionId, @Nullable Integer userId) {
         SQLiteDatabase db = helper.getReadableDatabase();
 
         List<String> params = new ArrayList<>(2);
         params.add(Long.toString(decisionId));
 
         StringBuilder strQuery =  new StringBuilder();
-        strQuery.append(" select ").append(T_Vote.cloumns("v"));
+        strQuery.append(" select ").append(PGSqlLiteHelper.T_Vote.cloumns("v"));
         strQuery.append(" from text_option o inner join vote v ");
         strQuery.append("  on o.id = v.fk_option ");
         strQuery.append(" where o.fk_decision = ? ");
@@ -218,20 +202,5 @@ class PollgramDAODBImpl extends PollgramDAO {
     }
 
 
-    @Override
-    public UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds) {
-        List<TLRPC.User> users = getUsers(participantIds);
-        return getUsersDecisionVotes(decisionId,users);
-
-    }
-
-    @Override
-    public UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users) {
-        Decision decision = getDecision(decisionId);
-        List<Option> options = getOptions(decisionId);
-        List<Vote> votes = getVote(decisionId, null);
-        UsersDecisionVotes udv = new UsersDecisionVotes(decision, users, options, votes);
-        return udv;
-    }
 }
 

@@ -7,9 +7,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.pollgram.decision.dao.PollgramDAO;
+import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.data.Decision;
-import org.pollgram.decision.utils.PolgramUtils;
+import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.utils.PollgramUtils;
 import org.pollgram.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -25,6 +26,7 @@ public class VotesManagerFragment extends BaseFragment {
 
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
     public static final String PAR_PARTICIPANT_IDS  = "PAR_PARTICIPANT_IDS" ;
+    public static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID" ;
 
     private int[] participantsUserIds;
     private PollgramDAO pollgramDAO;
@@ -38,7 +40,7 @@ public class VotesManagerFragment extends BaseFragment {
     public boolean onFragmentCreate() {
         // init field
         super.swipeBackEnabled = false;
-        pollgramDAO = PollgramDAO.getInstance();
+        pollgramDAO = PollgramServiceFactory.getPollgramDAO();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         participantsUserIds = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
         decision = pollgramDAO.getDecision(decisionId);
@@ -50,7 +52,7 @@ public class VotesManagerFragment extends BaseFragment {
     public View createView(Context context) {
         // set up action bar
         // TODO add real icon
-        PolgramUtils.init(actionBar, decision.getTitle(), 18, R.drawable.attach_camera);
+        PollgramUtils.init(actionBar, decision.getTitle(), 18, R.drawable.attach_camera);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
