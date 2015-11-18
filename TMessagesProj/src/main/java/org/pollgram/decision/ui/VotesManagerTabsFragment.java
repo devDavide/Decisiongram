@@ -330,7 +330,7 @@ public class VotesManagerTabsFragment extends Fragment {
                 userNameTv.setPadding(15, 0, 0, 0);
                 userNameTv.setEllipsize(TextUtils.TruncateAt.END);
                 userNameTv.setText(PollgramUtils.asString(user));
-                int maxWith = AndroidUtilities.dp(115);
+                int maxWith = AndroidUtilities.dp(80);
                 userNameTv.setMaxWidth(maxWith);
                 userNameTv.setMaxLines(1);
                 userNameTv.setGravity(Gravity.CENTER_VERTICAL);
