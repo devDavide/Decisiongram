@@ -7,8 +7,6 @@
  */
 
 package org.telegram.messenger;
-import org.pollgram.R;
-
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.app.Activity;
@@ -47,6 +45,7 @@ import android.os.Vibrator;
 import android.provider.MediaStore;
 import android.view.View;
 
+import org.pollgram.R;
 import org.telegram.messenger.audioinfo.AudioInfo;
 import org.telegram.messenger.query.SharedMediaQuery;
 import org.telegram.messenger.video.InputSurface;
@@ -2405,7 +2404,8 @@ public class MediaController implements NotificationCenter.NotificationCenterDel
 
     public void checkSaveToGalleryFiles() {
         try {
-            File telegramPath = new File(Environment.getExternalStorageDirectory(), "Telegram");
+            File telegramPath = new File(Environment.getExternalStorageDirectory(),
+                    ApplicationLoader.applicationContext.getString(R.string.AppName));
             File imagePath = new File(telegramPath, "Telegram Images");
             imagePath.mkdir();
             File videoPath = new File(telegramPath, "Telegram Video");

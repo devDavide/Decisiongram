@@ -573,7 +573,8 @@ public class DocumentSelectActivity extends BaseFragment {
         items.add(fs);
 
         try {
-            File telegramPath = new File(Environment.getExternalStorageDirectory(), "Telegram");
+            File telegramPath = new File(Environment.getExternalStorageDirectory(),
+                    ApplicationLoader.applicationContext.getString(R.string.AppName));
             if (telegramPath.exists()) {
                 fs = new ListItem();
                 fs.title = "Telegram";
