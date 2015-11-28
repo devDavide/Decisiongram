@@ -17,12 +17,12 @@ import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.Components.FrameLayoutFixed;
 import org.telegram.ui.Components.LayoutHelper;
 
+import java.nio.charset.Charset;
+
 /**
  * Created by davide on 08/10/15.
  */
 public class PollgramUtils {
-
-    public static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
 
     public static ActionBar init(ActionBar actionBar, int title,int titleFontSize, int drawableIcon){
         return init(actionBar, ApplicationLoader.applicationContext.getString(title), titleFontSize,drawableIcon);
@@ -71,6 +71,10 @@ public class PollgramUtils {
         } else {
             return UserObject.getUserName(user);
         }
+    }
+
+    public static String getEmojiAsString(byte... emojiBytes){
+        return new String(emojiBytes, Charset.forName("UTF-8"));
     }
 
 }

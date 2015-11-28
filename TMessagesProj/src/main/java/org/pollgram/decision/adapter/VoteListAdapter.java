@@ -15,14 +15,12 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
-import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.service.PollgramFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Created by davide on 04/10/15.
@@ -34,7 +32,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
     private List<Vote> votes;
     private List<Boolean> originalVotes;
-    private Set<Vote> newVoteSet;
+    private List<Vote> newVotes;
     private OnVoteChangeListener onVoteChageListener;
 
     public interface OnVoteChangeListener {
@@ -53,7 +51,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     public void setVotes(List<Vote> votes) {
         this.votes = votes;
-        this.newVoteSet = new HashSet<>();
+        this.newVotes = new ArrayList<>();
         this.originalVotes = new ArrayList<>();
         for (Vote v : votes){
             originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
@@ -86,7 +84,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
         final Vote vote = getItem(position);
-        final Option c = PollgramServiceFactory.getPollgramDAO().getOption(vote.getOptionId());
+        final Option c = PollgramFactory.getPollgramDAO().getOption(vote.getOptionId());
         if (c instanceof TimeRangeOption){
             Log.e("ChoiceAdapter", "TimeRangeOption not supported yet");
             return null;
@@ -105,12 +103,12 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 vote.setVote(optionCheckBox.isChecked());
                 vote.setVoteTime(new Date());
                 if (vote.isVote() != null && vote.isVote().equals(originalVotes.get(position))){
-                    newVoteSet.remove(vote);;
+                    newVotes.remove(vote);;
                 } else {
-                    newVoteSet.add(vote);
+                    newVotes.add(vote);
                 }
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
-                onVoteChageListener.voteChanges(!newVoteSet.isEmpty());
+                onVoteChageListener.voteChanges(!newVotes.isEmpty());
             }
         });
 
@@ -123,8 +121,8 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         return rowView;
     }
 
-    public Collection<Vote> getNewVoteSet() {
-        return newVoteSet;
+    public Collection<Vote> getNewVotes() {
+        return newVotes;
     }
 
 }

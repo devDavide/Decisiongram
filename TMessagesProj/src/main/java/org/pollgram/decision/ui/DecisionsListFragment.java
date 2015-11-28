@@ -22,11 +22,12 @@ import org.pollgram.R;
 import org.pollgram.decision.adapter.DecisionAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
-import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -45,7 +46,9 @@ import java.util.List;
  */
 public class DecisionsListFragment extends BaseFragment {
     private static int nextId = 1;
-    private static final int ID_TOGGLE_OPEN_CLOSE_DECISOINS = nextId++;
+    private static final int ID_TOGGLE_OPEN_CLOSE_DECISIONS = nextId++;
+    private static final int ID_PURGE_ALL_DATA = nextId++;
+    private static final int ID_PUT_STUB_DATA_DATA = nextId++;
 
     private TLRPC.ChatFull chatInfo;
     private TLRPC.Chat currentChat;
@@ -53,7 +56,7 @@ public class DecisionsListFragment extends BaseFragment {
     private Context context;
 
     private boolean hideCloseDecision;
-    private PollgramDAO decisionDAO;
+    private PollgramDAO pollgramDAO;
     private int[] participantsUserIds;
     private TextView tvSubtitle;
 
@@ -66,7 +69,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        decisionDAO = PollgramServiceFactory.getPollgramDAO();
+        pollgramDAO = PollgramFactory.getPollgramDAO();
         hideCloseDecision = true;
         return true;
     }
@@ -82,21 +85,28 @@ public class DecisionsListFragment extends BaseFragment {
         // Create menu
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
-        final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISOINS,
+        final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(R.string.viewCloseDecision),0 );
+        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Purge ALL data from db", 0);
+        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
                 if (id == -1) {
                     finishFragment();
-                } else if (id == ID_TOGGLE_OPEN_CLOSE_DECISOINS){
+                    return;
+                } else if (id == ID_TOGGLE_OPEN_CLOSE_DECISIONS) {
                     hideCloseDecision = !hideCloseDecision;
                     if (hideCloseDecision)
                         viewOpenCloseTextView.setText(R.string.viewCloseDecision);
                     else
                         viewOpenCloseTextView.setText(R.string.hideCloseDecision);
-                    updateResult();
+                } else if (id == ID_PURGE_ALL_DATA){
+                    pollgramDAO.purgeData();
+                } else if (id == ID_PUT_STUB_DATA_DATA){
+                    pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
                 }
+                updateResult();
             }
         });
 
@@ -168,7 +178,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     private void updateResult() {
         Boolean queryPar = hideCloseDecision ? true : null;
-        List<Decision> allDecisions = decisionDAO.getDecisions(null);
+        List<Decision> allDecisions = pollgramDAO.getDecisions(chatInfo.id, null);
         List<Decision> filterDecision = new ArrayList<>();
         int openCount = 0 ;
         for (Decision d : allDecisions){
@@ -191,5 +201,11 @@ public class DecisionsListFragment extends BaseFragment {
             participantsUserIds[i] = chatInfo.participants.participants.get(i).user_id;
         }
         this.currentChat = MessagesController.getInstance().getChat(chatInfo.id);
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateResult();
     }
 }

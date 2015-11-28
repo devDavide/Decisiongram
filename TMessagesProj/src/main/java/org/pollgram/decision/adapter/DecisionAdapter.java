@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.pollgram.decision.data.Decision;
 import org.pollgram.R;
+import org.pollgram.decision.service.PollgramFactory;
 
 import java.util.List;
 
@@ -40,7 +41,8 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
         // put data
         Decision decision = getItem(position);
         decisionTitle.setText(decision.getTitle());
-        String subTitle = getContext().getString(R.string.howManyMemberVote, decision.getUsersThatVoteCount(),groupMemberCount);
+        int userThatVoteSoFar = PollgramFactory.getPollgramDAO().getUserVoteCount(decision);
+        String subTitle = getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar,groupMemberCount);
         decisionSubtitle.setText(subTitle);
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);

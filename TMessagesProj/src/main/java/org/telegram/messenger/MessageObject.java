@@ -7,8 +7,6 @@
  */
 
 package org.telegram.messenger;
-import org.pollgram.R;
-
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Layout;
@@ -21,6 +19,8 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
+import org.pollgram.R;
+import org.pollgram.decision.service.PollgramFactory;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.TypefaceSpan;
@@ -89,6 +89,10 @@ public class MessageObject {
 
         if (message.replyMessage != null) {
             replyMessageObject = new MessageObject(message.replyMessage, users, false);
+        }
+
+        if (messageOwner.message != null){
+            messageOwner.message = PollgramFactory.getPollgramMessagesManager().reformatMessage(messageOwner.message);
         }
 
         if (message instanceof TLRPC.TL_messageService) {

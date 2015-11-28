@@ -13,6 +13,7 @@ import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.ApplicationLoader;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -32,7 +33,11 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String FULL_CHAT_ID = "full_chat_id";
         static final String USER_CREATOR_ID = "user_creator_id";
         static final String OPEN = "open";
-        static final String USER_VOTE_COUNT = "user_vote_count";
+
+        public static String cloumns(String tableAlias) {
+            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, FULL_CHAT_ID, USER_CREATOR_ID, OPEN);
+        }
+
     }
 
     static class T_TextOption {
@@ -41,6 +46,10 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String TITLE = "title";
         static final String LONG_DESCRIPTION = "long_description";
         static final String FK_DECISION = "fk_decision";
+
+        public static String cloumns(String tableAlias) {
+            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, FK_DECISION);
+        }
     }
 
     static class T_Vote {
@@ -52,22 +61,21 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String FK_OPTION = "fk_option";
 
         static String cloumns(String tableAlias){
-            return createColumns(tableAlias, new String[]{ID,VOTE,VOTE_TIME,USER_ID,FK_OPTION});
+            return createColumns(tableAlias, ID,VOTE,VOTE_TIME,USER_ID,FK_OPTION);
         }
     }
 
-    private static String createColumns(String tableName, String[] columnsNames){
+    private static String createColumns(String tableName, String... columnsNames){
         StringBuilder sb = new StringBuilder();
-        for (int i=0; i < columnsNames.length - 1 ; i++) {
-            sb.append(tableName);
-            sb.append('.');
+        for (int i = 0; i < columnsNames.length; i++) {
+            if (tableName != null) {
+                sb.append(tableName);
+                sb.append('.');
+            }
             sb.append(columnsNames[i]);
-            sb.append(',');
+            if (i != columnsNames.length - 1)
+                sb.append(',');
         }
-        sb.append(tableName);
-        sb.append('.');
-        sb.append(columnsNames[columnsNames.length - 1]);
-        sb.append(' ');
         return sb.toString();
     }
 
@@ -130,19 +138,17 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             int fullChatId = getInt(c, T_Decision.FULL_CHAT_ID);
             long userCreatorId = getLong(c, T_Decision.USER_CREATOR_ID);
             boolean isOpen = getBoolean(c, T_Decision.OPEN);
-            int userVoteCount = getInt(c, T_Decision.USER_VOTE_COUNT);
-            return new Decision(id, fullChatId, userCreatorId, title, description, isOpen, userVoteCount);
+            return new Decision(id, fullChatId, userCreatorId, title, description, isOpen);
         }
 
         @Override
         public ContentValues toCV(Decision d) {
             ContentValues cv = new ContentValues();
             cv.put(T_Decision.TITLE, d.getTitle());
-            cv.put(T_Decision.LONG_DESCRIPTION, d.getTitle());
-            cv.put(T_Decision.FULL_CHAT_ID, d.getFullChatId());
+            cv.put(T_Decision.LONG_DESCRIPTION, d.getLongDescription());
+            cv.put(T_Decision.FULL_CHAT_ID, d.getChatId());
             cv.put(T_Decision.USER_CREATOR_ID, d.getUserCreatorId());
             cv.put(T_Decision.OPEN, d.isOpen());
-            cv.put(T_Decision.USER_VOTE_COUNT, d.getUsersThatVoteCount());
             return cv;
         }
     };
@@ -192,7 +198,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         return Integer.toString(toInt(b));
     }
 
-    private static Boolean getBoolean(Cursor c, String colName) {
+    static Boolean getBoolean(Cursor c, String colName) {
         int columnIdx = c.getColumnIndex(colName);
         if (c.isNull(columnIdx))
             return null;
@@ -269,6 +275,18 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         }
     }
 
+    public <T extends DBBean> T findFirst(DBObjectMapper<T> mapper, String selection,
+                                            String[] selectionArgs) {
+        List<T> list = query(mapper,selection,selectionArgs);
+        if (list.isEmpty())
+            return null;
+
+        if (list.size() > 1){
+            Log.e(LOG_TAG, "Found multiple records for selection["+selection+"] " +
+                    "selectionArgs["+ Arrays.toString(selectionArgs)+"] i will return the first");
+        }
+        return list.get(0);
+    }
 
     public <T extends DBBean> T findById(long id, DBObjectMapper<T> mapper) {
         SQLiteDatabase db = getReadableDatabase();
@@ -296,13 +314,14 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_Decision.FULL_CHAT_ID + " INTEGER," +
                 T_Decision.USER_CREATOR_ID + " INTEGER," +
                 T_Decision.OPEN + " INTEGER, " +
-                T_Decision.USER_VOTE_COUNT + " INTEGER" +
+                "UNIQUE ("+T_Decision.TITLE+","+T_Decision.FULL_CHAT_ID+")" +
                 ") ;");
         db.execSQL("CREATE TABLE " + T_TextOption.TABLE_NAME + " (" +
                 T_TextOption.ID + " INTEGER PRIMARY KEY, " +
                 T_TextOption.TITLE + " TEXT, " +
                 T_TextOption.LONG_DESCRIPTION + " TEXT, " +
                 T_TextOption.FK_DECISION + " INTEGER, " +
+                "UNIQUE("+T_TextOption.TITLE +", " + T_TextOption.FK_DECISION +"), "+
                 "FOREIGN KEY(" + T_TextOption.FK_DECISION + ") REFERENCES " + T_Decision.TABLE_NAME + "(" + T_Decision.ID + ") ) ;");
         db.execSQL("CREATE TABLE " + T_Vote.TABLE_NAME + " (" +
                 T_Vote.ID + " INTEGER PRIMARY KEY," +

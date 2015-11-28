@@ -44,7 +44,7 @@ import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramService;
-import org.pollgram.decision.service.PollgramServiceFactory;
+import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.UserConfig;
@@ -56,7 +56,7 @@ import org.telegram.ui.Components.LayoutHelper;
 import java.util.Collection;
 import java.util.Date;
 
-public class VotesManagerTabsFragment extends Fragment {
+public abstract class VotesManagerTabsFragment extends Fragment {
 
     static final String LOG_TAG = "SlidingTabs";
 
@@ -78,8 +78,8 @@ public class VotesManagerTabsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pollgramDAO = PollgramServiceFactory.getPollgramDAO();
-        pollgramService = PollgramServiceFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getPollgramDAO();
+        pollgramService = PollgramFactory.getPollgramService();
         groupChatId = getArguments().getLong(VotesManagerFragment.PAR_GROUP_CHAT_ID);
         long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
         int[] participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
@@ -219,15 +219,12 @@ public class VotesManagerTabsFragment extends Fragment {
                         }
                     }
                 } else
-                    votes2Save = adapter.getNewVoteSet();
+                    votes2Save = adapter.getNewVotes();
 
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
-                for (Vote v : votes2Save) {
-                    // update persistence
-                    Vote saved = pollgramDAO.save(v);
+                pollgramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
 
-                }
-                usersDecisionVotes = PollgramServiceFactory.getPollgramService().
+                usersDecisionVotes = PollgramFactory.getPollgramService().
                         getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                                 usersDecisionVotes.getUsers());
                 btnSaveOption.setVisibility(View.GONE);
@@ -239,6 +236,8 @@ public class VotesManagerTabsFragment extends Fragment {
                 // Update table user interface
                 optionTableViewContainer.removeAllViews();
                 updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+                // Call method in order ti
+                onVoteSaved();
 
                 Toast.makeText(getContext(), R.string.voteSaved, Toast.LENGTH_SHORT).show();
             }
@@ -345,7 +344,7 @@ public class VotesManagerTabsFragment extends Fragment {
             remindButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    pollgramService.remindUserToVote(user, groupChatId, usersDecisionVotes.getDecision());
+                    pollgramService.remindUserToVote(usersDecisionVotes.getDecision(), user);
                     String message = getContext().getString(R.string.remindToUserSent, PollgramUtils.asString(user));
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 }
@@ -403,5 +402,9 @@ public class VotesManagerTabsFragment extends Fragment {
         row.addView(view, ViewGroup.LayoutParams.WRAP_CONTENT, height);
     }
 
+    /**
+     * Called when votes are saved
+     */
+    protected abstract void onVoteSaved();
 
 }

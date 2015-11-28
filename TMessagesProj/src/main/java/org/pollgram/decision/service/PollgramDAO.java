@@ -13,17 +13,33 @@ import java.util.List;
  */
 public interface PollgramDAO {
 
-    Decision insert(Decision d);
+    /**
+     * Insert or update the passed decision if not found
+     * @param d
+     * @return the inserted object
+     */
+    Decision save(Decision d);
 
-    void update(Decision d);
-
+    /**
+     * return decision by id
+     * @param decisionId
+     * @return null if not found
+     */
     Decision getDecision(long decisionId);
 
-    List<Decision> getDecisions(@Nullable Boolean open);
+    /**
+     * @param chatId
+     * @param open if null it will return either open or close decisions
+     * @return decision for given chat id
+     */
+    List<Decision> getDecisions(int chatId, @Nullable Boolean open);
 
-    Option insert(Option o);
-
-    void update(Option o);
+    /**
+     * Insert or update the passed Option if not found
+     * @param o
+     * @return the inserted object
+     */
+    Option save(Option o);
 
     Option getOption(long optionId);
 
@@ -43,5 +59,63 @@ public interface PollgramDAO {
      */
     List<Vote> getVotes(long decisionId, @Nullable Integer userId);
 
+    /**
+     * Insert or update the passed Vote if not found
+     * @param vote
+     * @return the inserted object
+     */
     Vote save(Vote vote);
+
+    /**
+     * Get decision with givne decisionTitle and chatId
+     * @param decisionTitle
+     * @param chatId
+     * @return null if no decision was found
+     */
+    Decision getDecision(String decisionTitle, int chatId);
+
+    Option getOption(String optionTitle, Decision decision);
+
+    /**
+     * @param optionId
+     * @param userId
+     * @return
+     */
+    Vote getVote(long optionId, int userId);
+
+    /**
+     * @param decision
+     * @return how many users has voted, at least one option, for the target decision
+     */
+    int getUserVoteCount(Decision decision);
+
+    /**
+     * Result for method getWinningOption
+     */
+    class WinningOption{
+        final int voteCount;
+        final Option option;
+
+        public WinningOption(int voteCount, Option option) {
+            this.voteCount = voteCount;
+            this.option = option;
+        }
+    }
+
+    /**
+     * @param decision
+     * @return the option that recive more votes for the decision
+     */
+    WinningOption getWinningOption(Decision decision);
+
+    /**
+     * just for test
+     */
+    void purgeData();
+
+    /**
+     * just for test
+     * TODO Remove
+     */
+    void putStubData(int chatId, int creatorId);
 }

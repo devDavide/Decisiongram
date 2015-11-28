@@ -15,6 +15,8 @@ import org.pollgram.R;
 
 public class ResourceLoader {
 
+    public static Drawable backgroundDrawablePollgramMessageIn;
+    public static Drawable backgroundDrawablePollgramMessageOut;
     public static Drawable backgroundDrawableIn;
     public static Drawable backgroundDrawableInSelected;
     public static Drawable backgroundDrawableOut;
@@ -56,6 +58,10 @@ public class ResourceLoader {
 
     public static void loadRecources(Context context) {
         if (backgroundDrawableIn == null) {
+            // TODO POLLGRAM palce here new constant for selected/unselected in/out pollgram messages with blue background
+            backgroundDrawablePollgramMessageIn = context.getResources().getDrawable(R.drawable.msg_in_pollgram_message);
+            backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_pollgram_message);
+
             backgroundDrawableIn = context.getResources().getDrawable(R.drawable.msg_in);
             backgroundDrawableInSelected = context.getResources().getDrawable(R.drawable.msg_in_selected);
             backgroundDrawableOut = context.getResources().getDrawable(R.drawable.msg_out);

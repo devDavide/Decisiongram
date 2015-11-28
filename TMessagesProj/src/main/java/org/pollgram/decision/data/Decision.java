@@ -10,24 +10,22 @@ public class Decision extends  DBBean {
     private final int fullChatId;
     private final long userCreatorId;
     private boolean open;
-    private int userThatVoteCount;
 
     // icon/image will be retrived externally by url or file.
     // Like the file containing the decision image can be named like decisio_<id>.png, and cached on the fs
 
     public Decision(int fullChatId, long userCreatorId, String title, String longDescription,
-                    boolean open, int userThatVoteCount) {
+                    boolean open) {
         this.fullChatId = fullChatId;
         this.userCreatorId = userCreatorId;
         this.title = title;
         this.longDescription = longDescription;
         this.open = open;
-        this.userThatVoteCount = userThatVoteCount;
     }
 
     public Decision(long id, int fullChatId, long userCreatorId, String title, String longDescription,
-                    boolean open, int userThatVoteCount) {
-        this(fullChatId,userCreatorId,title, longDescription, open, userThatVoteCount);
+                    boolean open) {
+        this(fullChatId,userCreatorId,title, longDescription, open);
         setId(id);
 
     }
@@ -35,7 +33,7 @@ public class Decision extends  DBBean {
     /*
      * @return the id of an TLRPC.ChatFull
      */
-    public int getFullChatId() {
+    public int getChatId() {
         return fullChatId;
     }
 
@@ -63,20 +61,35 @@ public class Decision extends  DBBean {
         return longDescription;
     }
 
-    public int getUserThatVoteCount() {
-        return userThatVoteCount;
-    }
-
     public void setOpen(boolean open) {
         this.open = open;
     }
 
-    public int getUsersThatVoteCount() {
-        return userThatVoteCount;
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Decision)) return false;
+
+        Decision decision = (Decision) o;
+
+        if (fullChatId != decision.fullChatId) return false;
+        if (getUserCreatorId() != decision.getUserCreatorId()) return false;
+        if (isOpen() != decision.isOpen()) return false;
+        if (getTitle() != null ? !getTitle().equals(decision.getTitle()) : decision.getTitle() != null)
+            return false;
+        return !(getLongDescription() != null ? !getLongDescription().equals(decision.getLongDescription()) : decision.getLongDescription() != null);
+
     }
 
-    public void setUserThatVoteCount(int userThatVoteCount) {
-        this.userThatVoteCount = userThatVoteCount;
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
+        result = 31 * result + (getLongDescription() != null ? getLongDescription().hashCode() : 0);
+        result = 31 * result + fullChatId;
+        result = 31 * result + (int) (getUserCreatorId() ^ (getUserCreatorId() >>> 32));
+        result = 31 * result + (isOpen() ? 1 : 0);
+        return result;
     }
 
     @Override
@@ -87,7 +100,8 @@ public class Decision extends  DBBean {
                 ", longDescription='" + longDescription + '\'' +
                 ", title='" + title + '\'' +
                 ", open=" + open +
-                ", userThatVoteCount=" + userThatVoteCount +
                 '}';
     }
+
+
 }

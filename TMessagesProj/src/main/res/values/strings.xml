@@ -953,7 +953,6 @@
     <string name="updateBuild">614</string>
 
     <!-- START of Pollgram text -->
-
     <string name="howManyMemberVote">%1$d members on %2$d have voted yet</string>
     <string name="groupDecision">Group decisions</string>
     <string name="decisionsCount">%1$d open decision, %2$d closed decisions</string>
@@ -969,9 +968,59 @@
     <string name="no_vote_desc">\?</string>
     <string name="noOptionPresent">There are no option\n for this decision</string>
     <string name="remindToUserSent">Remind sent to %1$s</string>
+    <string name="closeDecision">Close Decision</string>
+    <string name="reopenDecision">Reopen decision</string>
+    <string name="deleteDecision">Delete decision</string>
+    <string name="decisionClosed">Decision closed</string>
+    <string name="decisionReopened">Decision reopened</string>
+    <string name="decisionDeleted">Decision deleted</string>
 
-    <string name="remindMessage">Hey %1$s can you please for decision:\n\"%2$s\"\nThank you :-)</string>
+
+    <!-- START of POLLGRAM transaction messages -->
+    <string name="downloadPollgramFromMarket">Install Pollgram at </string>
+    <string name="yes">yes</string>
+    <string name="no">no</string>
+
+    <string name="tmsg_RemindToVoteP1">Hey</string>
+    <!-- between P1 and P2 goes the username -->
+    <string name="tmsg_RemindToVoteP2">can you please for decision\n</string>
+    <!-- between P2 and P3 goes the decision title -->
+    <string name="tmsg_RemindToVoteP3">\nThank you</string>
+
+    <string name="tmsg_NewDecisionMsgPrefix">I just create a new decision</string>
+    <!-- between MsgPrefix and OptionsPrefix goes the decision title, and long description -->
+    <string name="tmsg_NewDecisionOptionsPrefix">Available options are:</string>
+    <!-- after OptionsPrefix goes options -->
+
+    <string name="tmsg_Vote">I just vote for decision</string>
+    <!-- after tmsg_Vote goes the decision title -->
+
+    <string name="tmsg_CloseDecisionP1">Decision</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_CloseDecisionP2">, is now closed.\nThe option that receive more vote is</string>
+    <!--after P2 goes the winning option title -->
+    <string name="tmsg_CloseDecisionP3"> with </string>
+    <string name="tmsg_CloseDecisionP4"> votes.</string>
+
+    <string name="tmsg_ReopenDecisionPrefix">Decision</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_ReopenDecisionSuffix">has been reopened. So you can still vote for options.</string>
+
+    <string name="tmsg_DeleteDecisionPrefix">Decision</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_DeleteDecisionSuffix">has been permanently removed.</string>
+
+    <!-- END of POLLGRAM transaction messages -->
+
+    <!-- START MessageType descriptions -->
+    <string name="MessageType_REMIND_TO_VOTE">Vote remind</string>
+    <string name="MessageType_NEW_DECISION">New decision</string>
+    <string name="MessageType_VOTE">Vote</string>
+    <string name="MessageType_CLOSE_DECISION">Close decision</string>
+    <string name="MessageType_REOPEN_DECISION">Reopen decision</string>
+    <string name="MessageType_DELETE_DECISION">Delete decision</string>
+    <!-- END MessageType descriptions -->
+
     <!-- END of Pollgram text -->
-
 
 </resources>

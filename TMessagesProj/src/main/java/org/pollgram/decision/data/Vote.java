@@ -66,4 +66,26 @@ public class Vote extends DBBean {
     public String toString() {
         return "vote : " + vote;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Vote)) return false;
+        if (!super.equals(o)) return false;
+
+        Vote vote1 = (Vote) o;
+
+        if (getOptionId() != vote1.getOptionId()) return false;
+        if (getUserId() != vote1.getUserId()) return false;
+        return !(vote != null ? !vote.equals(vote1.vote) : vote1.vote != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = (vote != null ? vote.hashCode() : 0);
+        result = 31 * result + (int) (getOptionId() ^ (getOptionId() >>> 32));
+        result = 31 * result + getUserId();
+        return result;
+    }
 }

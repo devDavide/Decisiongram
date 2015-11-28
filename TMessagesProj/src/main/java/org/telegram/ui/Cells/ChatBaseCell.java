@@ -22,6 +22,7 @@ import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 
+import org.pollgram.decision.service.PollgramFactory;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.LocaleController;
@@ -733,7 +734,9 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
 
         Drawable currentBackgroundDrawable;
         if (currentMessageObject.isOutOwner()) {
-            if (isPressed() && isCheckPressed || !isCheckPressed && isPressed || isHighlighted) {
+            if (isPollgram(currentMessageObject)) {
+                currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageOut;
+            } else if (isPressed() && isCheckPressed || !isCheckPressed && isPressed || isHighlighted) {
                 if (!media) {
                     currentBackgroundDrawable = ResourceLoader.backgroundDrawableOutSelected;
                 } else {
@@ -748,7 +751,9 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
             }
             setDrawableBounds(currentBackgroundDrawable, layoutWidth - backgroundWidth - (!media ? 0 : AndroidUtilities.dp(9)), AndroidUtilities.dp(1), backgroundWidth, layoutHeight - AndroidUtilities.dp(2));
         } else {
-            if (isPressed() && isCheckPressed || !isCheckPressed && isPressed || isHighlighted) {
+            if (isPollgram(currentMessageObject)) {
+                currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageIn;
+            }else  if (isPressed() && isCheckPressed || !isCheckPressed && isPressed || isHighlighted) {
                 if (!media) {
                     currentBackgroundDrawable = ResourceLoader.backgroundDrawableInSelected;
                 } else {
@@ -767,6 +772,8 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
                 setDrawableBounds(currentBackgroundDrawable, (!media ? 0 : AndroidUtilities.dp(9)), AndroidUtilities.dp(1), backgroundWidth, layoutHeight - AndroidUtilities.dp(2));
             }
         }
+
+
         if (drawBackground && currentBackgroundDrawable != null) {
             currentBackgroundDrawable.draw(canvas);
         }
@@ -1025,6 +1032,12 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
                 }
             }
         }
+    }
+
+    private boolean isPollgram(MessageObject msg) {
+        if (msg == null || msg.messageText == null)
+            return false;
+        return PollgramFactory.getPollgramMessagesManager().getMessageType(msg.messageText.toString()) != null;
     }
 
     @Override

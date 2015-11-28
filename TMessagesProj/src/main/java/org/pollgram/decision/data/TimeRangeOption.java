@@ -22,15 +22,17 @@ public class TimeRangeOption extends Option {
         DAY, HOUR;
     }
 
-    public TimeRangeOption(Date from, Date to, Accuracy accuracy) {
+    public TimeRangeOption(Date from, Date to, Accuracy accuracy, long decisionId) {
+        super(decisionId);
         this.from = from;
         this.to = to;
         this.accuracy = accuracy;
+
     }
 
 
-    public TimeRangeOption(long id, Date from, Date to, Accuracy accuracy) {
-        this(from, to,accuracy);
+    public TimeRangeOption(long id, Date from, Date to, Accuracy accuracy, long decisionId) {
+        this(from, to,accuracy, decisionId);
         setId(id);
 
     }

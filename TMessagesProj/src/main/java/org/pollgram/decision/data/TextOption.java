@@ -5,16 +5,14 @@ package org.pollgram.decision.data;
  */
 public class TextOption extends Option {
 
-    private final long decisionId;
-
     // icon/image will be retrived externally by url or file
 
     private String title;
     private String longDescription;
 
     public TextOption(String title, String longDescription, long decisionId) {
+        super(decisionId);
         this.title = title;
-        this.decisionId = decisionId;
         this.longDescription = longDescription;
     }
 
@@ -22,11 +20,6 @@ public class TextOption extends Option {
         this(title,longDescription,decisionId);
         setId(id);
     }
-
-    public long getDecisionId() {
-        return decisionId;
-    }
-
     @Override
     public String getTitle() {
         return title;
@@ -40,9 +33,32 @@ public class TextOption extends Option {
         return longDescription;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof TextOption)) return false;
+
+        TextOption that = (TextOption) o;
+
+        if (getTitle() != null ? !getTitle().equals(that.getTitle()) : that.getTitle() != null)
+            return false;
+        return !(getLongDescription() != null ? !getLongDescription().equals(that.getLongDescription()) : that.getLongDescription() != null);
+
+    }
+
+    @Override
+    public int hashCode() {
+        int result = super.hashCode();
+        result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
+        result = 31 * result + (getLongDescription() != null ? getLongDescription().hashCode() : 0);
+        return result;
+    }
+
     public void setLongDescription(String longDescription) {
         this.longDescription = longDescription;
     }
+
+
 
     @Override
     public String toString() {
