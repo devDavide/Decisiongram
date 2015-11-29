@@ -33,7 +33,7 @@ public class MessagesManagerTest {
     Context mMockContext;
 
     private PollgramDAOTestImpl dao;
-    private PollgramMessagesManager messageManager;
+    private PollgramMessagesManagerImpl messageManager;
     private PollgramServiceImpl service;
     private Map<Long, String> receivedId2LastMessages = new HashMap<>();
     private TLRPC.Chat chat;
@@ -78,7 +78,16 @@ public class MessagesManagerTest {
     }
 
     @Test
-    public void testSendVotes() throws ParseException {
+    public void testBuildMessage() {
+        for (PollgramMessagesManager.MessageType mt1 : PollgramMessagesManager.MessageType.values()) {
+            String msg = messageManager.buildMessage(mt1, "Message Body");
+            PollgramMessagesManager.MessageType  type = messageManager.getMessageType(msg);
+            Assert.assertEquals(mt1, type);
+        }
+    }
+
+    @Test
+    public void testSendVotes() throws ParseException, PollgramParseException {
         List<Option> options = dao.getOptions(decision);
         Collection<Vote> votes = new ArrayList<>();
         Date voteDate = new Date();
@@ -94,8 +103,8 @@ public class MessagesManagerTest {
         assertVotes(votes, voteDate, messageManager.reformatMessage(message));
     }
 
-    private void assertVotes(Collection<Vote> votes, Date voteDate, String message) {
-        Collection<Vote> parsedVotes = messageManager.getVotes(message, chat, voteDate, user.id);
+    private void assertVotes(Collection<Vote> votes, Date voteDate, String message) throws PollgramParseException {
+        Collection<Vote> parsedVotes = messageManager.getVotes(message, chat.id, voteDate, user.id);
         Assert.assertEquals(parsedVotes, votes);
     }
 
@@ -107,7 +116,7 @@ public class MessagesManagerTest {
     }
 
     @Test
-    public void testNewDecision() throws ParseException {
+    public void testNewDecision() throws ParseException, PollgramParseException {
         List<Option> options = dao.getOptions(decision);
         String message = messageManager.buildNotifyNewDecision(decision, options);
 
@@ -119,14 +128,14 @@ public class MessagesManagerTest {
 
     }
 
-    private void assertNewDecision(Decision decision, List<Option> options, String message) {
-        PollgramMessagesManager.NewDecisionData result = messageManager.getNewDecision(message, chat, user.id);
+    private void assertNewDecision(Decision decision, List<Option> options, String message) throws PollgramParseException {
+        PollgramMessagesManager.NewDecisionData result = messageManager.getNewDecision(message, chat.id, user.id);
         Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(options, result.optionList);
     }
 
     @Test
-    public void testCloseDecision() {
+    public void testCloseDecision() throws PollgramParseException {
         Option winningOption = dao.getOptions(decision).get(0);
         int voteCount = 5;
         String message = messageManager.buildCloseDecision(decision, winningOption, voteCount);
@@ -136,17 +145,38 @@ public class MessagesManagerTest {
         assertCloseDecision(decision, winningOption, messageManager.reformatMessage(message));
     }
 
-    private void assertCloseDecision(Decision decision, Option winningOption, String message) {
-        PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(message, chat);
+    private void assertCloseDecision(Decision decision, Option winningOption, String message) throws PollgramParseException {
+        PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(message, chat.id);
         Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(winningOption, result.winningOption);
     }
 
     @Test
-    public void testReopenDecision() {
+    public void testReopenDecision() throws PollgramParseException {
         String message = messageManager.buildReopenDecision(decision);
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.REOPEN_DECISION, type);
+        assertReopenDecision(decision, message);
+        assertReopenDecision(decision, messageManager.reformatMessage(message));
+    }
 
+    private void assertReopenDecision(Decision decision, String message) throws PollgramParseException {
+        Decision foundDecision = messageManager.getReopenDecision(message, chat.id);
+        Assert.assertEquals(foundDecision, decision);
+    }
 
+    @Test
+    public void testDeleteDecision() throws PollgramParseException {
+        String message = messageManager.buildDeleteDecision(decision);
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.DELETE_DECISION, type);
+        assertDeleteDecision(decision, message);
+        assertDeleteDecision(decision, messageManager.reformatMessage(message));
+    }
+
+    private void assertDeleteDecision(Decision decision, String message) throws PollgramParseException {
+        Decision foundDecision = messageManager.getDeleteDecision(message, chat.id);
+        Assert.assertEquals(foundDecision, decision);
     }
 
 }

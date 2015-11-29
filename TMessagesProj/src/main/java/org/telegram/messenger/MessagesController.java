@@ -7,8 +7,6 @@
  */
 
 package org.telegram.messenger;
-import org.pollgram.R;
-
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.ProgressDialog;
@@ -22,6 +20,8 @@ import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.widget.Toast;
 
+import org.pollgram.R;
+import org.pollgram.decision.service.PollgramFactory;
 import org.telegram.messenger.query.BotQuery;
 import org.telegram.messenger.query.StickersQuery;
 import org.telegram.tgnet.ConnectionsManager;
@@ -4053,6 +4053,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                     message.media = new TLRPC.TL_messageMediaEmpty();
                     MessagesStorage.lastPtsValue = updates.pts;
                     final MessageObject obj = new MessageObject(message, null, true);
+                    PollgramFactory.getPollgramService().processMessage(obj);
                     final ArrayList<MessageObject> objArr = new ArrayList<>();
                     objArr.add(obj);
                     ArrayList<TLRPC.Message> arr = new ArrayList<>();

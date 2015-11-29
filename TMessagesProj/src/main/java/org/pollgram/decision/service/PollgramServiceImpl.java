@@ -7,12 +7,14 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
-import org.pollgram.decision.utils.PollgramUtils;
+import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
@@ -82,7 +84,13 @@ public class PollgramServiceImpl implements PollgramService {
     @Override
     public void remindUserToVote(Decision decision, TLRPC.User user) {
         Log.d(LOG_TAG, "remindUserToVote groupChatId[" + decision.getChatId() + "] decision[" + decision + "] user[" + user + "]");
-        String msg = messageManager.buildRemindMessage(PollgramUtils.asString(user), decision);
+        String userAsString = ContactsController.formatName(user.first_name, user.last_name);
+        // TODO Remove START
+        Toast.makeText(ApplicationLoader.applicationContext, "formatName="+userAsString,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ApplicationLoader.applicationContext, "user.first_name="+user.first_name,Toast.LENGTH_SHORT).show();
+        Toast.makeText(ApplicationLoader.applicationContext, "user.username="+user.username,Toast.LENGTH_SHORT).show();
+        // TODO Remove END
+        String msg = messageManager.buildRemindMessage(userAsString, decision);
         sendMessage(decision.getChatId(), msg);
     }
 
@@ -117,9 +125,10 @@ public class PollgramServiceImpl implements PollgramService {
 
     @Override
     public void notifyDelete(Decision decision) {
-        // TODO
+        pollgramDAO.delete(decision);
+        String message = messageManager.buildDeleteDecision(decision);
+        sendMessage(decision.getChatId(), message);
     }
-
     @Override
     public void notifyNewDecision(Decision decision, List<Option> options) {
         Log.d(LOG_TAG, "notifyNewDecision decision[" + decision + "] decision[" + decision + "] options[" + options + "]");
@@ -137,14 +146,20 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     @Override
-    public void processMessage(MessageObject message, TLRPC.Chat currentChat) {
-        Log.d(LOG_TAG,"parsing message ["+message.messageText+"] for chat ["+currentChat+"]");
-        if (currentChat == null) {
-            Log.d(NOT_PARSED_TAG,"not a group message");
+    public void processMessage(MessageObject message) {
+        Log.d(LOG_TAG,"parsing message ["+message.messageText+"]");
+        if (message.messageOwner == null) {
+            Log.d(NOT_PARSED_TAG,"message.messageOwner not set");
             return;
         }
 
-        if (ChatObject.isChannel(currentChat)){
+        if (message.messageOwner.dialog_id > 0){
+            Log.d(NOT_PARSED_TAG,"message.messageOwner.dialog_id positive, in not a group chat");
+            return;
+        }
+
+        int groupChatId = (int)(message.messageOwner.dialog_id * -1);
+        if (ChatObject.isChannel(groupChatId)){
             Log.d(NOT_PARSED_TAG,"is a channel");
             return;
         }
@@ -162,7 +177,7 @@ public class PollgramServiceImpl implements PollgramService {
         try {
             switch (msgType) {
                 case NEW_DECISION: {
-                    PollgramMessagesManager.NewDecisionData resut = messageManager.getNewDecision(text, currentChat, userId);
+                    PollgramMessagesManager.NewDecisionData resut = messageManager.getNewDecision(text, groupChatId, userId);
                     if (resut == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
                     }
@@ -174,22 +189,27 @@ public class PollgramServiceImpl implements PollgramService {
                     break;
                 }
                 case REOPEN_DECISION: {
+                    Decision decision = messageManager.getReopenDecision(text, groupChatId);
+                    decision.setOpen(true);
+                    pollgramDAO.save(decision);
                     break;
                 }
                 case CLOSE_DECISION: {
-                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text, currentChat);
+                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text, groupChatId);
                     result.decision.setOpen(false);
                     pollgramDAO.save(result.decision);
                     break;
                 }
                 case DELETE_DECISION: {
+                    Decision decision = messageManager.getDeleteDecision(text, groupChatId);
+                    pollgramDAO.delete(decision);
                     break;
                 }
                 case REMIND_TO_VOTE: {
                     break;
                 }
                 case VOTE: {
-                    Collection<Vote> votes = messageManager.getVotes(text, currentChat, messageDate, userId);
+                    Collection<Vote> votes = messageManager.getVotes(text, groupChatId, messageDate, userId);
                     for (Vote v : votes)
                         pollgramDAO.save(v);
                     break;
@@ -210,5 +230,20 @@ public class PollgramServiceImpl implements PollgramService {
         boolean asAdmin = false;
         SendMessagesHelper.getInstance().sendMessage(message, peer, replyToMsg, webPAge, searchLinks, asAdmin);
         Log.i(LOG_TAG, "sended message [" + message + "] in group [" + groupChatId + "]");
+    }
+
+    @Override
+    public String asString(TLRPC.User user){
+        if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
+                ContactsController.getInstance().contactsDict.get(user.id) == null &&
+                (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {
+            if (user.phone != null && user.phone.length() != 0) {
+                return PhoneFormat.getInstance().format("+" + user.phone);
+            } else {
+                return UserObject.getUserName(user);
+            }
+        } else {
+            return UserObject.getUserName(user);
+        }
     }
 }

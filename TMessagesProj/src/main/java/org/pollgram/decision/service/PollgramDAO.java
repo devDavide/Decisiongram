@@ -90,6 +90,12 @@ public interface PollgramDAO {
     int getUserVoteCount(Decision decision);
 
     /**
+     * Delete permanently a decision and all its options and vote
+     * @param decision
+     */
+    void delete(Decision decision);
+
+    /**
      * Result for method getWinningOption
      */
     class WinningOption{

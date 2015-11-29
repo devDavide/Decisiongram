@@ -87,7 +87,7 @@ public class DecisionsListFragment extends BaseFragment {
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(R.string.viewCloseDecision),0 );
-        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Purge ALL data from db", 0);
+        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions data", 0);
         headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
@@ -102,7 +102,10 @@ public class DecisionsListFragment extends BaseFragment {
                     else
                         viewOpenCloseTextView.setText(R.string.hideCloseDecision);
                 } else if (id == ID_PURGE_ALL_DATA){
-                    pollgramDAO.purgeData();
+                    List<Decision> allDecisions = pollgramDAO.getDecisions(chatInfo.id, null);
+                    for (Decision d : allDecisions){
+                        pollgramDAO.delete(d);
+                    }
                 } else if (id == ID_PUT_STUB_DATA_DATA){
                     pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
                 }

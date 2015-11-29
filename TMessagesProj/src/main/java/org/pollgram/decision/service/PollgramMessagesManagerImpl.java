@@ -11,9 +11,9 @@ import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
@@ -84,19 +84,21 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         return sb.toString();
     }
 
-    private Boolean getBooleanValue(String str){
-        if (str == null)
-            return  false;
-        return str.startsWith(TRUE_EMOJI);
+    private Boolean getBooleanValue(String str) {
+        return str != null && str.startsWith(TRUE_EMOJI);
     }
 
     @Override
     public String buildRemindMessage(String userAsString, Decision decision) {
         StringBuilder body = new StringBuilder();
         body.append(context.getString(R.string.tmsg_RemindToVoteP1));
+        body.append(' ');
         body.append(format(userAsString));
+        body.append(' ');
         body.append(context.getString(R.string.tmsg_RemindToVoteP2));
+        body.append(NEW_LINE);
         body.append(format(decision));
+        body.append(NEW_LINE);
         body.append(context.getString(R.string.tmsg_RemindToVoteP3));
         body.append(' ');
         body.append(WINKING_FACE_EMOJI);
@@ -107,6 +109,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     public String buildCloseDecision(Decision decision, Option winningOption, int voteCount) {
         StringBuilder body = new StringBuilder();
         body.append(context.getString(R.string.tmsg_CloseDecisionP1));
+        body.append(' ');
         body.append(format(decision));
         body.append(context.getString(R.string.tmsg_CloseDecisionP2));
         body.append(format(winningOption));
@@ -121,12 +124,24 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
     @Override
     public String buildReopenDecision(Decision decision) {
+        return buildDeleteOrReopenMessage(MessageType.REOPEN_DECISION, decision,
+                R.string.tmsg_ReopenDecisionPrefix, R.string.tmsg_ReopenDecisionSuffix);
+    }
+
+    @Override
+    public String buildDeleteDecision(Decision decision) {
+        return buildDeleteOrReopenMessage(MessageType.DELETE_DECISION, decision,
+                R.string.tmsg_DeleteDecisionPrefix, R.string.tmsg_DeleteDecisionSuffix);
+    }
+
+    private String buildDeleteOrReopenMessage(MessageType type, Decision decision, int prefixStringRes, int suffixStringRes){
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(R.string.tmsg_ReopenDecisionPrefix));
+        body.append(context.getString(prefixStringRes));
+        body.append(' ');
         body.append(format(decision));
         body.append(NEW_LINE);
-        body.append(context.getString(R.string.tmsg_ReopenDecisionSuffix));
-        return buildMessage(MessageType.REOPEN_DECISION, body.toString());
+        body.append(context.getString(suffixStringRes));
+        return buildMessage(type, body.toString());
     }
 
     @Override
@@ -185,7 +200,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
      * @param messageBody
      * @return a message ready to be sent
      */
-    private String buildMessage(MessageType type, String messageBody) {
+    protected String buildMessage(MessageType type, String messageBody) {
         StringBuilder sb = new StringBuilder();
         sb.append(POLLGRAM_MESSAGE_PREFIX);
         sb.append(' ');
@@ -217,7 +232,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 int start = POLLGRAM_MESSAGE_PREFIX.length() + 1;
                 String msgEmoji = msg.substring(start, start + 2);
                 MessageType t = MessageType.byEmoji(msgEmoji);
-                Log.d(LOG_TAG, "MessageType for [" + msgEmoji + "] is [" + t + "]");
+                Log.d(LOG_TAG, "MessageType for [" + Arrays.toString(msgEmoji.getBytes()) + "] is [" + t + "]");
                 return t;
             } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
                 Log.e(LOG_TAG, "Error parsing message type for message [" + msg + "] il will not be parset", e);
@@ -230,16 +245,16 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
 
     @Override
-    public Collection<Vote> getVotes(String msg, TLRPC.Chat currentChat, Date messageDate ,int userId) throws PollgramParseException {
+    public Collection<Vote> getVotes(String msg, int currentChat, Date messageDate ,int userId) throws PollgramParseException {
 
         try {
             StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR) + Character.toString(NEW_LINE));
             strTok.nextToken(); // skip token
             strTok.nextToken(); // skip token
             String decisionTitle = strTok.nextToken();
-            Decision decision = pollgramDAO.getDecision(decisionTitle, currentChat.id);
+            Decision decision = pollgramDAO.getDecision(decisionTitle, currentChat);
             if (decision == null)
-                throw new PollgramParseException("Decision not found for title["+decisionTitle+"]  currentChat["+currentChat.id+"]");
+                throw new PollgramParseException("Decision not found for title["+decisionTitle+"]  currentChat["+currentChat+"]");
             List<Vote> voteList = new ArrayList<>();
             while (strTok.hasMoreTokens()) {
                 String voteValue = strTok.nextToken();
@@ -267,7 +282,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public NewDecisionData getNewDecision(String msg, TLRPC.Chat currentChat, int userId) {
+    public NewDecisionData getNewDecision(String msg, int currentChat, int userId) throws PollgramParseException {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
@@ -277,7 +292,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 String title = strTok.nextToken();
                 strTok.nextToken();//skip this token
                 String longDescription = strTok.nextToken();
-                decision = new Decision(currentChat.id, userId, title, longDescription, true);
+                decision = new Decision(currentChat, userId, title, longDescription, true);
             }
             while (strTok.hasMoreTokens()){
                 strTok.nextToken();//skip this token
@@ -298,7 +313,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public ClosedDecisionDate getCloseDecision(String msg, TLRPC.Chat currentChat) {
+    public ClosedDecisionDate getCloseDecision(String msg, int currentChat) throws PollgramParseException {
         Decision decision;
         Option winningOption;
         try {
@@ -309,7 +324,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             String optionTitle = strTok.nextToken();//skip this token
 
             String longDescription = strTok.nextToken();
-            decision = pollgramDAO.getDecision(title, currentChat.id);
+            decision = pollgramDAO.getDecision(title, currentChat);
             winningOption = pollgramDAO.getOption(optionTitle, decision);
 
 
@@ -320,4 +335,42 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] winningOption[" + winningOption + "]");
         return new ClosedDecisionDate(decision, winningOption);
     }
+
+    @Override
+    public Decision getDeleteDecision(String text, int groupChatId) throws PollgramParseException {
+        Decision d = getDecisionInDeleteOrReopenMessage(text, groupChatId);
+        Log.d(LOG_TAG, "getDeleteDecision Decision["+d+"]");
+        return d;
+    }
+
+    @Override
+    public Decision getReopenDecision(String text, int groupChatId) throws PollgramParseException {
+        Decision d = getDecisionInDeleteOrReopenMessage(text,groupChatId);
+        Log.d(LOG_TAG, "getReopenDecision Decision["+d+"]");
+        return d;
+    }
+
+    /**
+     * Actually Delete and Reopen messages have the same structure
+     * @param msg
+     * @param groupChatId
+     * @return
+     */
+    private Decision getDecisionInDeleteOrReopenMessage(String msg, int groupChatId) throws PollgramParseException {
+        Decision decision;
+        try {
+            StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR));
+            strTok.nextToken(); // skipt this token
+            String decisionTitle = strTok.nextToken();
+            Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
+            if (d ==null)
+                throw new PollgramParseException("Decision not found for title["+decisionTitle+"] and groupChatId["+groupChatId+"]");
+            return d;
+        } catch (NoSuchElementException e){
+            Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
+            throw new PollgramParseException("Token not found", e);
+        }
+    }
+
+
 }

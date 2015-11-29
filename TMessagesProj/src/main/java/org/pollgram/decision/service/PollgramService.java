@@ -35,9 +35,17 @@ public interface PollgramService {
 
     /**
      * Process a message and return the new message, performing some transformation if needed.
-     * @param message the input message
      * @param currentChat
+     * @param message the input message
      * @return the input message transformed if needed
      */
-    void processMessage(MessageObject message, TLRPC.Chat currentChat);
+    void processMessage(MessageObject message);
+
+    /**
+     * @param user
+     * @return a string reppresetation of the passed user. That can be used just for local
+     * representaion not for sending message, as description can be taken right from
+     * the local contact list of the user
+     */
+    String asString(TLRPC.User user);
 }

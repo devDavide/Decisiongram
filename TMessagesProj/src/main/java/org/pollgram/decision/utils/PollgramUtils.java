@@ -7,12 +7,8 @@ import android.view.Gravity;
 import android.widget.TextView;
 
 import org.pollgram.R;
-import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.ContactsController;
-import org.telegram.messenger.UserObject;
-import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.Components.FrameLayoutFixed;
 import org.telegram.ui.Components.LayoutHelper;
@@ -57,20 +53,6 @@ public class PollgramUtils {
                 Gravity.TOP | Gravity.LEFT, 36, 0, 40, 0));
 
         return actionBar;
-    }
-
-    public static String asString(TLRPC.User user){
-        if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
-                ContactsController.getInstance().contactsDict.get(user.id) == null &&
-                (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {
-            if (user.phone != null && user.phone.length() != 0) {
-                return PhoneFormat.getInstance().format("+" + user.phone);
-            } else {
-                return UserObject.getUserName(user);
-            }
-        } else {
-            return UserObject.getUserName(user);
-        }
     }
 
     public static String getEmojiAsString(byte... emojiBytes){

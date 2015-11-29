@@ -43,9 +43,8 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramDAO;
-import org.pollgram.decision.service.PollgramService;
 import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.utils.PollgramUtils;
+import org.pollgram.decision.service.PollgramService;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
@@ -328,7 +327,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 userNameTv.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
                 userNameTv.setPadding(15, 0, 0, 0);
                 userNameTv.setEllipsize(TextUtils.TruncateAt.END);
-                userNameTv.setText(PollgramUtils.asString(user));
+                userNameTv.setText(pollgramService.asString(user));
                 int maxWith = AndroidUtilities.dp(80);
                 userNameTv.setMaxWidth(maxWith);
                 userNameTv.setMaxLines(1);
@@ -345,7 +344,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 @Override
                 public void onClick(View v) {
                     pollgramService.remindUserToVote(usersDecisionVotes.getDecision(), user);
-                    String message = getContext().getString(R.string.remindToUserSent, PollgramUtils.asString(user));
+                    String message = getContext().getString(R.string.remindToUserSent, pollgramService.asString(user));
                     Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
                 }
             });

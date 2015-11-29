@@ -953,14 +953,16 @@
     <string name="updateBuild">614</string>
 
     <!-- START of Pollgram text -->
-    <string name="howManyMemberVote">%1$d members on %2$d have voted yet</string>
+    <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
+    <string name="decisionStatus">Decision is %1$s</string>
+    <string name="statusOpen">open</string>
+    <string name="statusClose">close</string>
     <string name="groupDecision">Group decisions</string>
     <string name="decisionsCount">%1$d open decision, %2$d closed decisions</string>
 
     <string name="viewCloseDecision">View closed decision</string>
     <string name="hideCloseDecision">Hide closed decision</string>
 
-    <string name="decisionDetailSummarizeTitle">%1$d members on %2$d have already voted!</string>
     <string name="optionTabName">Options</string>
     <string name="tableViewTabName">Table View</string>
     <string name="saveVotes">Save votes</string>
@@ -983,9 +985,9 @@
 
     <string name="tmsg_RemindToVoteP1">Hey</string>
     <!-- between P1 and P2 goes the username -->
-    <string name="tmsg_RemindToVoteP2">can you please for decision\n</string>
+    <string name="tmsg_RemindToVoteP2">can you please for decision</string>
     <!-- between P2 and P3 goes the decision title -->
-    <string name="tmsg_RemindToVoteP3">\nThank you</string>
+    <string name="tmsg_RemindToVoteP3">Thank you</string>
 
     <string name="tmsg_NewDecisionMsgPrefix">I just create a new decision</string>
     <!-- between MsgPrefix and OptionsPrefix goes the decision title, and long description -->
@@ -997,9 +999,9 @@
 
     <string name="tmsg_CloseDecisionP1">Decision</string>
     <!-- between Prefix and Suffix goes the decision title -->
-    <string name="tmsg_CloseDecisionP2">, is now closed.\nThe option that receive more vote is</string>
+    <string name="tmsg_CloseDecisionP2">, is now closed. The option that receive more vote is</string>
     <!--after P2 goes the winning option title -->
-    <string name="tmsg_CloseDecisionP3"> with </string>
+    <string name="tmsg_CloseDecisionP3">with</string>
     <string name="tmsg_CloseDecisionP4"> votes.</string>
 
     <string name="tmsg_ReopenDecisionPrefix">Decision</string>
@@ -1019,6 +1021,7 @@
     <string name="MessageType_CLOSE_DECISION">Close decision</string>
     <string name="MessageType_REOPEN_DECISION">Reopen decision</string>
     <string name="MessageType_DELETE_DECISION">Delete decision</string>
+    <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ? This will remove this decision for ALL users involved, not just yourself.</string>
     <!-- END MessageType descriptions -->
 
     <!-- END of Pollgram text -->

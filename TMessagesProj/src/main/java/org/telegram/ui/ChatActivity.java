@@ -51,7 +51,6 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pollgram.R;
-import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -3952,9 +3951,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
                 // TODO _POLLGRAM HERE THE MESSAGES ARE PARSED !!!! YEAH !!!
                 // From here pass even the message that i send
-                for (MessageObject msgObj : arr) {
-                    PollgramFactory.getPollgramService().processMessage(msgObj, currentChat);
-                }
+//                for (MessageObject msgObj : arr) {
+//                    PollgramFactory.getPollgramService().processMessage(msgObj);
+//                }
 
                 ReplyMessageQuery.loadReplyMessagesForMessages(arr, dialog_id);
                 if (!forward_end_reached) {
@@ -5976,7 +5975,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     public void didPressUrl(MessageObject messageObject, final ClickableSpan url) {
                         if (url instanceof URLSpanNoUnderline) {
                             String str = ((URLSpanNoUnderline) url).getURL();
-                            // TODO _POLLGRAM add here eventualy some action on tap
                             if (str.startsWith("@")) {
                                 MessagesController.openByUserName(str.substring(1), ChatActivity.this, 0);
                             } else if (str.startsWith("#")) {

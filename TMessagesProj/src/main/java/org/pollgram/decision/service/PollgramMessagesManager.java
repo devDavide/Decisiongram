@@ -8,7 +8,6 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.tgnet.TLRPC;
 
 import java.text.ParseException;
 import java.util.Collection;
@@ -19,6 +18,7 @@ import java.util.List;
  * Created by davide on 19/11/15.
  */
 public interface PollgramMessagesManager {
+
 
     /**
      * The different messages type managed by Pollgram
@@ -46,8 +46,9 @@ public interface PollgramMessagesManager {
         }
 
         public static MessageType byEmoji(String emoji){
+            String trimmed = emoji.trim();
             for (MessageType mt : MessageType.values()){
-                if (emoji.equals(mt.getEmoji()))
+                if (trimmed.equals(mt.getEmoji()))
                     return mt;
             }
             return null;
@@ -117,6 +118,14 @@ public interface PollgramMessagesManager {
     String buildReopenDecision(Decision decision);
 
     /**
+     * build a message for notifying that the passed decision is has been deleted. All decision data will be lost.
+     * @param  decision
+     * @return
+     */
+    String buildDeleteDecision(Decision decision);
+
+    /**
+     * Only if getMessageType(text) == MessageType_VOTE
      * if the message is {@link org.pollgram.decision.service.PollgramMessagesManager.MessageType#VOTE}
      * @param msg the text message to parse
      * @param currentChat current group chat
@@ -124,7 +133,7 @@ public interface PollgramMessagesManager {
      * @return a collection of the vote contained in the message
      * @throws ParseException is the message is not well formed
      */
-    Collection<Vote> getVotes(String msg, TLRPC.Chat currentChat, Date messageDate, int userId) throws PollgramParseException;
+    Collection<Vote> getVotes(String msg, int currentChat, Date messageDate, int userId) throws PollgramParseException;
 
     /**
      * Retrun vale for getNewDecision method
@@ -140,13 +149,14 @@ public interface PollgramMessagesManager {
     }
 
     /**
+     * Only if getMessageType(text) == MessageType_NEW_DECISION
      * Return the new decision data contained in the passed message
      * @param msg the text message to parse
      * @param currentChat current group chat
      * @param userId message owner
-      @return the decision and its options
+     * @return the decision and its options
      */
-    NewDecisionData getNewDecision(String msg, TLRPC.Chat currentChat, int userId) throws PollgramParseException;
+    NewDecisionData getNewDecision(String msg, int currentChat, int userId) throws PollgramParseException;
 
     /**
      * Return value for getCloseDecision
@@ -161,6 +171,28 @@ public interface PollgramMessagesManager {
         }
     }
 
-    ClosedDecisionDate getCloseDecision(String text, TLRPC.Chat currentChat);
+    /**
+     * Only if getMessageType(text) == MessageType_CLOSE_DECISION
+     * @param text
+     * @param groupChatId
+     * @return the data for close decision message
+     */
+    ClosedDecisionDate getCloseDecision(String text, int groupChatId) throws PollgramParseException;
+
+    /**
+     * * Only if getMessageType(text) == MessageType_DELETE_DECISION
+     * @param text
+     * @param groupChatId
+     * @return the decision to delete
+     */
+    Decision getDeleteDecision(String text, int groupChatId) throws PollgramParseException;
+
+    /**
+     * Only if getMessageType(text) == MessageType_REOPEN_DECISION
+     * @param text
+     * @param groupChatId
+     * @return the decision to reopen
+     */
+    Decision getReopenDecision(String text, int groupChatId) throws PollgramParseException;
 
 }

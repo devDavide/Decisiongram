@@ -245,9 +245,9 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
     public <T extends DBBean> void update(T bean, DBObjectMapper<T> mapper) {
         SQLiteDatabase db = getWritableDatabase();
         try {
-            int nrow = db.update(mapper.getTableName(), mapper.toCV(bean),
+            int rowCount = db.update(mapper.getTableName(), mapper.toCV(bean),
                     mapper.getIdFiledName() + "= ?", new String[]{Long.toString(bean.getId())});
-            if (nrow == 0)
+            if (rowCount == 0)
                 throw new PollgramDAOException("Error updating: " + bean);
 
         } finally {
@@ -259,8 +259,9 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
     public <T extends DBBean> List<T> query(DBObjectMapper<T> mapper, String selection,
                                             String[] selectionArgs) {
         SQLiteDatabase db = getReadableDatabase();
+        Cursor cursor = null;
         try {
-            Cursor cursor = db.query(mapper.getTableName(), null, selection,
+             cursor = db.query(mapper.getTableName(), null, selection,
                     selectionArgs, null, null, null);
             List<T> result = new ArrayList<>();
             cursor.moveToFirst();
@@ -272,6 +273,8 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         } finally {
             if (db != null && db.isOpen())
                 db.close();
+            if (cursor != null)
+                cursor.close();
         }
     }
 
@@ -290,9 +293,9 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
 
     public <T extends DBBean> T findById(long id, DBObjectMapper<T> mapper) {
         SQLiteDatabase db = getReadableDatabase();
-
+        Cursor cursor = null;
         try {
-            Cursor cursor = db.query(mapper.getTableName(), null, mapper.getIdFiledName() + "= ?",
+             cursor = db.query(mapper.getTableName(), null, mapper.getIdFiledName() + "= ?",
                     new String[]{Long.toString(id)}, null, null, null);
             if (!cursor.moveToFirst())
                 return null;
@@ -301,6 +304,8 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         } finally {
             if (db != null && db.isOpen())
                 db.close();
+            if (cursor != null)
+                cursor.close();
         }
     }
 
@@ -322,14 +327,16 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_TextOption.LONG_DESCRIPTION + " TEXT, " +
                 T_TextOption.FK_DECISION + " INTEGER, " +
                 "UNIQUE("+T_TextOption.TITLE +", " + T_TextOption.FK_DECISION +"), "+
-                "FOREIGN KEY(" + T_TextOption.FK_DECISION + ") REFERENCES " + T_Decision.TABLE_NAME + "(" + T_Decision.ID + ") ) ;");
+                "FOREIGN KEY(" + T_TextOption.FK_DECISION + ") REFERENCES " +
+                     T_Decision.TABLE_NAME + "(" + T_Decision.ID + ") ON DELETE CASCADE ) ;");
         db.execSQL("CREATE TABLE " + T_Vote.TABLE_NAME + " (" +
                 T_Vote.ID + " INTEGER PRIMARY KEY," +
                 T_Vote.VOTE + " Boolean," +
                 T_Vote.VOTE_TIME + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 T_Vote.FK_OPTION + " INTEGER, " +
                 T_Vote.USER_ID + " INTEGER, " +
-                "FOREIGN KEY(" + T_Vote.FK_OPTION + ")REFERENCES " + T_TextOption.TABLE_NAME + " (" + T_TextOption.ID + ") ) ;");
+                "FOREIGN KEY(" + T_Vote.FK_OPTION + ")REFERENCES " +
+                    T_TextOption.TABLE_NAME + " (" + T_TextOption.ID + ") ON DELETE CASCADE ) ;");
         Log.i(LOG_TAG, "Db creation completed");
 
     }

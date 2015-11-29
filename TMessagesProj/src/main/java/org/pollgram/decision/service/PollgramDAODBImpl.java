@@ -12,6 +12,7 @@ import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -44,7 +45,6 @@ class PollgramDAODBImpl implements PollgramDAO {
         decisions.add(new Decision(chatId, creatorId, "Where do we go ?", "huge bla bla bla", true));
         decisions.add(new Decision(chatId, creatorId, "When will the party be ?", "huge bla bla bla", true));
         decisions.add(new Decision(chatId, creatorId, "Do we add Slomp to the group ?", "huge bla bla bla", false));
-        helper.getWritableDatabase().execSQL("DELETE FROM " + PGSqlLiteHelper.T_Decision.TABLE_NAME);
         for (Decision d : decisions) {
             Decision newD = save(d);
             Log.i(LOG_TAG, "inserted decision id:" + newD.getId());
@@ -52,16 +52,17 @@ class PollgramDAODBImpl implements PollgramDAO {
         }
 
         Decision decision1 = getDecisions(chatId, null).get(0);
-        List<TextOption> options = new ArrayList<>();
+        List<Option> options = new ArrayList<>();
         options.add(new TextOption("Ski", "They cost 385EUR i saw them at the corner shop", decision1.getId()));
         options.add(new TextOption("Phone", "The new StonexOne is AWESOME !!!", decision1.getId()));
         options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
         options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
-        helper.getWritableDatabase().execSQL("DELETE FROM " + PGSqlLiteHelper.T_TextOption.TABLE_NAME);
-        for (TextOption te : options) {
-            Option newOpt = save(te);
-            Log.i(LOG_TAG, "inserted TextOption id:" + newOpt.getId());
-            Option found = getOption(newOpt.getId());
+
+        for (Decision d : getDecisions(chatId, true)) {
+            if (d.equals(decisions.get(0)))
+                PollgramFactory.getPollgramService().notifyNewDecision(d, options);
+            else
+                PollgramFactory.getPollgramService().notifyNewDecision(d, Collections.<Option>emptyList());
         }
         // }
         // Do some test query
@@ -71,12 +72,7 @@ class PollgramDAODBImpl implements PollgramDAO {
         }
 
         Log.i(LOG_TAG, "query getDecisions(true)");
-        for (Decision d : getDecisions(chatId, true)) {
-            List<Option> optionsList = getOptions(d);
-            if (options.size() > 0)
-                PollgramFactory.getPollgramService().notifyNewDecision(d, optionsList);
-            Log.d(LOG_TAG, "found-2: " + d);
-        }
+
         Log.i(LOG_TAG, "query getDecisions(false)");
         for (Decision d : getDecisions(chatId, false)) {
             Log.d(LOG_TAG, "found-3 " + d);
@@ -88,8 +84,9 @@ class PollgramDAODBImpl implements PollgramDAO {
     @Override
     public int getUserVoteCount(Decision decision) {
         SQLiteDatabase db = helper.getReadableDatabase();
+        Cursor c = null;
         try {
-            Cursor c =db.rawQuery("Select count(*) FROM (" +
+            c =db.rawQuery("Select count(*) FROM (" +
                             "SELECT v." + PGSqlLiteHelper.T_Vote.USER_ID + " " +
                             "FROM decision d inner join text_option o " +
                             "on d." + PGSqlLiteHelper.T_Decision.ID + " = o." + PGSqlLiteHelper.T_TextOption.FK_DECISION + " " +
@@ -105,6 +102,31 @@ class PollgramDAODBImpl implements PollgramDAO {
         } finally {
             if (db != null)
                 db.close();
+            if (c != null)
+                c.close();
+        }
+    }
+
+    @Override
+    public void delete(Decision decision) {
+        Log.d(LOG_TAG, "Delete all decision data for decision["+decision+"]");
+        SQLiteDatabase db = helper.getWritableDatabase();
+        String[] decisionIdPar = new String[]{Long.toString(decision.getId())};
+        try {
+            db.delete(PGSqlLiteHelper.T_Vote.TABLE_NAME,
+                    PGSqlLiteHelper.T_Vote.FK_OPTION + " in  ( " +
+                            "select " + PGSqlLiteHelper.T_TextOption.ID + " from " + PGSqlLiteHelper.T_TextOption.TABLE_NAME +
+                            " where " + PGSqlLiteHelper.T_TextOption.FK_DECISION + "= ?)",
+                    decisionIdPar);
+            db.delete(PGSqlLiteHelper.T_TextOption.TABLE_NAME,
+                    PGSqlLiteHelper.T_TextOption.FK_DECISION + " =  ? ",
+                    decisionIdPar);
+            db.delete(PGSqlLiteHelper.T_Decision.TABLE_NAME,
+                    PGSqlLiteHelper.T_Decision.ID + " =  ? ",
+                    decisionIdPar);
+        } finally {
+            if (db != null)
+                db.close();
         }
     }
 
@@ -112,8 +134,9 @@ class PollgramDAODBImpl implements PollgramDAO {
     public WinningOption getWinningOption(Decision decision) {
         SQLiteDatabase db = helper.getReadableDatabase();
         String voteCountFieldName= "max_vote_count";
+        Cursor c = null;
         try {
-            Cursor c =db.rawQuery("SELECT "+PGSqlLiteHelper.T_TextOption.cloumns(null)+" , max(vote_count) as "+voteCountFieldName+" FROM (" +
+            c =db.rawQuery("SELECT "+PGSqlLiteHelper.T_TextOption.cloumns(null)+" , max(vote_count) as "+voteCountFieldName+" FROM (" +
                             "SELECT "+PGSqlLiteHelper.T_TextOption.cloumns("o")+",  count (*) as vote_count " +
                             "FROM decision d inner join text_option o " +
                             "on d." + PGSqlLiteHelper.T_Decision.ID + " = o." + PGSqlLiteHelper.T_TextOption.FK_DECISION + " " +
@@ -132,6 +155,8 @@ class PollgramDAODBImpl implements PollgramDAO {
         } finally {
             if (db != null)
                 db.close();
+            if (c != null)
+                c.close();
         }
     }
 
@@ -228,9 +253,10 @@ class PollgramDAODBImpl implements PollgramDAO {
             strQuery.append(" and v.user_id = ? ");
             params.add(Integer.toString(userId));
         }
+        Cursor cursor = null;
         try {
             List<Vote> result = new ArrayList<>();
-            Cursor cursor = db.rawQuery(strQuery.toString(),params.toArray(new String[params.size()]));
+            cursor = db.rawQuery(strQuery.toString(),params.toArray(new String[params.size()]));
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
                 result.add(helper.VOTE_MAPPER.from(cursor));
@@ -240,6 +266,8 @@ class PollgramDAODBImpl implements PollgramDAO {
         } finally {
             if (db != null && db.isOpen())
                 db.close();
+            if (cursor != null)
+                cursor.close();
         }
     }
 
