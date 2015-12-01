@@ -15,7 +15,6 @@ import java.util.List;
  */
 public interface PollgramService {
 
-    List<TLRPC.User> getUsers(int[] usersIds);
 
     UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds);
 
@@ -35,17 +34,19 @@ public interface PollgramService {
 
     /**
      * Process a message and return the new message, performing some transformation if needed.
-     * @param currentChat
      * @param message the input message
      * @return the input message transformed if needed
      */
     void processMessage(MessageObject message);
 
+    List<TLRPC.User> getUsers(int[] usersIds);
+
+    TLRPC.User getUser(int userid);
+
     /**
      * @param user
-     * @return a string reppresetation of the passed user. That can be used just for local
-     * representaion not for sending message, as description can be taken right from
-     * the local contact list of the user
+     * @return a string representation of the passed user.
      */
     String asString(TLRPC.User user);
+
 }

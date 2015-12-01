@@ -32,12 +32,12 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String LONG_DESCRIPTION = "long_description";
         static final String FULL_CHAT_ID = "full_chat_id";
         static final String USER_CREATOR_ID = "user_creator_id";
+        static final String CREATION_DATE = "creation_date";
         static final String OPEN = "open";
 
         public static String cloumns(String tableAlias) {
-            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, FULL_CHAT_ID, USER_CREATOR_ID, OPEN);
+            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, FULL_CHAT_ID,CREATION_DATE, USER_CREATOR_ID, OPEN);
         }
-
     }
 
     static class T_TextOption {
@@ -114,7 +114,6 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         }
     };
 
-
     /**
      * DBObjectMapper for Decision
      */
@@ -136,9 +135,10 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             String title = getString(c, T_Decision.TITLE);
             String description = getString(c, T_Decision.LONG_DESCRIPTION);
             int fullChatId = getInt(c, T_Decision.FULL_CHAT_ID);
-            long userCreatorId = getLong(c, T_Decision.USER_CREATOR_ID);
+            int userCreatorId = getInt(c, T_Decision.USER_CREATOR_ID);
+            Date creationDate = getDate(c, T_Decision.CREATION_DATE);
             boolean isOpen = getBoolean(c, T_Decision.OPEN);
-            return new Decision(id, fullChatId, userCreatorId, title, description, isOpen);
+            return new Decision(id, fullChatId, userCreatorId, title, description, creationDate, isOpen);
         }
 
         @Override
@@ -148,6 +148,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             cv.put(T_Decision.LONG_DESCRIPTION, d.getLongDescription());
             cv.put(T_Decision.FULL_CHAT_ID, d.getChatId());
             cv.put(T_Decision.USER_CREATOR_ID, d.getUserCreatorId());
+            cv.put(T_Decision.CREATION_DATE, d.getCreationDate().getTime());
             cv.put(T_Decision.OPEN, d.isOpen());
             return cv;
         }
@@ -256,13 +257,15 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         }
     }
 
+
     public <T extends DBBean> List<T> query(DBObjectMapper<T> mapper, String selection,
-                                            String[] selectionArgs) {
+                                            String[] selectionArgs, String groupBy, String having,
+                                            String orderBy) {
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = null;
         try {
-             cursor = db.query(mapper.getTableName(), null, selection,
-                    selectionArgs, null, null, null);
+            cursor = db.query(mapper.getTableName(), null, selection,
+                    selectionArgs, groupBy, having, orderBy);
             List<T> result = new ArrayList<>();
             cursor.moveToFirst();
             while (!cursor.isAfterLast()) {
@@ -276,6 +279,11 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             if (cursor != null)
                 cursor.close();
         }
+    }
+
+    public <T extends DBBean> List<T> query(DBObjectMapper<T> mapper, String selection,
+                                            String[] selectionArgs) {
+        return query(mapper, selection, selectionArgs, null, null, null);
     }
 
     public <T extends DBBean> T findFirst(DBObjectMapper<T> mapper, String selection,
@@ -318,6 +326,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_Decision.LONG_DESCRIPTION + " TEXT, " +
                 T_Decision.FULL_CHAT_ID + " INTEGER," +
                 T_Decision.USER_CREATOR_ID + " INTEGER," +
+                T_Decision.CREATION_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 T_Decision.OPEN + " INTEGER, " +
                 "UNIQUE ("+T_Decision.TITLE+","+T_Decision.FULL_CHAT_ID+")" +
                 ") ;");

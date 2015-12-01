@@ -30,19 +30,21 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private static final String LOG_TAG = "ChoiceAdapter";
 
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
+    private boolean editable;
     private List<Vote> votes;
     private List<Boolean> originalVotes;
     private List<Vote> newVotes;
-    private OnVoteChangeListener onVoteChageListener;
+    private OnVoteChangeListener onVoteChangeListener;
 
     public interface OnVoteChangeListener {
         void voteChanges(boolean areThereChangesToSave);
     }
 
-    public VoteListAdapter(Context context, List<Vote> votes) {
+    public VoteListAdapter(Context context, List<Vote> votes, boolean editable) {
         super(context, LAYOUT_RES_ID);
+        this.editable = editable;
         setVotes(votes);
-        this.onVoteChageListener = new OnVoteChangeListener() {
+        this.onVoteChangeListener = new OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
             }
@@ -56,6 +58,10 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         for (Vote v : votes){
             originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
         }
+    }
+
+    public void setEditable(boolean editable) {
+        this.editable = editable;
     }
 
     public List<Vote> getVotes() {
@@ -77,8 +83,8 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         return votes.indexOf(item);
     }
 
-    public void setOnVoteChageListener(OnVoteChangeListener onVoteChageListener){
-        this.onVoteChageListener = onVoteChageListener;
+    public void setOnVoteChangeListener(OnVoteChangeListener onVoteChangeListener){
+        this.onVoteChangeListener = onVoteChangeListener;
     }
 
     @Override
@@ -97,6 +103,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         TextView optionSubtitle = (TextView)rowView.findViewById(R.id.item_option_tv_subtitle);
 //        SurfaceView optionView = (SurfaceView)rowView.findViewById(R.id.item_option_sw_bar);
         final CheckBox optionCheckBox = (CheckBox)rowView.findViewById(R.id.item_option_cb);
+        optionCheckBox.setEnabled(editable);
         optionCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -108,7 +115,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                     newVotes.add(vote);
                 }
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
-                onVoteChageListener.voteChanges(!newVotes.isEmpty());
+                onVoteChangeListener.voteChanges(!newVotes.isEmpty());
             }
         });
 

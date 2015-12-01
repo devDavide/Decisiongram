@@ -27,16 +27,29 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/item_decision_iv_image"
         android:layout_toEndOf="@+id/item_decision_iv_image"
-        android:paddingLeft="10dp" />
+        android:paddingLeft="5dp" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="sub title that my report bla bla"
-        android:id="@+id/item_decision_tv_subtitle"
+        android:text="Subtitle1"
+        android:id="@+id/item_decision_tv_subtitle_1"
         android:layout_below="@+id/item_decision_tv_title"
         android:layout_toRightOf="@+id/item_decision_iv_image"
-        android:layout_toEndOf="@+id/item_decision_iv_image"
-        android:paddingLeft="10dp" />
+        android:layout_alignRight="@+id/item_decision_tv_title"
+        android:layout_alignEnd="@+id/item_decision_tv_title"
+        android:paddingLeft="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="Subtitle2"
+        android:id="@+id/item_decision_tv_subtitle_2"
+        android:layout_below="@+id/item_decision_tv_subtitle_1"
+        android:layout_toRightOf="@+id/item_decision_iv_image"
+        android:layout_alignRight="@+id/item_decision_tv_subtitle_1"
+        android:layout_alignEnd="@+id/item_decision_tv_subtitle_1"
+        android:paddingLeft="5dp"/>
 </RelativeLayout>

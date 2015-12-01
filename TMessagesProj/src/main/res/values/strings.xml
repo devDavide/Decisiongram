@@ -954,11 +954,13 @@
 
     <!-- START of Pollgram text -->
     <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
+    <string name="createdBy">Created by %1$s</string>
+    <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
     <string name="decisionStatus">Decision is %1$s</string>
-    <string name="statusOpen">open</string>
+    <string name="statusOpen">editable</string>
     <string name="statusClose">close</string>
     <string name="groupDecision">Group decisions</string>
-    <string name="decisionsCount">%1$d open decision, %2$d closed decisions</string>
+    <string name="decisionsCount">%1$d editable decision, %2$d closed decisions</string>
 
     <string name="viewCloseDecision">View closed decision</string>
     <string name="hideCloseDecision">Hide closed decision</string>

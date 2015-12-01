@@ -70,7 +70,7 @@ public class DecisionsListFragment extends BaseFragment {
     @Override
     public boolean onFragmentCreate() {
         pollgramDAO = PollgramFactory.getPollgramDAO();
-        hideCloseDecision = true;
+        hideCloseDecision = false;
         return true;
     }
 

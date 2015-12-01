@@ -282,7 +282,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public NewDecisionData getNewDecision(String msg, int currentChat, int userId) throws PollgramParseException {
+    public NewDecisionData getNewDecision(String msg, int currentChat, int userId, Date messageDate) throws PollgramParseException {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
@@ -292,7 +292,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 String title = strTok.nextToken();
                 strTok.nextToken();//skip this token
                 String longDescription = strTok.nextToken();
-                decision = new Decision(currentChat, userId, title, longDescription, true);
+                decision = new Decision(currentChat, userId, title, longDescription, messageDate, true);
             }
             while (strTok.hasMoreTokens()){
                 strTok.nextToken();//skip this token

@@ -69,6 +69,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private int currentUserId;
     private ViewGroup optionTableViewContainer;
     private long groupChatId;
+    private VoteListAdapter voteListAdapter;
 
     public VotesManagerTabsFragment() {
     }
@@ -201,15 +202,17 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         View rootView;
         rootView = inflater.inflate(R.layout.votes_manager_list_tab, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.decision_option_lw_options);
-        final VoteListAdapter adapter = new VoteListAdapter(getActivity(), usersDecisionVotes.getVotes(currentUserId));
-        listView.setAdapter(adapter);
+        voteListAdapter = new VoteListAdapter(getActivity(),
+                usersDecisionVotes.getVotes(currentUserId),
+                usersDecisionVotes.getDecision().isOpen());
+        listView.setAdapter(voteListAdapter);
         final Button btnSaveOption = (Button) rootView.findViewById(R.id.decision_option_btn_save_votes);
         btnSaveOption.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Collection<Vote> votes2Save;
                 if (usersDecisionVotes.atLeastOneIsNull(currentUserId)) {
-                    votes2Save = adapter.getVotes();
+                    votes2Save = voteListAdapter.getVotes();
                     // set to false null votes
                     for(Vote v : votes2Save){
                         if (v.isVote() == null) {
@@ -218,23 +221,15 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                         }
                     }
                 } else
-                    votes2Save = adapter.getNewVotes();
+                    votes2Save = voteListAdapter.getNewVotes();
 
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
                 pollgramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
-
-                usersDecisionVotes = PollgramFactory.getPollgramService().
-                        getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
-                                usersDecisionVotes.getUsers());
                 btnSaveOption.setVisibility(View.GONE);
 
-                // set new sorted  votes in the adapter
-                adapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
-                adapter.notifyDataSetChanged();
+                // update view
+                updateView();
 
-                // Update table user interface
-                optionTableViewContainer.removeAllViews();
-                updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
                 // Call method in order ti
                 onVoteSaved();
 
@@ -242,7 +237,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
             }
         });
 
-        adapter.setOnVoteChageListener(new VoteListAdapter.OnVoteChangeListener() {
+        voteListAdapter.setOnVoteChangeListener(new VoteListAdapter.OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
                 if (areThereChangesToSave)
@@ -252,6 +247,21 @@ public abstract class VotesManagerTabsFragment extends Fragment {
             }
         });
         return rootView;
+    }
+
+    protected void updateView() {
+        usersDecisionVotes = PollgramFactory.getPollgramService().
+                getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
+                        usersDecisionVotes.getUsers());
+
+        // set new sorted  votes in the voteListAdapter
+        voteListAdapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
+        voteListAdapter.notifyDataSetChanged();
+        voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
+
+        // Update table user interface
+        optionTableViewContainer.removeAllViews();
+        updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
     }
 
     @NonNull

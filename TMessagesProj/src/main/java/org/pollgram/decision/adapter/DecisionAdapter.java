@@ -9,9 +9,10 @@ import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import org.pollgram.decision.data.Decision;
 import org.pollgram.R;
+import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.service.PollgramService;
 
 import java.util.List;
 
@@ -22,10 +23,12 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
 
     private static final int LAYOUT_RES_ID = R.layout.item_decision_list;
     private final int groupMemberCount;
+    private final PollgramService pollgramService;
 
     public DecisionAdapter(Context context,  List<Decision> items, int groupMemberCount) {
         super(context, LAYOUT_RES_ID, items);
         this.groupMemberCount = groupMemberCount;
+        pollgramService = PollgramFactory.getPollgramService();
     }
 
     @Override
@@ -35,15 +38,17 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
         View rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
         ImageView decisionImage = (ImageView)rowView.findViewById(R.id.item_decision_iv_image);
         TextView decisionTitle = (TextView)rowView.findViewById(R.id.item_decision_tv_title);
-        TextView decisionSubtitle = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle);
+        TextView decisionSubtitle1 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_1);
+        TextView decisionSubtitle2 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_2);
 
 
         // put data
         Decision decision = getItem(position);
         decisionTitle.setText(decision.getTitle());
         int userThatVoteSoFar = PollgramFactory.getPollgramDAO().getUserVoteCount(decision);
-        String subTitle = getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar,groupMemberCount);
-        decisionSubtitle.setText(subTitle);
+        String userAsString = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
+        decisionSubtitle1.setText(getContext().getString(R.string.createdBy, userAsString));
+        decisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);
 

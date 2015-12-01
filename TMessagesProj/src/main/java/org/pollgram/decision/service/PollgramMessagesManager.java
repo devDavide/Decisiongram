@@ -154,9 +154,10 @@ public interface PollgramMessagesManager {
      * @param msg the text message to parse
      * @param currentChat current group chat
      * @param userId message owner
+     * @param messageDate the message date
      * @return the decision and its options
      */
-    NewDecisionData getNewDecision(String msg, int currentChat, int userId) throws PollgramParseException;
+    NewDecisionData getNewDecision(String msg, int currentChat, int userId, Date messageDate) throws PollgramParseException;
 
     /**
      * Return value for getCloseDecision

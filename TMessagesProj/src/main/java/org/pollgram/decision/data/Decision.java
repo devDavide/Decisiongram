@@ -1,31 +1,35 @@
 package org.pollgram.decision.data;
 
+import java.util.Date;
+
 /**
  * Created by davide on 01/10/15.
  */
 public class Decision extends  DBBean {
 
+    private final Date creationDate;
     private String title;
     private final String longDescription;
     private final int fullChatId;
-    private final long userCreatorId;
+    private final int userCreatorId;
     private boolean open;
 
     // icon/image will be retrived externally by url or file.
     // Like the file containing the decision image can be named like decisio_<id>.png, and cached on the fs
 
-    public Decision(int fullChatId, long userCreatorId, String title, String longDescription,
-                    boolean open) {
+    public Decision(int fullChatId, int userCreatorId, String title, String longDescription,
+                    Date creationDate, boolean open) {
         this.fullChatId = fullChatId;
-        this.userCreatorId = userCreatorId;
         this.title = title;
         this.longDescription = longDescription;
+        this.userCreatorId = userCreatorId;
+        this.creationDate = creationDate;
         this.open = open;
     }
 
-    public Decision(long id, int fullChatId, long userCreatorId, String title, String longDescription,
-                    boolean open) {
-        this(fullChatId,userCreatorId,title, longDescription, open);
+    public Decision(long id, int fullChatId, int userCreatorId, String title, String longDescription,
+                    Date creationDate, boolean open) {
+        this(fullChatId,userCreatorId,title, longDescription, creationDate, open);
         setId(id);
 
     }
@@ -41,7 +45,7 @@ public class Decision extends  DBBean {
      * @return the id of the user that create the current decision.
      * This id referes to TLRPC.User
      */
-    public long getUserCreatorId() {
+    public int getUserCreatorId() {
         return userCreatorId;
     }
 
@@ -51,6 +55,10 @@ public class Decision extends  DBBean {
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     public boolean isOpen() {

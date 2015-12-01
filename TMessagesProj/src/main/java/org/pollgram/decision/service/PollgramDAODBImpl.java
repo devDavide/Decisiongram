@@ -13,6 +13,7 @@ import org.pollgram.decision.data.Vote;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -41,10 +42,11 @@ class PollgramDAODBImpl implements PollgramDAO {
         Log.i(LOG_TAG, "Put Stub test data");
 
         List<Decision> decisions = new ArrayList<>();
-        decisions.add(new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", true));
-        decisions.add(new Decision(chatId, creatorId, "Where do we go ?", "huge bla bla bla", true));
-        decisions.add(new Decision(chatId, creatorId, "When will the party be ?", "huge bla bla bla", true));
-        decisions.add(new Decision(chatId, creatorId, "Do we add Slomp to the group ?", "huge bla bla bla", false));
+        Date creationDate = new Date();
+        decisions.add(new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true));
+        decisions.add(new Decision(chatId, creatorId, "Where do we go ?", "huge bla bla bla", creationDate, true));
+        decisions.add(new Decision(chatId, creatorId, "When will the party be ?", "huge bla bla bla", creationDate, true));
+        decisions.add(new Decision(chatId, creatorId, "Do we add Slomp to the group ?", "huge bla bla bla", creationDate, false));
         for (Decision d : decisions) {
             Decision newD = save(d);
             Log.i(LOG_TAG, "inserted decision id:" + newD.getId());
@@ -179,13 +181,17 @@ class PollgramDAODBImpl implements PollgramDAO {
 
     @Override
     public List<Decision> getDecisions(int chatId, @Nullable Boolean open) {
-        String chatIdCond = PGSqlLiteHelper.T_Decision.FULL_CHAT_ID + " = ? ";
-        if (open == null)
-            return helper.query(helper.DECISION_MAPPER, chatIdCond, new String[]{Integer.toString(chatId)});
-        else
-            return helper.query(helper.DECISION_MAPPER,
-                    PGSqlLiteHelper.T_Decision.OPEN + "= ? and " + chatIdCond,
-                    new String[]{PGSqlLiteHelper.toString(open), Integer.toString(chatId)});
+        String selection = PGSqlLiteHelper.T_Decision.FULL_CHAT_ID + " = ? ";
+        String[] selectionArgs;
+        if (open != null) {
+            selection = PGSqlLiteHelper.T_Decision.OPEN + "= ? and " + selection;
+            selectionArgs = new String[]{PGSqlLiteHelper.toString(open), Integer.toString(chatId)};
+        } else {
+            selectionArgs = new String[]{Integer.toString(chatId)};
+        }
+
+        return helper.query(helper.DECISION_MAPPER, selection, selectionArgs, null, null,
+                PGSqlLiteHelper.T_Decision.OPEN + " DESC, " + PGSqlLiteHelper.T_Decision.CREATION_DATE) ;
     }
 
     @Override

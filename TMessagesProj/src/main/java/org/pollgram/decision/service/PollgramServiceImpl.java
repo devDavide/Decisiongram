@@ -43,19 +43,6 @@ public class PollgramServiceImpl implements PollgramService {
         this.messageManager = messageManager;
     }
 
-    @Override
-    public List<TLRPC.User> getUsers(int[] usersIds) {
-        List<TLRPC.User> users = new ArrayList<>();
-        for (int i = 0; i < usersIds.length; i++) {
-            TLRPC.User user = MessagesController.getInstance().getUser(usersIds[i]);
-            if (user.status == null) {// suppose this is a bot
-                Log.i(LOG_TAG, "User [" + user + "] is a BOT, it will be skipped");
-                continue;
-            }
-            users.add(user);
-        }
-        return users;
-    }
 
     @Override
     public UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds) {
@@ -106,6 +93,7 @@ public class PollgramServiceImpl implements PollgramService {
         sendMessage(decision.getChatId(), message);
     }
 
+
     @Override
     public void notifyClose(Decision decision) {
         decision.setOpen(false);
@@ -141,13 +129,13 @@ public class PollgramServiceImpl implements PollgramService {
             pollgramDAO.save(o);
         }
 
-        String message = messageManager.buildNotifyNewDecision(decision,options);
+        String message = messageManager.buildNotifyNewDecision(decision, options);
         sendMessage(decision.getChatId(), message);
     }
 
     @Override
     public void processMessage(MessageObject message) {
-        Log.d(LOG_TAG,"parsing message ["+message.messageText+"]");
+        Log.d(LOG_TAG, "parsing message [" + message.messageText + "]");
         if (message.messageOwner == null) {
             Log.d(NOT_PARSED_TAG,"message.messageOwner not set");
             return;
@@ -177,7 +165,8 @@ public class PollgramServiceImpl implements PollgramService {
         try {
             switch (msgType) {
                 case NEW_DECISION: {
-                    PollgramMessagesManager.NewDecisionData resut = messageManager.getNewDecision(text, groupChatId, userId);
+                    PollgramMessagesManager.NewDecisionData resut = messageManager.getNewDecision(text,
+                            groupChatId, userId, messageDate);
                     if (resut == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
                     }
@@ -233,6 +222,25 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     @Override
+    public TLRPC.User getUser(int userid) {
+        return MessagesController.getInstance().getUser(userid);
+    }
+
+    @Override
+    public List<TLRPC.User> getUsers(int[] usersIds) {
+        List<TLRPC.User> users = new ArrayList<>();
+        for (int i = 0; i < usersIds.length; i++) {
+            TLRPC.User user = getUser(usersIds[i]);
+            if (user.status == null) {// suppose this is a bot
+                Log.i(LOG_TAG, "User [" + user + "] is a BOT, it will be skipped");
+                continue;
+            }
+            users.add(user);
+        }
+        return users;
+    }
+
+    @Override
     public String asString(TLRPC.User user){
         if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
                 ContactsController.getInstance().contactsDict.get(user.id) == null &&
@@ -246,4 +254,5 @@ public class PollgramServiceImpl implements PollgramService {
             return UserObject.getUserName(user);
         }
     }
+
 }

@@ -25,6 +25,8 @@ import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 
+import java.text.DateFormat;
+
 /**
  * Created by davide on 04/10/15.
  */
@@ -47,12 +49,15 @@ public class VotesManagerFragment extends BaseFragment {
     private PollgramDAO pollgramDAO;
     private PollgramService pollgramService;
     private Decision decision;
+
+    private TextView tvCreationInfo;
     private TextView tvUserVoteCount;
     private TextView tvDecisionStatus;
     private TextView menuDeleteDecisionItem;
     private TextView menuReopenDecisionItem;
     private TextView menuCloseDecisionItem;
     private ActionBarMenu menu;
+    private VotesManagerTabsFragment votesManagerTabsFragment;
 
     public VotesManagerFragment(Bundle bundle) {
         super(bundle);
@@ -117,6 +122,7 @@ public class VotesManagerFragment extends BaseFragment {
                     Log.e(LOG_TAG, "Unknown action id[" + id + "]");
                     return;
                 }
+                votesManagerTabsFragment.updateView();
                 updateView();
                 Toast.makeText(context, context.getString(stringId), Toast.LENGTH_SHORT).show();
             }
@@ -127,19 +133,20 @@ public class VotesManagerFragment extends BaseFragment {
         ViewGroup rootView = (ViewGroup)li.inflate(R.layout.votes_manager_main, (ViewGroup) fragmentView);
 
         // Create view
-        tvUserVoteCount = (TextView) rootView.findViewById(R.id.tv_user_vote_count);
-        tvDecisionStatus = (TextView) rootView.findViewById(R.id.tv_decision_status);
+        tvCreationInfo = (TextView) rootView.findViewById(R.id.vote_manager_tv_creationInfo);
+        tvUserVoteCount = (TextView) rootView.findViewById(R.id.vote_manager_tv_user_vote_count);
+        tvDecisionStatus = (TextView) rootView.findViewById(R.id.vote_manager_tv_decision_status);
         updateView();
 
         android.support.v4.app.FragmentTransaction transaction = getParentActivity().getSupportFragmentManager().beginTransaction();
-        VotesManagerTabsFragment fragment = new VotesManagerTabsFragment(){
+        votesManagerTabsFragment = new VotesManagerTabsFragment(){
             @Override
             protected void onVoteSaved() {
                 updateView();
             }
         };
-        fragment.setArguments(getArguments());
-        transaction.replace(R.id.sample_content_fragment, fragment);
+        votesManagerTabsFragment.setArguments(getArguments());
+        transaction.replace(R.id.sample_content_fragment, votesManagerTabsFragment);
         transaction.commit();
 
         return rootView;
@@ -153,7 +160,7 @@ public class VotesManagerFragment extends BaseFragment {
         menuReopenDecisionItem.setVisibility(View.GONE);
         menuDeleteDecisionItem.setVisibility(View.GONE);
         menuCloseDecisionItem.setVisibility(View.GONE);
-        if (decision.getUserCreatorId() == UserConfig.getCurrentUser().id){
+        if (decision.getUserCreatorId() == UserConfig.getCurrentUser().id) {
             menu.setVisibility(View.VISIBLE);
             if (decision.isOpen())
                 menuCloseDecisionItem.setVisibility(View.VISIBLE);
@@ -161,10 +168,14 @@ public class VotesManagerFragment extends BaseFragment {
                 menuReopenDecisionItem.setVisibility(View.VISIBLE);
                 menuDeleteDecisionItem.setVisibility(View.VISIBLE);
             }
-        }
+        } else {
             menu.setVisibility(View.GONE);
+        }
 
-
+        String userStr = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
+        String creationDateStr = DateFormat.getDateInstance(DateFormat.MEDIUM).
+                format(decision.getCreationDate());
+        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDay,userStr, creationDateStr));
 
         String statusDesc = ctx.getString(decision.isOpen() ? R.string.statusOpen : R.string.statusClose);
         tvDecisionStatus.setText(ctx.getString(R.string.decisionStatus, statusDesc));

@@ -17,6 +17,13 @@
     
 
 -->
+    <TextView
+        android:id="@+id/vote_manager_tv_creationInfo"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="vote_manager_tv_creationInfos"
+        android:padding="5dp"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
 
     <LinearLayout android:id="@+id/top_title_layout"
         android:layout_width="match_parent"
@@ -24,8 +31,8 @@
         android:orientation="horizontal">
 
         <TextView
-            android:id="@+id/tv_decision_status"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/vote_manager_tv_decision_status"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="status"
             android:padding="5dp"
             android:layout_width="wrap_content"
@@ -33,8 +40,8 @@
 
 
         <TextView
-            android:id="@+id/tv_user_vote_count"
-            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:id="@+id/vote_manager_tv_user_vote_count"
+            android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Title"
             android:padding="5dp"
             android:layout_width="wrap_content"
