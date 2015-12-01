@@ -214,7 +214,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 if (usersDecisionVotes.atLeastOneIsNull(currentUserId)) {
                     votes2Save = voteListAdapter.getVotes();
                     // set to false null votes
-                    for(Vote v : votes2Save){
+                    for (Vote v : votes2Save) {
                         if (v.isVote() == null) {
                             v.setVote(false);
                             v.setVoteTime(new Date());
@@ -368,7 +368,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 Vote v = usersDecisionVotes.getVotes(user.id, option);
                 add2Row(row, newVoteView(v), otherRowHeight);
             }
-            if (!atLeastOneIsNull || user.id == currentUserId)
+            if (!atLeastOneIsNull || user.id == currentUserId || !usersDecisionVotes.getDecision().isOpen())
                 remindButton.setVisibility(View.INVISIBLE);
 
             tableLayout.addView(row);
