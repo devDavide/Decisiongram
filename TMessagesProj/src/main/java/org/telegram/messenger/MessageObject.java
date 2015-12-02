@@ -7,6 +7,7 @@
  */
 
 package org.telegram.messenger;
+
 import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.text.Layout;
@@ -21,6 +22,7 @@ import android.text.util.Linkify;
 
 import org.pollgram.R;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.service.PollgramMessagesManager;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.TypefaceSpan;
@@ -90,10 +92,11 @@ public class MessageObject {
         if (message.replyMessage != null) {
             replyMessageObject = new MessageObject(message.replyMessage, users, false);
         }
-
-        if (messageOwner.message != null){
+        // If i want to change format in a more deeper way i can evn add a new atribute like (orginal message)
+        // where i can save the original message without any modification, but if it is not necessary
+        // why doing it
+        if (messageOwner.message != null)
             messageOwner.message = PollgramFactory.getPollgramMessagesManager().reformatMessage(messageOwner.message);
-        }
 
         if (message instanceof TLRPC.TL_messageService) {
             if (message.action != null) {
@@ -355,7 +358,7 @@ public class MessageObject {
                 messageText = LocaleController.getString("AttachAudio", R.string.AttachAudio);
             }
         } else {
-            messageText = message.message;
+            messageText =messageOwner.message;
         }
         if (generateLayout) {
             messageText = Emoji.replaceEmoji(messageText, textPaint.getFontMetricsInt(), AndroidUtilities.dp(20), false);
@@ -436,6 +439,7 @@ public class MessageObject {
 
         generateCaption();
         if (generateLayout) {
+            addPollgramLinks(messageText);
             generateLayout();
         }
         generateThumbs(false);
@@ -587,6 +591,7 @@ public class MessageObject {
             } else if (!(c != ' ' && digitsInRow > 0)) {
                 digitsInRow = 0;
             }
+            // POLLGRAM Check
             if ((c == '@' || c == '#' || c == '/') && i == 0 || i != 0 && (message.charAt(i - 1) == ' ' || message.charAt(i - 1) == '\n')) {
                 return true;
             }
@@ -667,6 +672,18 @@ public class MessageObject {
             }
         } catch (Exception e) {
             FileLog.e("tmessages", e);
+        }
+    }
+
+    private static void addPollgramLinks(CharSequence charSequence) {
+        PollgramMessagesManager manager = PollgramFactory.getPollgramMessagesManager();
+        try {
+            PollgramMessagesManager.MessageType type = manager.getMessageType(charSequence.toString());
+            if (type == null)
+                return;
+            manager.addDecisionURLSpan(type, (Spannable)charSequence);
+        } catch (Exception e) {
+            FileLog.e("pollgramLink", e);
         }
     }
 

@@ -1,6 +1,7 @@
 package org.pollgram.decision.service;
 
 import android.support.annotation.NonNull;
+import android.text.Spannable;
 
 import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
@@ -8,6 +9,7 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.MessageObject;
 
 import java.text.ParseException;
 import java.util.Collection;
@@ -19,6 +21,8 @@ import java.util.List;
  */
 public interface PollgramMessagesManager {
 
+
+    void addDecisionURLSpan(MessageType type, Spannable charSequence);
 
     /**
      * The different messages type managed by Pollgram
@@ -61,6 +65,12 @@ public interface PollgramMessagesManager {
         }
 
     }
+
+    /**
+     * @param messageObject
+     * @return the group chat id of this message or -1 if this message is not a group chat message
+     */
+    int getMessageGroupId(MessageObject messageObject);
 
     /**
      * @param msg message to parse

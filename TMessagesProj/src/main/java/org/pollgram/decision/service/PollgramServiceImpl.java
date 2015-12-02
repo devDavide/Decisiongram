@@ -1,5 +1,7 @@
 package org.pollgram.decision.service;
 
+import android.os.Bundle;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -7,15 +9,16 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
+import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.SendMessagesHelper;
 import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.Components.URLSpanNoUnderline;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -141,14 +144,9 @@ public class PollgramServiceImpl implements PollgramService {
             return;
         }
 
-        if (message.messageOwner.dialog_id > 0){
-            Log.d(NOT_PARSED_TAG,"message.messageOwner.dialog_id positive, in not a group chat");
-            return;
-        }
-
-        int groupChatId = (int)(message.messageOwner.dialog_id * -1);
-        if (ChatObject.isChannel(groupChatId)){
-            Log.d(NOT_PARSED_TAG,"is a channel");
+        int groupChatId = messageManager.getMessageGroupId(message);
+        if (groupChatId == -1){
+            Log.d(NOT_PARSED_TAG,"group chat id not found");
             return;
         }
 
@@ -253,6 +251,33 @@ public class PollgramServiceImpl implements PollgramService {
         } else {
             return UserObject.getUserName(user);
         }
+    }
+
+    @Override
+    public Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject, ClickableSpan url) {
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(messageObject.messageText.toString());
+        if (type == null) {
+            return null;
+        }
+        int groupChatId = messageManager.getMessageGroupId(messageObject);
+        if (groupChatId == -1) {
+            return null;
+        }
+        String decisionTitle = ((URLSpanNoUnderline) url).getURL();
+        decisionTitle = decisionTitle.replace("'", "");
+        Decision d = PollgramFactory.getPollgramDAO().getDecision(decisionTitle, groupChatId);
+        if (d == null) {
+            return null;
+        }
+        int[] participantsUserIds = new int[info.participants.participants.size()];
+        for (int i = 0; i < info.participants.participants.size(); i++) {
+            participantsUserIds[i] = info.participants.participants.get(i).user_id;
+        }
+        Bundle bundle = new Bundle();
+        bundle.putLong(VotesManagerFragment.PAR_GROUP_CHAT_ID, groupChatId);
+        bundle.putLong(VotesManagerFragment.PAR_DECISION_ID, d.getId());
+        bundle.putIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
+        return  bundle;
     }
 
 }

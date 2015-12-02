@@ -1,5 +1,8 @@
 package org.pollgram.decision.service;
 
+import android.os.Bundle;
+import android.text.style.ClickableSpan;
+
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
@@ -42,6 +45,14 @@ public interface PollgramService {
     List<TLRPC.User> getUsers(int[] usersIds);
 
     TLRPC.User getUser(int userid);
+
+    /**
+     *
+     * @param messageObject
+     * @param url
+     * @return a Bundle for invoking VoteMangerFragment, based on pollgram message
+     */
+    Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject,final ClickableSpan url);
 
     /**
      * @param user

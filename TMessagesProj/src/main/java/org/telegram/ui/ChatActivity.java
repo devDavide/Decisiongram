@@ -30,7 +30,6 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
-import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
@@ -51,7 +50,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pollgram.R;
+import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
+import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationCompat.AnimatorListenerAdapterProxy;
@@ -903,7 +904,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         /// uuuuu add button
         boolean isChannel = ChatObject.isChannel(currentChat);
-        Log.i("AAAZZZ","isChannel = "+isChannel);
         if (currentChat != null && !isChannel) { // only incase of a group chat
             ImageView aNewButton = new ImageView(context);
             aNewButton.setScaleType(ImageView.ScaleType.CENTER);
@@ -3949,12 +3949,6 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     }
                 }
 
-                // TODO _POLLGRAM HERE THE MESSAGES ARE PARSED !!!! YEAH !!!
-                // From here pass even the message that i send
-//                for (MessageObject msgObj : arr) {
-//                    PollgramFactory.getPollgramService().processMessage(msgObj);
-//                }
-
                 ReplyMessageQuery.loadReplyMessagesForMessages(arr, dialog_id);
                 if (!forward_end_reached) {
                     int currentMaxDate = Integer.MIN_VALUE;
@@ -5987,6 +5981,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 }
                             } else if (str.startsWith("/")) {
                                 chatActivityEnterView.setCommand(messageObject, str);
+                            } else {
+                                // Pollgram decision tile link to vote manager
+                                Bundle bundle = PollgramFactory.getPollgramService().
+                                        getBundleForVotesManagerFragment(info, messageObject, url);
+                                if (bundle != null) {
+                                    presentFragment(new VotesManagerFragment(bundle));
+                                }
                             }
                         } else if (url instanceof URLSpanReplacement) {
                             AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());

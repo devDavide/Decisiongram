@@ -1,6 +1,7 @@
 package org.pollgram.decision.service;
 
 import android.content.Context;
+import android.text.Spannable;
 import android.util.Log;
 
 import org.pollgram.R;
@@ -11,6 +12,9 @@ import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
+import org.telegram.messenger.ChatObject;
+import org.telegram.messenger.MessageObject;
+import org.telegram.ui.Components.URLSpanNoUnderline;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -93,7 +97,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         StringBuilder body = new StringBuilder();
         body.append(context.getString(R.string.tmsg_RemindToVoteP1));
         body.append(' ');
-        body.append(format(userAsString));
+        body.append(userAsString);
         body.append(' ');
         body.append(context.getString(R.string.tmsg_RemindToVoteP2));
         body.append(NEW_LINE);
@@ -217,7 +221,13 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
     @Override
     public String reformatMessage(String message) {
-        return message.replace(getTailingString(), "");
+        // remove talning string
+        MessageType type = getMessageType(message);
+        if (type == null) {
+            return  message;
+        }
+        message = message.replace(getTailingString(), "");
+        return  message;
     }
 
     /**
@@ -243,6 +253,24 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         return null;
     }
 
+    @Override
+    public int getMessageGroupId(MessageObject messageObject) {
+        if (messageObject.messageOwner == null)
+            return -1;
+
+        if (messageObject.messageOwner.dialog_id > 0){
+            Log.d(LOG_TAG,"message.messageOwner.dialog_id positive, in not a group chat");
+            return -1;
+        }
+
+        int groupChatId = (int)(messageObject.messageOwner.dialog_id * -1);
+        if (ChatObject.isChannel(groupChatId)){
+            Log.d(LOG_TAG,"is a channel");
+            return -1;
+        }
+
+        return groupChatId;
+    }
 
     @Override
     public Collection<Vote> getVotes(String msg, int currentChat, Date messageDate ,int userId) throws PollgramParseException {
@@ -339,7 +367,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public Decision getDeleteDecision(String text, int groupChatId) throws PollgramParseException {
         Decision d = getDecisionInDeleteOrReopenMessage(text, groupChatId);
-        Log.d(LOG_TAG, "getDeleteDecision Decision["+d+"]");
+        Log.d(LOG_TAG, "getDeleteDecision Decision[" + d + "]");
         return d;
     }
 
@@ -370,6 +398,44 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
             throw new PollgramParseException("Token not found", e);
         }
+    }
+
+    private int getDecisionTitleStartIdx(MessageType type, String message){
+        switch (type){
+            // Actually in all messageType decision title is always the first QUTE_CHAR token
+            case VOTE:
+            case REMIND_TO_VOTE:
+            case CLOSE_DECISION:
+            case DELETE_DECISION:
+            case NEW_DECISION:
+            case REOPEN_DECISION:
+                return message.indexOf(QUOTE_CHAR);
+        }
+        return  -1;
+    }
+
+    private int getDecisionTitleEndIdx(String msgStr, int start) {
+        return start + msgStr.substring(start + 1).indexOf(QUOTE_CHAR) + 2;
+    }
+
+    @Override
+    public void addDecisionURLSpan(MessageType type, Spannable spannable) {
+        if (type == null){
+            Log.d(LOG_TAG, "Null message type no link added for["+spannable+"]");
+            return;
+        }
+        String msgStr = spannable.toString();
+        int start = getDecisionTitleStartIdx(type, msgStr);
+        if (start == -1){
+            Log.d(LOG_TAG, "Decision title start idx not found for[" + spannable + "]");
+            return;
+        }
+        int end = getDecisionTitleEndIdx(msgStr, start);
+
+        String linkStr = msgStr.subSequence(start, end).toString();
+        Log.d(LOG_TAG, "Link string is ["+linkStr+"]");
+        URLSpanNoUnderline url = new URLSpanNoUnderline(linkStr);
+        spannable.setSpan(url, start, end, 0);
     }
 
 
