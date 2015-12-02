@@ -21,9 +21,6 @@ import java.util.List;
  */
 public interface PollgramMessagesManager {
 
-
-    void addDecisionURLSpan(MessageType type, Spannable charSequence);
-
     /**
      * The different messages type managed by Pollgram
      * Emoji codes are taken from http://apps.timwhitlock.info/emoji/tables/unicode#block-6a-additional-emoticons
@@ -65,6 +62,14 @@ public interface PollgramMessagesManager {
         }
 
     }
+
+    /**
+     * Add URL link for decision title on charSequence message
+     * @param type
+     * @param charSequence
+     */
+    void addDecisionURLSpan(MessageType type, Spannable charSequence);
+
 
     /**
      * @param messageObject

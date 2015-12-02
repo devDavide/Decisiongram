@@ -358,7 +358,7 @@ public class MessageObject {
                 messageText = LocaleController.getString("AttachAudio", R.string.AttachAudio);
             }
         } else {
-            messageText =messageOwner.message;
+            messageText = messageOwner.message;
         }
         if (generateLayout) {
             messageText = Emoji.replaceEmoji(messageText, textPaint.getFontMetricsInt(), AndroidUtilities.dp(20), false);
@@ -591,7 +591,6 @@ public class MessageObject {
             } else if (!(c != ' ' && digitsInRow > 0)) {
                 digitsInRow = 0;
             }
-            // POLLGRAM Check
             if ((c == '@' || c == '#' || c == '/') && i == 0 || i != 0 && (message.charAt(i - 1) == ' ' || message.charAt(i - 1) == '\n')) {
                 return true;
             }
