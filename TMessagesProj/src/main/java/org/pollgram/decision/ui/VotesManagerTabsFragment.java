@@ -259,6 +259,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
             // set new sorted  votes in the voteListAdapter
             voteListAdapter.setData(usersDecisionVotes, currentUserId);
+            voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
             voteListAdapter.notifyDataSetChanged();
 
             // Update table user interface
