@@ -129,7 +129,7 @@ public class MessagesManagerTest {
     }
 
     private void assertNewDecision(Decision decision, List<Option> options, String message) throws PollgramParseException {
-        PollgramMessagesManager.NewDecisionData result = messageManager.getNewDecision(message, chat.id, user.id);
+        PollgramMessagesManager.NewDecisionData result = messageManager.getNewDecision(message, chat.id, user.id, new Date());
         Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(options, result.optionList);
     }

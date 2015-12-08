@@ -26,14 +26,16 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     private final List<Option> textOptions = new ArrayList<>();
     private final List<Vote> votes = new ArrayList<>();
 
-    PollgramDAOTestImpl(int chatId, long creatorId){
-        long id = 1;
+    PollgramDAOTestImpl(int chatId, int creatorId){
+        int id = 1;
         /// just for test
 
-        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+"huge bla bla bla" ,true));
-        decisions.add(new Decision(id++, chatId, creatorId, "Where do we go ?", id + "huge bla bla bla", true));
-        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", id + "huge bla bla bla", true));
-        decisions.add(new Decision(id++, chatId, creatorId, "Do we add Slomp to the group ?", id + "huge bla bla bla", false));
+        Date date = new Date();
+
+        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+"huge bla bla bla",date ,true));
+        decisions.add(new Decision(id++, chatId, creatorId, "Where do we go ?", id + "huge bla bla bla",date, true));
+        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", id + "huge bla bla bla",date, true));
+        decisions.add(new Decision(id++, chatId, creatorId, "Do we add Slomp to the group ?", id + "huge bla bla bla",date, false));
 
         textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", decisions.get(0).getId()));
         textOptions.add(new TextOption(id++, "Phone", "The new StonexOne is AWESOME !!!", decisions.get(0).getId()));
@@ -195,6 +197,11 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     @Override
     public int getUserVoteCount(Decision decision) {
         return 0;
+    }
+
+    @Override
+    public void delete(Decision decision) {
+
     }
 
     @Override
