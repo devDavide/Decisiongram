@@ -441,7 +441,6 @@ public class MessageObject {
 
         generateCaption();
         if (generateLayout) {
-            addPollgramLinks(messageText);
             generateLayout();
         }
         generateThumbs(false);
@@ -727,8 +726,7 @@ public class MessageObject {
         if (useManualParse) {
             addLinks(messageText);
         } else {
-            if (messageText instanceof Spannable && messageText.length() < 100 &&
-                    msgManager.getMessageType(messageText.toString()) == null ) {
+            if (messageText instanceof Spannable && messageText.length() < 100) {
                 try {
                     Linkify.addLinks((Spannable) messageText, Linkify.PHONE_NUMBERS);
                 } catch (Throwable e) {
@@ -736,6 +734,7 @@ public class MessageObject {
                 }
             }
         }
+        addPollgramLinks(messageText);
 
         if (messageText instanceof Spannable) {
             Spannable spannable = (Spannable) messageText;
