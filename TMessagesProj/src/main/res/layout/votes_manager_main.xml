@@ -28,14 +28,15 @@
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="status"
             android:padding="5dp"
+            android:gravity="center_vertical"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent"/>
 
 
         <TextView
             android:id="@+id/vote_manager_tv_creationInfo"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="Title"
+            android:text="Title and even more \n title contents"
             android:padding="5dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>

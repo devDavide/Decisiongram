@@ -172,9 +172,9 @@ public class VotesManagerFragment extends BaseFragment {
         }
 
         String userStr = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
-        String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
+        String creationDateStr = DateFormat.getDateInstance(DateFormat.LONG).
                 format(decision.getCreationDate());
-        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDay,userStr, creationDateStr));
+        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDayNewLine,userStr, creationDateStr));
 
         String statusDesc = ctx.getString(decision.isOpen() ? R.string.statusOpen : R.string.statusClose);
         tvDecisionStatus.setText(ctx.getString(R.string.decisionStatus, statusDesc));

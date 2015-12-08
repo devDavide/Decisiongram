@@ -51,8 +51,11 @@ public interface PollgramService {
      * @param messageObject
      * @param url
      * @return a Bundle for invoking VoteMangerFragment, based on pollgram message
+     * @throws PollgramDAOException in case of not found decision. The message can be showed to
+     * the user by using for example a toast
      */
-    Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject,final ClickableSpan url);
+    Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject,
+                                            final ClickableSpan url) throws PollgramDAOException;
 
     /**
      * @param user

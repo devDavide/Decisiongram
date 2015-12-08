@@ -34,7 +34,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     private static final String GOOGLE_PLAY_POOLGRAM_URL = "https://play.google.com/store/apps/details?id=org.pollgram";
 
     private static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
-    private static final char QUOTE_CHAR = '\'';
+    protected static final char QUOTE_CHAR = '\'';
     private static final char NEW_LINE = '\n';
 
     private static final String WINKING_FACE_EMOJI = PollgramUtils.getEmojiAsString((byte) 0xF0, (byte) 0x9F, (byte) 0x98, (byte)0x89);// winking face
@@ -116,7 +116,12 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         body.append(' ');
         body.append(format(decision));
         body.append(context.getString(R.string.tmsg_CloseDecisionP2));
-        body.append(format(winningOption));
+        body.append(' ');
+        if (voteCount == 0)
+            body.append(format(context.getString(R.string.tmsg_CloseDecisionNoOptionDesc)));
+        else
+            body.append(format(winningOption));
+        body.append(' ');
         body.append(context.getString(R.string.tmsg_CloseDecisionP3));
         body.append(' ');
         body.append(voteCount);

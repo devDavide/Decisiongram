@@ -254,14 +254,16 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                         usersDecisionVotes.getUsers());
 
-        // set new sorted  votes in the voteListAdapter
-        voteListAdapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
-        voteListAdapter.notifyDataSetChanged();
-        voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
+        if (!areThereNoOptions()) {
+            // set new sorted  votes in the voteListAdapter
+            voteListAdapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
+            voteListAdapter.notifyDataSetChanged();
+            voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
 
-        // Update table user interface
-        optionTableViewContainer.removeAllViews();
-        updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+            // Update table user interface
+            optionTableViewContainer.removeAllViews();
+            updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+        }
     }
 
     @NonNull

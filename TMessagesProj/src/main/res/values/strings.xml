@@ -954,6 +954,7 @@
 
     <!-- START of Pollgram text -->
     <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
+    <string name="createdByUserOnDayNewLine">Created by %1$s \non %2$s</string>
     <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
     <string name="decisionStatus">Decision is %1$s</string>
     <string name="statusOpen">open</string>
@@ -977,6 +978,7 @@
     <string name="decisionClosed">Decision closed</string>
     <string name="decisionReopened">Decision reopened</string>
     <string name="decisionDeleted">Decision deleted</string>
+    <string name="decisionNotFound">Decision %1$s not found, it may has been deleted.</string>
 
 
     <!-- START of POLLGRAM transaction messages -->
@@ -1002,6 +1004,7 @@
     <!-- between Prefix and Suffix goes the decision title -->
     <string name="tmsg_CloseDecisionP2">, is now closed. The option that receive more vote is</string>
     <!--after P2 goes the winning option title -->
+    <string name="tmsg_CloseDecisionNoOptionDesc">no option</string>
     <string name="tmsg_CloseDecisionP3">with</string>
     <string name="tmsg_CloseDecisionP4"> votes.</string>
 

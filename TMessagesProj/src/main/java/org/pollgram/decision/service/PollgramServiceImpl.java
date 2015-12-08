@@ -5,6 +5,7 @@ import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.widget.Toast;
 
+import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
@@ -76,9 +77,9 @@ public class PollgramServiceImpl implements PollgramService {
         Log.d(LOG_TAG, "remindUserToVote groupChatId[" + decision.getChatId() + "] decision[" + decision + "] user[" + user + "]");
         String userAsString = ContactsController.formatName(user.first_name, user.last_name);
         // TODO Remove START
-        Toast.makeText(ApplicationLoader.applicationContext, "formatName="+userAsString,Toast.LENGTH_SHORT).show();
-        Toast.makeText(ApplicationLoader.applicationContext, "user.first_name="+user.first_name,Toast.LENGTH_SHORT).show();
-        Toast.makeText(ApplicationLoader.applicationContext, "user.username="+user.username,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ApplicationLoader.applicationContext, "formatName="+userAsString,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ApplicationLoader.applicationContext, "user.first_name="+user.first_name,Toast.LENGTH_SHORT).show();
+//        Toast.makeText(ApplicationLoader.applicationContext, "user.username="+user.username,Toast.LENGTH_SHORT).show();
         // TODO Remove END
         String msg = messageManager.buildRemindMessage(userAsString, decision);
         sendMessage(decision.getChatId(), msg);
@@ -213,10 +214,10 @@ public class PollgramServiceImpl implements PollgramService {
         long peer = -groupChatId;
         MessageObject replyToMsg = null;
         TLRPC.WebPage webPAge = null;
-        boolean searchLinks = false;
+        boolean searchLinks = true;
         boolean asAdmin = false;
         SendMessagesHelper.getInstance().sendMessage(message, peer, replyToMsg, webPAge, searchLinks, asAdmin);
-        Log.i(LOG_TAG, "sended message [" + message + "] in group [" + groupChatId + "]");
+        Log.i(LOG_TAG, "sent message [" + message + "] in group [" + groupChatId + "]");
     }
 
     @Override
@@ -257,17 +258,19 @@ public class PollgramServiceImpl implements PollgramService {
     public Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject, ClickableSpan url) {
         PollgramMessagesManager.MessageType type = messageManager.getMessageType(messageObject.messageText.toString());
         if (type == null) {
-            return null;
+            throw new PollgramDAOException("Not a pollgram message");
         }
         int groupChatId = messageManager.getMessageGroupId(messageObject);
         if (groupChatId == -1) {
-            return null;
+            throw new PollgramDAOException("Not a group chat message");
         }
-        String decisionTitle = ((URLSpanNoUnderline) url).getURL();
-        decisionTitle = decisionTitle.replace("'", "");
-        Decision d = PollgramFactory.getPollgramDAO().getDecision(decisionTitle, groupChatId);
+        String urlString = ((URLSpanNoUnderline) url).getURL();
+        String decisionTitle = urlString.replace(
+                Character.toString(PollgramMessagesManagerImpl.QUOTE_CHAR), "");
+        Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
         if (d == null) {
-            return null;
+            throw  new PollgramDAOException(ApplicationLoader.applicationContext.
+                    getString(R.string.decisionNotFound, urlString));
         }
         int[] participantsUserIds = new int[info.participants.participants.size()];
         for (int i = 0; i < info.participants.participants.size(); i++) {
