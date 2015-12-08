@@ -80,7 +80,7 @@ public class VotesManagerFragment extends BaseFragment {
     public View createView(final Context context) {
         // TODO add real icon
         // set up action bar
-        PollgramUtils.init(actionBar, decision.getTitle(), 18, R.drawable.attach_camera);
+        tvUserVoteCount = PollgramUtils.init(actionBar, decision.getTitle(), 18, R.drawable.attach_camera);
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISOIN, context.getString(R.string.closeDecision), 0);
@@ -134,7 +134,6 @@ public class VotesManagerFragment extends BaseFragment {
 
         // Create view
         tvCreationInfo = (TextView) rootView.findViewById(R.id.vote_manager_tv_creationInfo);
-        tvUserVoteCount = (TextView) rootView.findViewById(R.id.vote_manager_tv_user_vote_count);
         tvDecisionStatus = (TextView) rootView.findViewById(R.id.vote_manager_tv_decision_status);
         updateView();
 
@@ -173,7 +172,7 @@ public class VotesManagerFragment extends BaseFragment {
         }
 
         String userStr = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
-        String creationDateStr = DateFormat.getDateInstance(DateFormat.MEDIUM).
+        String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(decision.getCreationDate());
         tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDay,userStr, creationDateStr));
 

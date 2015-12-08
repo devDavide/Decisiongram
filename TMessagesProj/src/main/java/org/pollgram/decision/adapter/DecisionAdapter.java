@@ -14,6 +14,7 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
 
+import java.text.DateFormat;
 import java.util.List;
 
 /**
@@ -47,7 +48,9 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
         decisionTitle.setText(decision.getTitle());
         int userThatVoteSoFar = PollgramFactory.getPollgramDAO().getUserVoteCount(decision);
         String userAsString = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
-        decisionSubtitle1.setText(getContext().getString(R.string.createdBy, userAsString));
+        String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
+                format(decision.getCreationDate());
+        decisionSubtitle1.setText(getContext().getString(R.string.createdByUserOnDay, userAsString, creationDateStr));
         decisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);

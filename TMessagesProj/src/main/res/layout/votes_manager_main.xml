@@ -17,13 +17,6 @@
     
 
 -->
-    <TextView
-        android:id="@+id/vote_manager_tv_creationInfo"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="vote_manager_tv_creationInfos"
-        android:padding="5dp"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"/>
 
     <LinearLayout android:id="@+id/top_title_layout"
         android:layout_width="match_parent"
@@ -40,7 +33,7 @@
 
 
         <TextView
-            android:id="@+id/vote_manager_tv_user_vote_count"
+            android:id="@+id/vote_manager_tv_creationInfo"
             android:textAppearance="?android:attr/textAppearanceSmall"
             android:text="Title"
             android:padding="5dp"

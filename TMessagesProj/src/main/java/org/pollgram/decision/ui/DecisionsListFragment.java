@@ -86,7 +86,7 @@ public class DecisionsListFragment extends BaseFragment {
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
-                context.getString(R.string.viewCloseDecision),0 );
+                context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
         headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions data", 0);
         headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {

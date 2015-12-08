@@ -20,11 +20,19 @@ import java.nio.charset.Charset;
  */
 public class PollgramUtils {
 
-    public static ActionBar init(ActionBar actionBar, int title,int titleFontSize, int drawableIcon){
+    public static TextView init(ActionBar actionBar, int title,int titleFontSize, int drawableIcon){
         return init(actionBar, ApplicationLoader.applicationContext.getString(title), titleFontSize,drawableIcon);
     }
 
-    public static ActionBar init(ActionBar actionBar, String title,int titleFontSize, int drawableIcon){
+    /**
+     *
+     * @param actionBar
+     * @param title
+     * @param titleFontSize
+     * @param drawableIcon
+     * @return the textView containing the subtitle
+     */
+    public static TextView init(ActionBar actionBar, String title,int titleFontSize, int drawableIcon){
         // set up poll icon
         Context context = ApplicationLoader.applicationContext;
         FrameLayoutFixed pollIconContainer = new FrameLayoutFixed(context);
@@ -35,6 +43,7 @@ public class PollgramUtils {
             pollIcon.setBackgroundResource(drawableIcon);
             pollIconContainer.addView(pollIcon, LayoutHelper.createFrame(42, 42, Gravity.BOTTOM | Gravity.LEFT, 0, 0, 0, 8));
         }
+
         TextView txtTitle = new TextView(context);
         txtTitle.setTextColor(0xffffffff);
         txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, titleFontSize);
@@ -49,10 +58,22 @@ public class PollgramUtils {
         pollIconContainer.addView(txtTitle, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT,
                 Gravity.LEFT | Gravity.BOTTOM, 48, 0, 0, 22));
 
+        // subtitle
+        TextView subtitleTextView = new TextView(context);
+        subtitleTextView.setTextColor(0xffd7e8f7);
+        subtitleTextView.setTextSize(TypedValue.COMPLEX_UNIT_DIP, 14);
+        subtitleTextView.setLines(1);
+        subtitleTextView.setMaxLines(1);
+        subtitleTextView.setSingleLine(true);
+        subtitleTextView.setEllipsize(TextUtils.TruncateAt.END);
+        subtitleTextView.setGravity(Gravity.LEFT);
+        pollIconContainer.addView(subtitleTextView, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, Gravity.LEFT | Gravity.BOTTOM, 54, 0, 0, 4));
+
+
         actionBar.addView(pollIconContainer,  LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT,
                 Gravity.TOP | Gravity.LEFT, 36, 0, 40, 0));
 
-        return actionBar;
+        return subtitleTextView;
     }
 
     public static String getEmojiAsString(byte... emojiBytes){
