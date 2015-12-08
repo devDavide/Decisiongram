@@ -30,6 +30,7 @@ import android.provider.MediaStore;
 import android.text.TextUtils;
 import android.text.style.ClickableSpan;
 import android.util.Base64;
+import android.util.Log;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.util.TypedValue;
@@ -50,6 +51,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import org.pollgram.R;
+import org.pollgram.decision.service.PollgramDAOException;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
@@ -5983,10 +5985,15 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                 chatActivityEnterView.setCommand(messageObject, str);
                             } else {
                                 // Pollgram decision tile link to vote manager
-                                Bundle bundle = PollgramFactory.getPollgramService().
-                                        getBundleForVotesManagerFragment(info, messageObject, url);
-                                if (bundle != null) {
-                                    presentFragment(new VotesManagerFragment(bundle));
+                                try {
+                                    Bundle bundle = PollgramFactory.getPollgramService().
+                                            getBundleForVotesManagerFragment(info, messageObject, url);
+                                    if (bundle != null) {
+                                        presentFragment(new VotesManagerFragment(bundle));
+                                    }
+                                } catch (PollgramDAOException e){
+                                    Log.w("OpenLink", e.getMessage());
+                                    Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }
                             }
                         } else if (url instanceof URLSpanReplacement) {
