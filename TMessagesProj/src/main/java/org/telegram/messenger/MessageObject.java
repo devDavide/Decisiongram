@@ -78,6 +78,8 @@ public class MessageObject {
 
     public ArrayList<TextLayoutBlock> textLayoutBlocks;
 
+    private PollgramMessagesManager msgManager = PollgramFactory.getPollgramMessagesManager();
+
     public MessageObject(TLRPC.Message message, AbstractMap<Integer, TLRPC.User> users, boolean generateLayout) {
         if (textPaint == null) {
             textPaint = new TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -96,7 +98,7 @@ public class MessageObject {
         // where i can save the original message without any modification, but if it is not necessary
         // why doing it
         if (messageOwner.message != null)
-            messageOwner.message = PollgramFactory.getPollgramMessagesManager().reformatMessage(messageOwner.message);
+            messageOwner.message = msgManager.reformatMessage(messageOwner.message);
 
         if (message instanceof TLRPC.TL_messageService) {
             if (message.action != null) {
@@ -674,13 +676,12 @@ public class MessageObject {
         }
     }
 
-    private static void addPollgramLinks(CharSequence charSequence) {
-        PollgramMessagesManager manager = PollgramFactory.getPollgramMessagesManager();
+    private void addPollgramLinks(CharSequence charSequence) {
         try {
-            PollgramMessagesManager.MessageType type = manager.getMessageType(charSequence.toString());
+            PollgramMessagesManager.MessageType type = msgManager.getMessageType(charSequence.toString());
             if (type == null)
                 return;
-            manager.addDecisionURLSpan(type, (Spannable)charSequence);
+            msgManager.addDecisionURLSpan(type, (Spannable)charSequence);
         } catch (Exception e) {
             FileLog.e("pollgramLink", e);
         }
@@ -726,7 +727,8 @@ public class MessageObject {
         if (useManualParse) {
             addLinks(messageText);
         } else {
-            if (messageText instanceof Spannable && messageText.length() < 100) {
+            if (messageText instanceof Spannable && messageText.length() < 100 &&
+                    msgManager.getMessageType(messageText.toString()) == null ) {
                 try {
                     Linkify.addLinks((Spannable) messageText, Linkify.PHONE_NUMBERS);
                 } catch (Throwable e) {
