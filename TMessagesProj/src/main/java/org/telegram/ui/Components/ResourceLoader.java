@@ -58,9 +58,10 @@ public class ResourceLoader {
 
     public static void loadRecources(Context context) {
         if (backgroundDrawableIn == null) {
-            // TODO POLLGRAM palce here new constant for selected/unselected in/out pollgram messages with blue background
             backgroundDrawablePollgramMessageIn = context.getResources().getDrawable(R.drawable.msg_in_pollgram_message);
-            backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_pollgram_message);
+            //backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_pollgram_message);
+            backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out);
+
 
             backgroundDrawableIn = context.getResources().getDrawable(R.drawable.msg_in);
             backgroundDrawableInSelected = context.getResources().getDrawable(R.drawable.msg_in_selected);
