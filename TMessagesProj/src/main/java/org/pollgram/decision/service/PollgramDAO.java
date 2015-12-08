@@ -99,8 +99,8 @@ public interface PollgramDAO {
      * Result for method getWinningOption
      */
     class WinningOption{
-        final int voteCount;
-        final Option option;
+        public final int voteCount;
+        public final Option option;
 
         public WinningOption(int voteCount, Option option) {
             this.voteCount = voteCount;

@@ -14,6 +14,7 @@ import org.pollgram.R;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
+import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramFactory;
 
@@ -35,15 +36,15 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private List<Boolean> originalVotes;
     private List<Vote> newVotes;
     private OnVoteChangeListener onVoteChangeListener;
+    private UsersDecisionVotes usersDecisionVotes;
 
     public interface OnVoteChangeListener {
         void voteChanges(boolean areThereChangesToSave);
     }
 
-    public VoteListAdapter(Context context, List<Vote> votes, boolean editable) {
+    public VoteListAdapter(Context context, boolean editable) {
         super(context, LAYOUT_RES_ID);
         this.editable = editable;
-        setVotes(votes);
         this.onVoteChangeListener = new OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
@@ -51,8 +52,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         };
     }
 
-    public void setVotes(List<Vote> votes) {
-        this.votes = votes;
+    public void setData(UsersDecisionVotes usersDecisionVotes, int currentUserId) {
+        this.usersDecisionVotes = usersDecisionVotes;
+        this.votes = usersDecisionVotes.getVotes(currentUserId);
         this.newVotes = new ArrayList<>();
         this.originalVotes = new ArrayList<>();
         for (Vote v : votes){
@@ -100,17 +102,21 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         View rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
         ImageView optionImage = (ImageView)rowView.findViewById(R.id.item_option_iv_image);
         TextView optionTitle = (TextView)rowView.findViewById(R.id.item_option_tv_title);
+        TextView optionVoteCount = (TextView)rowView.findViewById(R.id.item_option_tv_vote_count);
+        ImageView starImageView = (ImageView)rowView.findViewById(R.id.item_option_start_imageView);
         TextView optionSubtitle = (TextView)rowView.findViewById(R.id.item_option_tv_subtitle);
 //        SurfaceView optionView = (SurfaceView)rowView.findViewById(R.id.item_option_sw_bar);
         final CheckBox optionCheckBox = (CheckBox)rowView.findViewById(R.id.item_option_cb);
+
         optionCheckBox.setEnabled(editable);
         optionCheckBox.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 vote.setVote(optionCheckBox.isChecked());
                 vote.setVoteTime(new Date());
-                if (vote.isVote() != null && vote.isVote().equals(originalVotes.get(position))){
-                    newVotes.remove(vote);;
+                if (vote.isVote() != null && vote.isVote().equals(originalVotes.get(position))) {
+                    newVotes.remove(vote);
+                    ;
                 } else {
                     newVotes.add(vote);
                 }
@@ -121,8 +127,10 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
         // TODO optionImage
         optionTitle.setText(o.getTitle());
+        optionVoteCount.setText( "(" + usersDecisionVotes.getPositiveVoteCount(o) + ")");
+        starImageView.setVisibility(position == 0 && usersDecisionVotes.getPositiveVoteCount(o) > 0 ?
+                View.VISIBLE : View.GONE);
         optionSubtitle.setText(o.getLongDescription());
-        // TODO optionView
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
         return rowView;

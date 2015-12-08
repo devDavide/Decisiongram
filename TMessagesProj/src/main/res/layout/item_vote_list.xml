@@ -1,67 +1,79 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
 
     <ImageView
+        android:id="@+id/item_option_iv_image"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/item_option_iv_image"
-        android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
+        android:layout_alignParentTop="true"
         android:background="@drawable/attach_file"
         android:padding="2dp"
+        android:paddingBottom="2dp"
         android:paddingLeft="2dp"
-        android:paddingTop="2dp"
         android:paddingRight="2dp"
-        android:paddingBottom="2dp" />
+        android:paddingTop="2dp" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text="Title"
         android:id="@+id/item_option_tv_title"
-        android:paddingLeft="10dp"
-        android:layout_toRightOf="@+id/item_option_iv_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:layout_toStartOf="@+id/item_option_sw_bar"
-        android:layout_toLeftOf="@+id/item_option_sw_bar" />
+        android:layout_toRightOf="@+id/item_option_iv_image"
+        android:paddingLeft="8dp"
+        android:text="Title that can be long"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
     <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceSmall"
-        android:text="Lorem ipsum dolor sit amet, 1 2 3 4 5 . 6 7 consectetuer  adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam "
         android:id="@+id/item_option_tv_subtitle"
-        android:paddingLeft="10dp"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:maxLines="2"
-        android:paddingRight="20dp"
+        android:paddingLeft="8dp"
+        android:paddingRight="22dp"
+        android:text="Lorem ipsum dolor sit amet, 1 2 3 4 5 . 6 7 consectetuer  adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam "
+        android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/item_option_tv_title"
         android:layout_toRightOf="@+id/item_option_iv_image"
-        android:layout_alignRight="@+id/item_option_tv_title"
-        android:layout_alignEnd="@+id/item_option_tv_title" />
+        android:layout_toLeftOf="@+id/item_option_cb" />
 
     <CheckBox
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
         android:id="@+id/item_option_cb"
-        android:checked="false"
-        android:scaleX="2.3"
-        android:scaleY="2.3"
-        android:padding="10dp"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:layout_alignBottom="@+id/item_option_iv_image"
         android:layout_alignParentEnd="true"
-        android:layout_alignBottom="@+id/item_option_iv_image" />
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:checked="false"
+        android:padding="10dp"
+        android:scaleX="2.3"
+        android:scaleY="2.3" />
 
     <TextView
+        android:id="@+id/item_option_tv_vote_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:id="@+id/item_option_sw_bar"
-        android:layout_toLeftOf="@+id/item_option_cb"
-        android:layout_toStartOf="@+id/item_option_cb"
         android:layout_alignParentTop="true"
-        android:layout_alignBottom="@+id/item_option_tv_subtitle" />
+        android:layout_toRightOf="@+id/item_option_tv_title"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:textStyle="italic"
+        android:text="(n)" />
+
+
+    <ImageView
+        android:id="@+id/item_option_start_imageView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:paddingRight="5dp"
+        android:paddingLeft="5dp"
+        android:layout_toRightOf="@+id/item_option_tv_vote_count"
+        android:background="@drawable/assign_manager"
+         />
 
 </RelativeLayout>

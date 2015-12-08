@@ -104,6 +104,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
         slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         slidingTabLayout.setViewPager(viewPager);
+
     }
 
     private boolean areThereNoOptions(){
@@ -203,8 +204,8 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         rootView = inflater.inflate(R.layout.votes_manager_list_tab, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.decision_option_lw_options);
         voteListAdapter = new VoteListAdapter(getActivity(),
-                usersDecisionVotes.getVotes(currentUserId),
                 usersDecisionVotes.getDecision().isOpen());
+        voteListAdapter.setData(usersDecisionVotes, currentUserId);
         listView.setAdapter(voteListAdapter);
         final Button btnSaveOption = (Button) rootView.findViewById(R.id.decision_option_btn_save_votes);
         btnSaveOption.setOnClickListener(new View.OnClickListener() {
@@ -255,10 +256,10 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                         usersDecisionVotes.getUsers());
 
         if (!areThereNoOptions()) {
+
             // set new sorted  votes in the voteListAdapter
-            voteListAdapter.setVotes(usersDecisionVotes.getVotes(currentUserId));
+            voteListAdapter.setData(usersDecisionVotes, currentUserId);
             voteListAdapter.notifyDataSetChanged();
-            voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
 
             // Update table user interface
             optionTableViewContainer.removeAllViews();
