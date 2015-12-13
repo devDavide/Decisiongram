@@ -17,6 +17,7 @@ import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.ui.DrawView;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -69,13 +70,12 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private void updateMaxVote() {
         maxVote = 0;
         for (Option o : usersDecisionVotes.getOptions()){
-            maxVote = Math.max(maxVote, getPositiveVoteCount(o, newVotes.get(o)));
+            maxVote = Math.max(maxVote, getPositiveVoteCount(o));
         }
     }
 
-    private int getPositiveVoteCount(Option o, Vote newVote) {
+    private int getPositiveVoteCount(Option o) {
         int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
-        positiveVoteCount += newVote == null ? 0 : (newVote.isVote() == true ? +1 : -1);
         return  positiveVoteCount;
     }
 
@@ -120,9 +120,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         ImageView optionImage = (ImageView)rowView.findViewById(R.id.item_option_iv_image);
         TextView optionTitle = (TextView)rowView.findViewById(R.id.item_option_tv_title);
         final TextView optionVoteCount = (TextView)rowView.findViewById(R.id.item_option_tv_vote_count);
-        final ImageView starImageView = (ImageView)rowView.findViewById(R.id.item_option_start_imageView);
+        final ImageView starImageView = (ImageView)rowView.findViewById(R.id.item_option_star_imageView);
         TextView optionSubtitle = (TextView)rowView.findViewById(R.id.item_option_tv_subtitle);
-//        SurfaceView optionView = (SurfaceView)rowView.findViewById(R.id.item_option_sw_bar);
+        ViewGroup stackedBarContainer = (ViewGroup)rowView.findViewById(R.id.item_option_stacked_bar);
         final CheckBox optionCheckBox = (CheckBox)rowView.findViewById(R.id.item_option_cb);
 
         optionCheckBox.setEnabled(editable);
@@ -138,6 +138,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                     newVotes.put(o, vote);
                 }
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
+                usersDecisionVotes.setVote(vote.getUserId(),o, vote);
                 onVoteChangeListener.voteChanges(!newVotes.isEmpty());
                 updateMaxVote();
                 notifyDataSetChanged();
@@ -145,13 +146,20 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         });
 
         // TODO optionImage
+
+        // Set values
         optionTitle.setText(o.getTitle());
 
-        int positiveVoteCount = getPositiveVoteCount(o, newVotes.get(o));
+        int positiveVoteCount = getPositiveVoteCount(o);
         optionVoteCount.setText(formatVoteCount(positiveVoteCount));
         //noinspection ResourceType
         starImageView.setVisibility(getStartVisibility(positiveVoteCount));
         optionSubtitle.setText(o.getLongDescription());
+
+        DrawView stackedBarDrawView = new DrawView(getContext(), usersDecisionVotes.getUsers().size(),
+                positiveVoteCount, usersDecisionVotes.getUserThatVoteCount());
+        stackedBarContainer.addView(stackedBarDrawView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
         return rowView;

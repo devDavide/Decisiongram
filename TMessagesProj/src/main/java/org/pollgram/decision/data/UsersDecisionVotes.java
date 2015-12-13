@@ -81,6 +81,21 @@ public class UsersDecisionVotes {
         }
         return false;
     }
+    public int getUserThatVoteCount(){
+        int count = 0 ;
+        for (TLRPC.User user : users){
+            boolean allNulls = true;
+            for (Option o : options){
+                if (getVotes(user.id,o).isVote() != null) {
+                    allNulls = false;
+                    break;
+                }
+            }
+            if (!allNulls)
+                count++;
+        }
+        return count;
+    }
 
     public List<Vote> getVotes(int userID){
         List<Vote> votes = new ArrayList<>();
@@ -100,8 +115,8 @@ public class UsersDecisionVotes {
         return v;
     }
 
-    public void setVote(int userItem, Option option, Vote vote){
-        voteMap.put(new UserIdOptionKey(userItem,option.getId()), vote);
+    public void setVote(int userID, Option option, Vote vote){
+        voteMap.put(new UserIdOptionKey(userID,option.getId()), vote);
         // update cache
         cachedPositiveVoteCount.put(option,calculateVoteCount(option));
         Collections.sort(options, optionsComparator);

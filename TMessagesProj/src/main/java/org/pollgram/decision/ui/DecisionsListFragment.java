@@ -16,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.pollgram.R;
 import org.pollgram.decision.adapter.DecisionAdapter;
@@ -169,11 +168,8 @@ public class DecisionsListFragment extends BaseFragment {
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-//                Bundle args = new Bundle();
-//                args.putBoolean("destroyAfterSelect", true);
-//                presentFragment(new ContactsActivity(args));
-                Toast.makeText(context, "plus pressed", Toast.LENGTH_SHORT).show();
-
+                Bundle args = new Bundle();
+                presentFragment(new NewDecisionFragment(args));
             }
         });
         return fragmentView;

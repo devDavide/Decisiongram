@@ -31,14 +31,14 @@
         android:id="@+id/item_option_tv_subtitle"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:maxLines="2"
-        android:paddingLeft="8dp"
-        android:paddingRight="22dp"
-        android:text="Lorem ipsum dolor sit amet, 1 2 3 4 5 . 6 7 consectetuer  adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam "
-        android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_below="@+id/item_option_tv_title"
         android:layout_toRightOf="@+id/item_option_iv_image"
-        android:layout_toLeftOf="@+id/item_option_cb" />
+        android:maxLines="2"
+        android:paddingLeft="8dp"
+        android:text="Lorem ipsum dolor sit amet, 1 2 3 4 5 . 6 7 consectetuer  adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam "
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:layout_toLeftOf="@+id/item_option_stacked_bar"
+        android:layout_toStartOf="@+id/item_option_stacked_bar" />
 
     <CheckBox
         android:id="@+id/item_option_cb"
@@ -50,7 +50,8 @@
         android:checked="false"
         android:paddingLeft="10dp"
         android:scaleX="2.3"
-        android:scaleY="2.3" />
+        android:scaleY="2.3"
+        />
 
     <TextView
         android:id="@+id/item_option_tv_vote_count"
@@ -58,21 +59,29 @@
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/item_option_tv_title"
-        android:paddingRight="5dp"
         android:paddingLeft="5dp"
-        android:textStyle="italic"
-        android:text="(n)" />
+        android:paddingRight="5dp"
+        android:text="(n)"
+        android:textStyle="italic" />
 
 
     <ImageView
-        android:id="@+id/item_option_start_imageView"
+        android:id="@+id/item_option_star_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentTop="true"
-        android:paddingRight="5dp"
-        android:paddingLeft="5dp"
         android:layout_toRightOf="@+id/item_option_tv_vote_count"
         android:background="@drawable/assign_manager"
-         />
+        android:paddingLeft="5dp"
+        android:paddingRight="5dp" />
+
+    <LinearLayout
+        android:id="@+id/item_option_stacked_bar"
+        android:layout_width="wrap_content"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"
+        android:paddingRight="22dp"
+        android:layout_toLeftOf="@+id/item_option_cb"
+        android:layout_alignBottom="@+id/item_option_cb" />
 
 </RelativeLayout>
