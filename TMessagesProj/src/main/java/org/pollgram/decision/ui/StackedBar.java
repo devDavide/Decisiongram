@@ -9,9 +9,11 @@ import android.util.Log;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
-public class DrawView extends TextView {
+public class StackedBar extends TextView {
 
     private static final String LOG_TAG ="DRAW_VIEW";
+
+    private static final String PROTOTYPE_TEXT_VALUE = "aaaa\naaaa\naaaa\naaaa" ;
 
     private final Paint paint;
     private final float positivePerc;
@@ -25,7 +27,7 @@ public class DrawView extends TextView {
     private float top;
 
 
-    public DrawView(Context context, int totalUserCount, int positiveVoteCount, int userThatVoteCount) {
+    public StackedBar(Context context, int totalUserCount, int positiveVoteCount, int userThatVoteCount) {
         super(context);
 
         Log.d(LOG_TAG, "totalUserCount["+totalUserCount+"] positiveVoteCount["+ positiveVoteCount +"] " +
@@ -38,7 +40,7 @@ public class DrawView extends TextView {
 
         padding = AndroidUtilities.dp(10);
         externalStroke = AndroidUtilities.dp(1);
-        setText("aaaa\naaaa\naaa\naa");
+        setText(PROTOTYPE_TEXT_VALUE);
         paint = new Paint();
     }
 
@@ -50,7 +52,6 @@ public class DrawView extends TextView {
                         " must be between 1 and 0");
         }
     }
-
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -86,7 +87,6 @@ public class DrawView extends TextView {
         canvas.drawRect(left, top, myRight, myBottom, paint);
 
         paint.setColor(Color.GREEN);
-        //float left, float top, float right, float bottom,
         float myLeft = left;
         float myTop = top + (height * emptyPerc);
         myRight = left + width;

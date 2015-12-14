@@ -32,7 +32,7 @@ public class NewDecisionFragment extends BaseFragment {
         LayoutInflater li = LayoutInflater.from(context);
         ViewGroup myView = (ViewGroup) li.inflate(R.layout.new_decision_layout, (ViewGroup) fragmentView);
 
-        DrawView dv = new DrawView(getParentActivity(), 10, 4, 7);
+        StackedBar dv = new StackedBar(getParentActivity(), 10, 4, 7);
         myView.addView(dv, ViewGroup.LayoutParams.WRAP_CONTENT,ViewGroup.LayoutParams.WRAP_CONTENT);
 
         return  fragmentView;

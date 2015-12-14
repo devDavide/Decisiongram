@@ -17,7 +17,7 @@ import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.ui.DrawView;
+import org.pollgram.decision.ui.StackedBar;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -156,9 +156,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         starImageView.setVisibility(getStartVisibility(positiveVoteCount));
         optionSubtitle.setText(o.getLongDescription());
 
-        DrawView stackedBarDrawView = new DrawView(getContext(), usersDecisionVotes.getUsers().size(),
+        StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
                 positiveVoteCount, usersDecisionVotes.getUserThatVoteCount());
-        stackedBarContainer.addView(stackedBarDrawView, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
