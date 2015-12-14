@@ -15,10 +15,8 @@ public class StackedBar extends TextView {
 
     private static final String PROTOTYPE_TEXT_VALUE = "aaaa\naaaa\naaaa\naaaa" ;
 
+    private final Percs percs;
     private final Paint paint;
-    private final float positivePerc;
-    private final float emptyPerc;
-    private final float negativePerc;
     private float height;
     private float width;
     private float padding;
@@ -26,6 +24,37 @@ public class StackedBar extends TextView {
     private float left;
     private float top;
 
+    static class Percs {
+        protected final float positivePerc;
+        protected final float emptyPerc;
+        protected final float negativePerc;
+
+        private Percs(float emptyPerc, float positivePerc, float negativePerc) {
+            this.positivePerc = positivePerc;
+            this.emptyPerc = emptyPerc;
+            this.negativePerc = negativePerc;
+            checkPerc();
+        }
+
+        private void checkPerc() {
+            float[] percs = new float[]{emptyPerc, positivePerc, negativePerc};
+            for (int i=0; i <percs.length ; i++){
+                if (percs[i] > 1 || percs[i] < 0)
+                    throw new IllegalArgumentException("perc["+i+"]  [" + percs[i] + "]" +
+                            " must be between 1 and 0");
+            }
+        }
+    }
+
+    static Percs getPercs(int totalUserCount, int positiveVoteCount, int userThatVoteCount) {
+        if (totalUserCount == 0)
+            return new Percs(1, 0, 0);
+
+        float emptyPerc = (float) (totalUserCount - userThatVoteCount) / totalUserCount;
+        float positivePerc = (float) positiveVoteCount / totalUserCount;
+        float negativePerc = (float) (userThatVoteCount - positiveVoteCount) / totalUserCount;
+        return new Percs(emptyPerc, positivePerc, negativePerc);
+    }
 
     public StackedBar(Context context, int totalUserCount, int positiveVoteCount, int userThatVoteCount) {
         super(context);
@@ -33,10 +62,7 @@ public class StackedBar extends TextView {
         Log.d(LOG_TAG, "totalUserCount["+totalUserCount+"] positiveVoteCount["+ positiveVoteCount +"] " +
                 "userThatVoteCount["+userThatVoteCount+"]");
 
-        this.emptyPerc = (float)(totalUserCount - userThatVoteCount) / totalUserCount;
-        this.positivePerc = (float) positiveVoteCount/ totalUserCount;
-        this.negativePerc = (float) 1 - emptyPerc - positivePerc;
-        checkPerc();
+        this.percs = getPercs(totalUserCount,positiveVoteCount,userThatVoteCount);
 
         padding = AndroidUtilities.dp(10);
         externalStroke = AndroidUtilities.dp(1);
@@ -44,14 +70,7 @@ public class StackedBar extends TextView {
         paint = new Paint();
     }
 
-    private void checkPerc() {
-        float[] percs = new float[]{emptyPerc, positivePerc, negativePerc};
-        for (float p : percs) {
-            if (p > 1 || p < 0)
-                throw new IllegalArgumentException("positivePerc [" + p + "]" +
-                        " must be between 1 and 0");
-        }
-    }
+
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -88,9 +107,9 @@ public class StackedBar extends TextView {
 
         paint.setColor(Color.GREEN);
         float myLeft = left;
-        float myTop = top + (height * emptyPerc);
+        float myTop = top + (height * percs.emptyPerc);
         myRight = left + width;
-        myBottom = myTop + (height * positivePerc) ;
+        myBottom = myTop + (height * percs.positivePerc) ;
         canvas.drawRect(myLeft, myTop, myRight, myBottom, paint);
 
         paint.setColor(Color.RED);
