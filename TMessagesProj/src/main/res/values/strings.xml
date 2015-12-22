@@ -960,7 +960,7 @@
     <string name="statusOpen">open</string>
     <string name="statusClose">close</string>
     <string name="groupDecision">Group decisions</string>
-    <string name="decisionsCount">%1$d open decision, %2$d closed decisions</string>
+    <string name="decisionsCount">%1$d open, %2$d closed</string>
 
     <string name="viewCloseDecision">View closed decision</string>
     <string name="hideCloseDecision">Hide closed decision</string>

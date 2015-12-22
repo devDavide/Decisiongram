@@ -79,7 +79,7 @@ public class DecisionsListFragment extends BaseFragment {
 
         // set up action bar
 
-        PollgramUtils.init(actionBar, R.string.groupDecision, 22, R.drawable.decision);
+        tvSubtitle = PollgramUtils.init(actionBar, R.string.groupDecision, R.drawable.decision);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         // Create menu
         ActionBarMenu menu = actionBar.createMenu();
@@ -118,7 +118,6 @@ public class DecisionsListFragment extends BaseFragment {
         LayoutInflater li = LayoutInflater.from(context);
         View myView = li.inflate(R.layout.decision_list_layout, (ViewGroup) fragmentView);
         TextView tvTitle = (TextView) myView.findViewById(R.id.decision_list_tv_title);
-        tvSubtitle = (TextView) myView.findViewById(R.id.decision_list_tv_subtitle);
         ViewGroup imageContainer = (ViewGroup)myView.findViewById(R.id.decision_icon_container);
         decisionsListView = (ListView) myView.findViewById(R.id.decision_list_list_view);
         //myView.setBackground(ApplicationLoader.getCachedWallpaper());

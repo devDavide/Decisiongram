@@ -20,19 +20,20 @@ import java.nio.charset.Charset;
  */
 public class PollgramUtils {
 
-    public static TextView init(ActionBar actionBar, int title,int titleFontSize, int drawableIcon){
-        return init(actionBar, ApplicationLoader.applicationContext.getString(title), titleFontSize,drawableIcon);
+    private static final float TITLE_FONT_SIZE = 19;
+
+    public static TextView init(ActionBar actionBar, int title, int drawableIcon){
+        return init(actionBar, ApplicationLoader.applicationContext.getString(title), drawableIcon);
     }
 
     /**
      *
      * @param actionBar
      * @param title
-     * @param titleFontSize
      * @param drawableIcon
      * @return the textView containing the subtitle
      */
-    public static TextView init(ActionBar actionBar, String title,int titleFontSize, int drawableIcon){
+    public static TextView init(ActionBar actionBar, String title,int drawableIcon){
         // set up poll icon
         Context context = ApplicationLoader.applicationContext;
         FrameLayoutFixed pollIconContainer = new FrameLayoutFixed(context);
@@ -46,7 +47,7 @@ public class PollgramUtils {
 
         TextView txtTitle = new TextView(context);
         txtTitle.setTextColor(0xffffffff);
-        txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, titleFontSize);
+        txtTitle.setTextSize(TypedValue.COMPLEX_UNIT_DIP, TITLE_FONT_SIZE);
         txtTitle.setLines(1);
         txtTitle.setMaxLines(1);
         txtTitle.setSingleLine(true);

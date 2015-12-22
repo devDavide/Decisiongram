@@ -10,7 +10,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
         android:layout_alignParentTop="true"
-        android:background="@drawable/attach_file"
+        android:background="@drawable/option"
         android:padding="2dp"
         android:paddingBottom="2dp"
         android:paddingLeft="2dp"

@@ -6,7 +6,8 @@
 
     <TextView
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="78dp"
+        android:gravity="center_vertical|left"
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="Group name"
         android:id="@+id/decision_list_tv_title"
@@ -16,15 +17,6 @@
         android:layout_toRightOf="@+id/decision_icon_container"
         android:layout_toEndOf="@+id/decision_icon_container" />
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="normal Text"
-        android:id="@+id/decision_list_tv_subtitle"
-        android:layout_below="@+id/decision_list_tv_title"
-        android:layout_toRightOf="@+id/decision_icon_container"
-        android:layout_toEndOf="@+id/decision_icon_container" />
-    />
 
 
     <LinearLayout
@@ -43,19 +35,8 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/decision_list_list_view"
-        android:layout_below="@+id/textPadding"
         android:layout_alignRight="@+id/decision_list_tv_title"
-        android:layout_alignEnd="@+id/decision_list_tv_title" />
-
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:textAppearance="?android:attr/textAppearanceMedium"
-        android:text=""
-        android:id="@+id/textPadding"
-        android:layout_below="@+id/decision_list_tv_subtitle"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentStart="true" />
-
+        android:layout_alignEnd="@+id/decision_list_tv_title"
+        android:layout_below="@+id/decision_list_tv_title" />
 
 </RelativeLayout>

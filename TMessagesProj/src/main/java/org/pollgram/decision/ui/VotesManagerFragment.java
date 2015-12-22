@@ -80,7 +80,7 @@ public class VotesManagerFragment extends BaseFragment {
     public View createView(final Context context) {
         // TODO add real icon
         // set up action bar
-        tvUserVoteCount = PollgramUtils.init(actionBar, decision.getTitle(), 18, R.drawable.attach_camera);
+        tvUserVoteCount = PollgramUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISOIN, context.getString(R.string.closeDecision), 0);
