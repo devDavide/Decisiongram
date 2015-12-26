@@ -1,4 +1,4 @@
-package org.pollgram.decision.utils;
+package org.pollgram.decision.ui;
 
 import android.content.Context;
 import android.text.TextUtils;
@@ -13,12 +13,12 @@ import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.Components.FrameLayoutFixed;
 import org.telegram.ui.Components.LayoutHelper;
 
-import java.nio.charset.Charset;
-
 /**
  * Created by davide on 08/10/15.
  */
-public class PollgramUtils {
+class UIUtils {
+
+    public static final int ACTION_BAR_BACK_ITEM_ID = -1;
 
     private static final float TITLE_FONT_SIZE = 19;
 
@@ -77,8 +77,5 @@ public class PollgramUtils {
         return subtitleTextView;
     }
 
-    public static String getEmojiAsString(byte... emojiBytes){
-        return new String(emojiBytes, Charset.forName("UTF-8"));
-    }
 
 }

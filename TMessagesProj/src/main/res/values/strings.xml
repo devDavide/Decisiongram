@@ -953,33 +953,6 @@
     <string name="updateBuild">614</string>
 
     <!-- START of Pollgram text -->
-    <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
-    <string name="createdByUserOnDayNewLine">Created by %1$s \non %2$s</string>
-    <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
-    <string name="decisionStatus">Decision is %1$s</string>
-    <string name="statusOpen">open</string>
-    <string name="statusClose">close</string>
-    <string name="groupDecision">Group decisions</string>
-    <string name="decisionsCount">%1$d open, %2$d closed</string>
-
-    <string name="viewCloseDecision">View closed decision</string>
-    <string name="hideCloseDecision">Hide closed decision</string>
-
-    <string name="optionTabName">Options</string>
-    <string name="tableViewTabName">Table View</string>
-    <string name="saveVotes">Save votes</string>
-    <string name="voteSaved">Vote saved</string>
-    <string name="no_vote_desc">\?</string>
-    <string name="noOptionPresent">There are no option\n for this decision</string>
-    <string name="remindToUserSent">Remind sent to %1$s</string>
-    <string name="closeDecision">Close Decision</string>
-    <string name="reopenDecision">Reopen decision</string>
-    <string name="deleteDecision">Delete decision</string>
-    <string name="decisionClosed">Decision closed</string>
-    <string name="decisionReopened">Decision reopened</string>
-    <string name="decisionDeleted">Decision deleted</string>
-    <string name="decisionNotFound">Decision %1$s not found, it may has been deleted.</string>
-
 
     <!-- START of POLLGRAM transaction messages -->
     <string name="downloadPollgramFromMarket">Install Pollgram at </string>
@@ -1025,8 +998,51 @@
     <string name="MessageType_CLOSE_DECISION">Close decision</string>
     <string name="MessageType_REOPEN_DECISION">Reopen decision</string>
     <string name="MessageType_DELETE_DECISION">Delete decision</string>
-    <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ? This will remove this decision for ALL users involved, not just yourself.</string>
     <!-- END MessageType descriptions -->
+
+
+
+    <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
+    <string name="createdByUserOnDayNewLine">Created by %1$s \non %2$s</string>
+    <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
+    <string name="decisionStatus">Decision is %1$s</string>
+    <string name="statusOpen">open</string>
+    <string name="statusClose">close</string>
+    <string name="groupDecision">Group decisions</string>
+    <string name="decisionsCount">%1$d open, %2$d closed</string>
+
+    <string name="viewCloseDecision">View closed decision</string>
+    <string name="hideCloseDecision">Hide closed decision</string>
+
+    <string name="optionTabName">Options</string>
+    <string name="tableViewTabName">Table View</string>
+    <string name="saveVotes">Save votes</string>
+    <string name="voteSaved">Vote saved</string>
+    <string name="no_vote_desc">\?</string>
+    <string name="noOptionPresent">There are no option\n for this decision</string>
+    <string name="remindToUserSent">Remind sent to %1$s</string>
+    <string name="closeDecision">Close Decision</string>
+    <string name="reopenDecision">Reopen decision</string>
+    <string name="deleteDecision">Delete decision</string>
+    <string name="decisionClosed">Decision closed</string>
+    <string name="decisionReopened">Decision reopened</string>
+    <string name="decisionDeleted">Decision deleted</string>
+    <string name="decisionNotFound">Decision %1$s not found, it may has been deleted.</string>
+    <string name="title">Title</string>
+    <string name="notes">Notes</string>
+    <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ? This will remove this decision for ALL users involved, not just yourself.</string>
+    <string name="insert_the_title_here">Insert the title here</string>
+    <string name="insert_the_long_description_here">Insert the long description here</string>
+    <string name="new_decision">New decision</string>
+    <string name="select_options">Select options</string>
+    <string name="please_select_a_title">Please select a title</string>
+    <string name="decisionSaved">Decision has been saved</string>
+    <string name="new_option">New Option</string>
+    <string name="please_select_a_title_for_option">Pleace select a value for the title of the last option, before adding a new one</string>
+    <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
+    <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
+    <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?</string>
+    <string name="you">you</string>
 
     <!-- END of Pollgram text -->
 

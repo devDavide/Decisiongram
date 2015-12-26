@@ -85,8 +85,17 @@ public class Decision extends  DBBean {
         if (isOpen() != decision.isOpen()) return false;
         if (getTitle() != null ? !getTitle().equals(decision.getTitle()) : decision.getTitle() != null)
             return false;
-        return !(getLongDescription() != null ? !getLongDescription().equals(decision.getLongDescription()) : decision.getLongDescription() != null);
+        return equalString(getLongDescription(), decision.getLongDescription());
 
+    }
+
+    private boolean equalString(String s1, String s2) {
+        boolean isS1Emtpy = s1 == null || s1.trim().isEmpty() || s1.equals(""+null);
+        boolean isS2Emtpy = s2 == null || s2.trim().isEmpty() || s2.equals(""+null);
+        if (isS1Emtpy && isS2Emtpy)
+            return true;
+        else
+            return s1.equals(s2);
     }
 
     @Override

@@ -6,6 +6,7 @@ import android.util.Log;
 import android.widget.Toast;
 
 import org.pollgram.R;
+import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.UsersDecisionVotes;
@@ -17,6 +18,7 @@ import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.URLSpanNoUnderline;
@@ -124,15 +126,16 @@ public class PollgramServiceImpl implements PollgramService {
     @Override
     public void notifyNewDecision(Decision decision, List<Option> options) {
         Log.d(LOG_TAG, "notifyNewDecision decision[" + decision + "] decision[" + decision + "] options[" + options + "]");
-        pollgramDAO.save(decision);
-        for(Option o : options){
-            if (o.getDecisionId() != decision.getId()) {
-                Log.e(LOG_TAG, "Option decisionid["+o.getDecisionId()+"] != decision.getId()["+decision.getId()+"]");
+        decision = pollgramDAO.save(decision);
+        for(Option o : options) {
+            if (o.getDecisionId() == DBBean.ID_NOT_SET) {
+                o.setDecisionId(decision.getId());
+            } else if (o.getDecisionId() != decision.getId()) {
+                Log.e(LOG_TAG, "Option decisionid[" + o.getDecisionId() + "] != decision.getId()[" + decision.getId() + "]");
                 continue;
             }
             pollgramDAO.save(o);
         }
-
         String message = messageManager.buildNotifyNewDecision(decision, options);
         sendMessage(decision.getChatId(), message);
     }
@@ -168,6 +171,9 @@ public class PollgramServiceImpl implements PollgramService {
                             groupChatId, userId, messageDate);
                     if (resut == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
+                    }
+                    if (pollgramDAO.getDecision(resut.decision.getTitle(),resut.decision.getChatId()) != null){
+                        Log.d(LOG_TAG,"New decision already found will not insert twice");
                     }
                     Decision d = pollgramDAO.save(resut.decision);
                     for (Option o : resut.optionList) {
@@ -241,6 +247,9 @@ public class PollgramServiceImpl implements PollgramService {
 
     @Override
     public String asString(TLRPC.User user){
+        if (user.id == UserConfig.getCurrentUser().id)
+            return ApplicationLoader.applicationContext.getString(R.string.you);
+
         if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
                 ContactsController.getInstance().contactsDict.get(user.id) == null &&
                 (ContactsController.getInstance().contactsDict.size() != 0 || !ContactsController.getInstance().isLoadingContacts())) {

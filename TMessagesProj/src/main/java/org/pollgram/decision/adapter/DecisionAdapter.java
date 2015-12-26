@@ -25,17 +25,19 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
     private static final int LAYOUT_RES_ID = R.layout.item_decision_list;
     private final int groupMemberCount;
     private final PollgramService pollgramService;
+    private final LayoutInflater inflater;
 
     public DecisionAdapter(Context context,  List<Decision> items, int groupMemberCount) {
         super(context, LAYOUT_RES_ID, items);
         this.groupMemberCount = groupMemberCount;
         pollgramService = PollgramFactory.getPollgramService();
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
+
         // init layout
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         View rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
         ImageView decisionImage = (ImageView)rowView.findViewById(R.id.item_decision_iv_image);
         TextView decisionTitle = (TextView)rowView.findViewById(R.id.item_decision_tv_title);

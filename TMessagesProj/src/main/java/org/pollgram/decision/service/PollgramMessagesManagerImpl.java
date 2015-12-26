@@ -10,7 +10,6 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
-import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.MessageObject;
@@ -37,10 +36,10 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     protected static final char QUOTE_CHAR = '\'';
     private static final char NEW_LINE = '\n';
 
-    private static final String WINKING_FACE_EMOJI = PollgramUtils.getEmojiAsString((byte) 0xF0, (byte) 0x9F, (byte) 0x98, (byte)0x89);// winking face
-    private static final String TRUE_EMOJI = PollgramUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9C, (byte) 0x85);// WHITE HEAVY CHECK MARK
-    private static final String FALSE_EMOJI = PollgramUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9D, (byte) 0x8C);// CROSS MARK
-    private static final String BULLET_LIST_EMOJI = PollgramUtils.getEmojiAsString((byte) 0xE2, (byte) 0x96, (byte) 0xAB);// white small square
+    private static final String WINKING_FACE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xF0, (byte) 0x9F, (byte) 0x98, (byte)0x89);// winking face
+    private static final String TRUE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9C, (byte) 0x85);// WHITE HEAVY CHECK MARK
+    private static final String FALSE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9D, (byte) 0x8C);// CROSS MARK
+    private static final String BULLET_LIST_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x96, (byte) 0xAB);// white small square
 
     private final PollgramDAO pollgramDAO;
     private final Context context;
@@ -75,6 +74,9 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             strValue = ((Option)obj).getTitle();
         } else
             strValue = "" + obj;
+
+        if (strValue.length() == 0)
+            strValue = " ";
 
         strValue = QUOTE_CHAR + strValue + QUOTE_CHAR;
         return strValue;

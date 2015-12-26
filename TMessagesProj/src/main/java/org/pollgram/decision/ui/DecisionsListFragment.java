@@ -22,11 +22,9 @@ import org.pollgram.decision.adapter.DecisionAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
-import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -47,7 +45,7 @@ public class DecisionsListFragment extends BaseFragment {
     private static int nextId = 1;
     private static final int ID_TOGGLE_OPEN_CLOSE_DECISIONS = nextId++;
     private static final int ID_PURGE_ALL_DATA = nextId++;
-    private static final int ID_PUT_STUB_DATA_DATA = nextId++;
+    //private static final int ID_PUT_STUB_DATA_DATA = nextId++;
 
     private TLRPC.ChatFull chatInfo;
     private TLRPC.Chat currentChat;
@@ -79,19 +77,19 @@ public class DecisionsListFragment extends BaseFragment {
 
         // set up action bar
 
-        tvSubtitle = PollgramUtils.init(actionBar, R.string.groupDecision, R.drawable.decision);
+        tvSubtitle = UIUtils.init(actionBar, R.string.groupDecision, R.drawable.decision);
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         // Create menu
         ActionBarMenu menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
-        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions data", 0);
-        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
+        //headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-                if (id == -1) {
+                if (id == UIUtils.ACTION_BAR_BACK_ITEM_ID) {
                     finishFragment();
                     return;
                 } else if (id == ID_TOGGLE_OPEN_CLOSE_DECISIONS) {
@@ -105,8 +103,8 @@ public class DecisionsListFragment extends BaseFragment {
                     for (Decision d : allDecisions){
                         pollgramDAO.delete(d);
                     }
-                } else if (id == ID_PUT_STUB_DATA_DATA){
-                    pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
+//                } else if (id == ID_PUT_STUB_DATA_DATA){
+//                    pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
                 }
                 updateResult();
             }
@@ -114,7 +112,6 @@ public class DecisionsListFragment extends BaseFragment {
 
         // inflate xml main layout
         fragmentView = new SizeNotifierFrameLayout(context);
-        SizeNotifierFrameLayout contentView = (SizeNotifierFrameLayout) fragmentView;
         LayoutInflater li = LayoutInflater.from(context);
         View myView = li.inflate(R.layout.decision_list_layout, (ViewGroup) fragmentView);
         TextView tvTitle = (TextView) myView.findViewById(R.id.decision_list_tv_title);
@@ -163,12 +160,15 @@ public class DecisionsListFragment extends BaseFragment {
                 }
             });
         }
+
+        SizeNotifierFrameLayout contentView = (SizeNotifierFrameLayout) fragmentView;
         contentView.addView(floatingButton, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.WRAP_CONTENT, (LocaleController.isRTL ? Gravity.LEFT : Gravity.RIGHT) | Gravity.BOTTOM, LocaleController.isRTL ? 14 : 0, 0, LocaleController.isRTL ? 0 : 14, 14));
         floatingButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                presentFragment(new NewDecisionFragment(args));
+                args.putInt(NewDecisionStep1TitleFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+                presentFragment(new NewDecisionStep1TitleFragment(DecisionsListFragment.this, args));
             }
         });
         return fragmentView;

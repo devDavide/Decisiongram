@@ -17,7 +17,6 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
-import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -80,7 +79,7 @@ public class VotesManagerFragment extends BaseFragment {
     public View createView(final Context context) {
         // TODO add real icon
         // set up action bar
-        tvUserVoteCount = PollgramUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
+        tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISOIN, context.getString(R.string.closeDecision), 0);
@@ -91,7 +90,7 @@ public class VotesManagerFragment extends BaseFragment {
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
-                if (id == -1) {
+                if (id == UIUtils.ACTION_BAR_BACK_ITEM_ID) {
                     finishFragment();
                     return;
                 }

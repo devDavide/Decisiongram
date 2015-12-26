@@ -7,7 +7,6 @@ import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.Vote;
-import org.pollgram.decision.utils.PollgramUtils;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.MessageObject;
 
@@ -38,7 +37,7 @@ public interface PollgramMessagesManager {
         private String descriptionString;
 
         private MessageType(int descrStringRes, byte... emojiBytes) {
-            this.emoji = PollgramUtils.getEmojiAsString(emojiBytes);
+            this.emoji = EmojiUtils.getEmojiAsString(emojiBytes);
             this.descrStringRes = descrStringRes;
         }
 

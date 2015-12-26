@@ -117,15 +117,18 @@ public class MessagesManagerTest {
 
     @Test
     public void testNewDecision() throws ParseException, PollgramParseException {
-        List<Option> options = dao.getOptions(decision);
-        String message = messageManager.buildNotifyNewDecision(decision, options);
+        for (Decision decision : dao.getDecisions(chat.id, null)) {
+            if (!decision.isOpen())
+                continue;
+            List<Option> options = dao.getOptions(decision);
+            String message = messageManager.buildNotifyNewDecision(decision, options);
 
-        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
-        Assert.assertEquals(type, PollgramMessagesManager.MessageType.NEW_DECISION);
+            PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+            Assert.assertEquals(type, PollgramMessagesManager.MessageType.NEW_DECISION);
 
-        assertNewDecision(decision, options, message);
-        assertNewDecision(decision, options, messageManager.reformatMessage(message));
-
+            assertNewDecision(decision, options, message);
+            assertNewDecision(decision, options, messageManager.reformatMessage(message));
+        }
     }
 
     private void assertNewDecision(Decision decision, List<Option> options, String message) throws PollgramParseException {

@@ -34,6 +34,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private static final String LOG_TAG = "ChoiceAdapter";
 
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
+    private final LayoutInflater inflater;
     private boolean editable;
     private int maxVote;
     private List<Vote> votes;
@@ -48,6 +49,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     public VoteListAdapter(Context context, boolean editable) {
         super(context, LAYOUT_RES_ID);
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.editable = editable;
         this.onVoteChangeListener = new OnVoteChangeListener() {
             @Override
@@ -115,7 +117,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
             return null;
         }
         final TextOption o = (TextOption)c;
-        LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+
         View rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
         ImageView optionImage = (ImageView)rowView.findViewById(R.id.item_option_iv_image);
         TextView optionTitle = (TextView)rowView.findViewById(R.id.item_option_tv_title);

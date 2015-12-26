@@ -20,6 +20,11 @@ public class TextOption extends Option {
         this(title,longDescription,decisionId);
         setId(id);
     }
+
+    public TextOption() {
+        this(null,null,ID_NOT_SET);
+    }
+
     @Override
     public String getTitle() {
         return title;

@@ -12,7 +12,6 @@ import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -38,20 +37,10 @@ class PollgramDAODBImpl implements PollgramDAO {
     @Override
     public void putStubData(int chatId, int creatorId) {
         // TODO remove it one day
-
         Log.i(LOG_TAG, "Put Stub test data");
 
-        List<Decision> decisions = new ArrayList<>();
         Date creationDate = new Date();
-        decisions.add(new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true));
-        decisions.add(new Decision(chatId, creatorId, "Where do we go ?", "huge bla bla bla", creationDate, true));
-        decisions.add(new Decision(chatId, creatorId, "When will the party be ?", "huge bla bla bla", creationDate, true));
-        decisions.add(new Decision(chatId, creatorId, "Do we add Slomp to the group ?", "huge bla bla bla", creationDate, false));
-        for (Decision d : decisions) {
-            Decision newD = save(d);
-            Log.i(LOG_TAG, "inserted decision id:" + newD.getId());
-            Decision found = getDecision(newD.getId());
-        }
+        Decision d =  new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true);
 
         Decision decision1 = getDecisions(chatId, null).get(0);
         List<Option> options = new ArrayList<>();
@@ -60,27 +49,7 @@ class PollgramDAODBImpl implements PollgramDAO {
         options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
         options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
 
-        for (Decision d : getDecisions(chatId, true)) {
-            if (d.equals(decisions.get(0)))
-                PollgramFactory.getPollgramService().notifyNewDecision(d, options);
-            else
-                PollgramFactory.getPollgramService().notifyNewDecision(d, Collections.<Option>emptyList());
-        }
-        // }
-        // Do some test query
-        Log.i(LOG_TAG, "query getDecisions(null)");
-        for (Decision d : getDecisions(chatId, null)) {
-            Log.d(LOG_TAG, "found-1: " + d);
-        }
-
-        Log.i(LOG_TAG, "query getDecisions(true)");
-
-        Log.i(LOG_TAG, "query getDecisions(false)");
-        for (Decision d : getDecisions(chatId, false)) {
-            Log.d(LOG_TAG, "found-3 " + d);
-        }
-
-
+        PollgramFactory.getPollgramService().notifyNewDecision(d, options);
     }
 
     @Override
@@ -200,6 +169,8 @@ class PollgramDAODBImpl implements PollgramDAO {
             throw new RuntimeException("Not yet supported :-(");
 
         TextOption tOpt = (TextOption) o;
+        if (tOpt.getLongDescription() == null)// mask null values
+            tOpt.setLongDescription("");
         Option foundOption = getOption(tOpt.getTitle(), o.getDecisionId());
         if (foundOption == null)
             return helper.insert(tOpt, helper.TEXT_OPTION_MAPPER);
