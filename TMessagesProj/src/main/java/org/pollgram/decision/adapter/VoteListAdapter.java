@@ -169,7 +169,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     private int getStartVisibility(int positiveVoteCount) {
         return positiveVoteCount == maxVote && positiveVoteCount > 0 ?
-                View.VISIBLE : View.GONE;
+                View.VISIBLE : View.INVISIBLE;
     }
 
     private String formatVoteCount(int positiveVoteCount) {

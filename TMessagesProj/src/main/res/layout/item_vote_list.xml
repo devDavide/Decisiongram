@@ -24,8 +24,11 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/item_option_iv_image"
         android:paddingLeft="8dp"
-        android:text="Title that can be long"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:maxLines="2"
+        android:text="Title that can dskfjsdkl dklsjfklsdjf klsjsklfdlong"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:layout_toStartOf="@+id/item_option_tv_vote_count"
+        android:layout_toLeftOf="@+id/item_option_tv_vote_count" />
 
     <TextView
         android:id="@+id/item_option_tv_subtitle"
@@ -57,23 +60,25 @@
         android:id="@+id/item_option_tv_vote_count"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/item_option_tv_title"
         android:paddingLeft="5dp"
         android:paddingRight="5dp"
         android:text="(n)"
-        android:textStyle="italic" />
+        android:textStyle="italic"
+        android:layout_below="@+id/item_option_star_imageView"
+        android:layout_alignRight="@+id/item_option_star_imageView"
+        android:layout_alignEnd="@+id/item_option_star_imageView" />
 
 
     <ImageView
         android:id="@+id/item_option_star_imageView"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/item_option_tv_vote_count"
         android:background="@drawable/assign_manager"
         android:paddingLeft="5dp"
-        android:paddingRight="5dp" />
+        android:paddingRight="5dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignRight="@+id/item_option_tv_subtitle"
+        android:layout_alignEnd="@+id/item_option_tv_subtitle" />
 
     <LinearLayout
         android:id="@+id/item_option_stacked_bar"
