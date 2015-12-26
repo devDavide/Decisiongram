@@ -56,7 +56,7 @@ public class NewDecisionStep1TitleFragment extends BaseFragment {
 
     @Override
     public View createView(Context context) {
-        UIUtils.init(actionBar, R.string.new_decision, R.drawable.decision);
+        UIUtils.init(actionBar, R.string.newDecision, R.drawable.decision);
         ActionBarMenu menu = actionBar.createMenu();
         actionBar.setBackButtonImage(R.drawable.ic_close_white);
         menu.addItem(NEXT_MENU_ITEM_ID, R.drawable.ic_arrow_forward_white_24dp);
@@ -89,7 +89,7 @@ public class NewDecisionStep1TitleFragment extends BaseFragment {
     private void nextStep() {
         String title = edTitle.getText().toString();
         if (title == null || title.trim().isEmpty()){
-            Toast.makeText(getParentActivity(), R.string.please_select_a_title, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getParentActivity(), R.string.pleaseSelectATitle, Toast.LENGTH_SHORT).show();
             return;
         }
         Decision decision = pollgramDAO.getDecision(title, groupChatId);

@@ -63,7 +63,7 @@ public class NewDecisionStep2OptionsFragment extends BaseFragment {
 
         getParentActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
-        UIUtils.init(actionBar,R.string.select_options, R.drawable.decision);
+        UIUtils.init(actionBar,R.string.selectOptions, R.drawable.decision);
         ActionBarMenu menu = actionBar.createMenu();
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         menu.addItem(SAVE_DECISION_MENU_ITEM_ID, R.drawable.ic_done_white_36dp);
@@ -119,7 +119,7 @@ public class NewDecisionStep2OptionsFragment extends BaseFragment {
 
     private void saveDecision(List<Option> options) {
         if (decisionTitle == null || decisionTitle.isEmpty()){
-            Toast.makeText(getParentActivity(), R.string.please_select_a_title, Toast.LENGTH_SHORT).show();
+            Toast.makeText(getParentActivity(), R.string.pleaseSelectATitle, Toast.LENGTH_SHORT).show();
             return;
         }
 

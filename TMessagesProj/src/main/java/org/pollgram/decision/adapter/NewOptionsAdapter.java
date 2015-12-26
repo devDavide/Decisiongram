@@ -58,7 +58,7 @@ public class NewOptionsAdapter extends ArrayAdapter<Option> {
                 @Override
                 public void onClick(View v) {
                     if (options.get(position-1).getTitle() == null){
-                        Toast.makeText(getContext(), R.string.please_select_a_title_for_option, Toast.LENGTH_LONG).show();
+                        Toast.makeText(getContext(), R.string.pleaseSelectATitleForOption, Toast.LENGTH_LONG).show();
                     } else {
                         options.add(new TextOption());
                         notifyDataSetChanged();

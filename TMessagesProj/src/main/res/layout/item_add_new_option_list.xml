@@ -8,7 +8,7 @@
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="@string/new_option"
+        android:text="@string/newOption"
         android:drawableLeft="@drawable/ic_add_white_24dp"
         android:id="@+id/new_option_add_button"
         android:layout_alignParentTop="true"

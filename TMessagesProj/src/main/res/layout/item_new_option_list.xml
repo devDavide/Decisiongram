@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/new_option_ed_title"
-        android:hint="@string/insert_the_title_here"
+        android:hint="@string/insertTitleHint"
         android:singleLine = "true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/imageView"
@@ -27,7 +27,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/new_option_ed_long_description"
-        android:hint="@string/insert_the_long_description_here"
+        android:hint="@string/insertLongDescriptionHint"
         android:layout_below="@+id/new_option_ed_title"
         android:layout_toRightOf="@+id/imageView"
         android:layout_toEndOf="@+id/imageView" />
