@@ -421,6 +421,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             Integer msgId = (Integer) args[0];
             Long did = (Long) args[3];
             MessageObject obj = dialogMessage.get(did);
+            pollgramService.processMessage(obj);
             if (obj != null && obj.getId() == msgId) {
                 Integer newMsgId = (Integer) args[1];
                 obj.messageOwner.id = newMsgId;
@@ -2587,7 +2588,6 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             newMsg.flags |= TLRPC.MESSAGE_FLAG_HAS_FROM_ID;
             UserConfig.saveConfig(false);
             MessageObject newMsgObj = new MessageObject(newMsg, users, true);
-            pollgramService.processMessage(newMsgObj);
             newMsgObj.messageOwner.send_state = MessageObject.MESSAGE_SEND_STATE_SENT;
 
             ArrayList<MessageObject> objArr = new ArrayList<>();
@@ -3763,6 +3763,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                                                 arr = new ArrayList<>();
                                                 messages.put(uid, arr);
                                             }
+                                            pollgramService.processMessage(obj);
                                             arr.add(obj);
                                         }
 
