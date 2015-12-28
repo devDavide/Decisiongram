@@ -25,6 +25,7 @@ import org.pollgram.decision.service.PollgramFactory;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
+import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -45,7 +46,7 @@ public class DecisionsListFragment extends BaseFragment {
     private static int nextId = 1;
     private static final int ID_TOGGLE_OPEN_CLOSE_DECISIONS = nextId++;
     private static final int ID_PURGE_ALL_DATA = nextId++;
-    //private static final int ID_PUT_STUB_DATA_DATA = nextId++;
+    private static final int ID_PUT_STUB_DATA_DATA = nextId++;
 
     private TLRPC.ChatFull chatInfo;
     private TLRPC.Chat currentChat;
@@ -85,7 +86,7 @@ public class DecisionsListFragment extends BaseFragment {
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
         headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
-        //headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -103,8 +104,8 @@ public class DecisionsListFragment extends BaseFragment {
                     for (Decision d : allDecisions){
                         pollgramDAO.delete(d);
                     }
-//                } else if (id == ID_PUT_STUB_DATA_DATA){
-//                    pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
+                } else if (id == ID_PUT_STUB_DATA_DATA){
+                    pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
                 }
                 updateResult();
             }

@@ -185,6 +185,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             cv.put(T_TextOption.FK_DECISION, to.getDecisionId());
             return cv;
         }
+
     };
 
     static boolean getBoolean(int num) {
@@ -229,6 +230,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
 
 
     public <T extends DBBean> T insert(T bean, DBObjectMapper<T> mapper) {
+        Log.d(LOG_TAG, "inserting bean["+bean+"] into table["+mapper.getTableName()+"]");
         SQLiteDatabase db = getWritableDatabase();
         try {
             long id = db.insert(mapper.getTableName(), null, mapper.toCV(bean));
@@ -244,6 +246,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
     }
 
     public <T extends DBBean> void update(T bean, DBObjectMapper<T> mapper) {
+        Log.d(LOG_TAG, "update bean["+bean+"] into table["+mapper.getTableName()+"]");
         SQLiteDatabase db = getWritableDatabase();
         try {
             int rowCount = db.update(mapper.getTableName(), mapper.toCV(bean),
@@ -261,6 +264,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
     public <T extends DBBean> List<T> query(DBObjectMapper<T> mapper, String selection,
                                             String[] selectionArgs, String groupBy, String having,
                                             String orderBy) {
+
         SQLiteDatabase db = getReadableDatabase();
         Cursor cursor = null;
         try {

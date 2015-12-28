@@ -109,8 +109,8 @@ public class UsersDecisionVotes {
         Vote v = voteMap.get(new UserIdOptionKey(userId,option.getId()));
         if (v == null) {
             // userId never vote for option v
-            v = new Vote(userId,option.getId());
-            Log.d(LOG_TAG,"vote not found for userId["+userId+"] and optionId["+option.getId()+"]");
+            v = new Vote(userId, option.getId());
+            //Log.d(LOG_TAG,"vote not found for userId["+userId+"] and optionId["+option.getId()+"]");
         }
         return v;
     }

@@ -249,7 +249,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 int start = POLLGRAM_MESSAGE_PREFIX.length() + 1;
                 String msgEmoji = msg.substring(start, start + 2);
                 MessageType t = MessageType.byEmoji(msgEmoji);
-                Log.d(LOG_TAG, "MessageType for [" + Arrays.toString(msgEmoji.getBytes()) + "] is [" + t + "]");
+                Log.d(LOG_TAG, "MessageType for emoji[" + Arrays.toString(msgEmoji.getBytes()) + "] is [" + t + "]");
                 return t;
             } catch (IndexOutOfBoundsException | IllegalArgumentException e) {
                 Log.e(LOG_TAG, "Error parsing message type for message [" + msg + "] il will not be parset", e);
@@ -265,12 +265,13 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         if (messageObject.messageOwner == null)
             return -1;
 
-        if (messageObject.messageOwner.dialog_id > 0){
+
+        if (messageObject.getDialogId() > 0){
             Log.d(LOG_TAG,"message.messageOwner.dialog_id positive, in not a group chat");
             return -1;
         }
 
-        int groupChatId = (int)(messageObject.messageOwner.dialog_id * -1);
+        int groupChatId = (int)(messageObject.getDialogId() * -1);
         if (ChatObject.isChannel(groupChatId)){
             Log.d(LOG_TAG,"is a channel");
             return -1;
@@ -360,8 +361,11 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
             String longDescription = strTok.nextToken();
             decision = pollgramDAO.getDecision(title, currentChat);
+            if (decision == null)
+                throw new PollgramParseException("Decision not found for title  [" + title + "]");
             winningOption = pollgramDAO.getOption(optionTitle, decision);
-
+            if (winningOption == null)
+                throw new PollgramParseException("winningOption not found for decision  [" + title + "]");
 
         } catch (NoSuchElementException e) {
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
