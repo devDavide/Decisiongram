@@ -168,8 +168,8 @@ public class DecisionsListFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                args.putInt(NewDecisionStep1TitleFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
-                presentFragment(new NewDecisionStep1TitleFragment(DecisionsListFragment.this, args));
+                args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+                presentFragment(new NewDecisionFragment(args));
             }
         });
         return fragmentView;

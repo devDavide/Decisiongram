@@ -32,9 +32,10 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
         Date date = new Date();
 
-        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+"huge bla bla bla",date ,true));
+        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+" i'm huge bla bla bla",date ,true));
         decisions.add(new Decision(id++, chatId, creatorId, "Where do we go ?", "",date, true));
         decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", null,date, true));
+        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", "this is\na multine\nfucking dscription",date, true));
         decisions.add(new Decision(id++, chatId, creatorId, "Do we add Slomp to the group ?", id + "huge bla bla bla",date, false));
 
         textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", decisions.get(0).getId()));
@@ -95,7 +96,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
     @Override
     public List<Option> getOptions(long decisionId) {
-        if (decisionId == decisions.get(0).getId())
+        if (decisionId == decisions.get(0).getId() || decisionId == decisions.get(2).getId())
             return textOptions;
         else
             return new ArrayList<>();
