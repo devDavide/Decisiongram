@@ -34,6 +34,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
     private static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
     protected static final char QUOTE_CHAR = '\'';
+    protected static final char ESCAPE_QUOTE_CHAR = '´';
     private static final char NEW_LINE = '\n';
 
     private static final String WINKING_FACE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xF0, (byte) 0x9F, (byte) 0x98, (byte)0x89);// winking face
@@ -63,6 +64,33 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         context = ApplicationLoader.applicationContext;
     }
 
+    /**
+     * Local version of StringTokenizer that manage default sep char and escape
+     */
+    private class EscapeStringTokenizer extends  StringTokenizer{
+
+        public EscapeStringTokenizer(String string) {
+            super(string, Character.toString(QUOTE_CHAR));
+        }
+
+        public EscapeStringTokenizer(String string, boolean considerNewLine) {
+            super(string, considerNewLine ? Character.toString(QUOTE_CHAR)+ Character.toString(NEW_LINE) : Character.toString(QUOTE_CHAR) );
+        }
+
+        @Override
+        public String nextToken() {
+            String tok = super.nextToken();
+            return parseMessageField(tok);
+        }
+    }
+
+    @Override
+    public String parseMessageField(String str) {
+        str = str.replace(
+                Character.toString(PollgramMessagesManagerImpl.QUOTE_CHAR), "");
+        return str.replace(Character.toString(ESCAPE_QUOTE_CHAR), Character.toString(QUOTE_CHAR));
+    }
+
     private String format(Object obj){
         if (obj instanceof Boolean)
             return getBooleanValue((Boolean) obj);
@@ -74,6 +102,8 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             strValue = ((Option)obj).getTitle();
         } else
             strValue = "" + obj;
+
+        strValue = strValue.replace(Character.toString(QUOTE_CHAR), Character.toString(ESCAPE_QUOTE_CHAR));
 
         if (strValue.length() == 0)
             strValue = " ";
@@ -231,10 +261,12 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         // remove talning string
         MessageType type = getMessageType(message);
         if (type == null) {
-            return  message;
+            return message;
         }
         message = message.replace(getTailingString(), "");
-        return  message;
+        // Test will fail if uncomment the follwing row
+        // message = parseMessageField(message);
+        return message;
     }
 
     /**
@@ -284,7 +316,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     public Collection<Vote> getVotes(String msg, int currentChat, Date messageDate ,int userId) throws PollgramParseException {
 
         try {
-            StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR) + Character.toString(NEW_LINE));
+            StringTokenizer strTok = new EscapeStringTokenizer(msg, true);
             strTok.nextToken(); // skip token
             strTok.nextToken(); // skip token
             String decisionTitle = strTok.nextToken();
@@ -322,7 +354,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
-            StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR));
+            StringTokenizer strTok = new EscapeStringTokenizer(msg);
             { //Create decsion
                 strTok.nextToken();//skip this token
                 String title = strTok.nextToken();
@@ -353,7 +385,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         Decision decision;
         Option winningOption;
         try {
-            StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR));
+            StringTokenizer strTok = new EscapeStringTokenizer(msg);
             strTok.nextToken();//skip this token
             String title = strTok.nextToken();
             strTok.nextToken();//skip this token
@@ -398,7 +430,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     private Decision getDecisionInDeleteOrReopenMessage(String msg, int groupChatId) throws PollgramParseException {
         Decision decision;
         try {
-            StringTokenizer strTok = new StringTokenizer(msg, Character.toString(QUOTE_CHAR));
+            StringTokenizer strTok = new EscapeStringTokenizer(msg);
             strTok.nextToken(); // skipt this token
             String decisionTitle = strTok.nextToken();
             Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);

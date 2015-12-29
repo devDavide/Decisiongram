@@ -274,8 +274,8 @@ public class PollgramServiceImpl implements PollgramService {
             throw new PollgramDAOException("Not a group chat message");
         }
         String urlString = ((URLSpanNoUnderline) url).getURL();
-        String decisionTitle = urlString.replace(
-                Character.toString(PollgramMessagesManagerImpl.QUOTE_CHAR), "");
+        String decisionTitle = messageManager.parseMessageField(urlString);
+
         Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
         if (d == null) {
             throw  new PollgramDAOException(ApplicationLoader.applicationContext.

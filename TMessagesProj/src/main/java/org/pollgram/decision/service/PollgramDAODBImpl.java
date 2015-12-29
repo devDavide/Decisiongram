@@ -40,16 +40,15 @@ class PollgramDAODBImpl implements PollgramDAO {
         Log.i(LOG_TAG, "Put Stub test data");
 
         Date creationDate = new Date();
-        Decision d =  new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true);
+        Decision decision1 =  new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true);
 
-        Decision decision1 = getDecisions(chatId, null).get(0);
         List<Option> options = new ArrayList<>();
         options.add(new TextOption("Ski", "They cost 385EUR i saw them at the corner shop", decision1.getId()));
         options.add(new TextOption("Phone", "The new StonexOne is AWESOME !!!", decision1.getId()));
         options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
         options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
 
-        PollgramFactory.getPollgramService().notifyNewDecision(d, options);
+        PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
     }
 
     @Override

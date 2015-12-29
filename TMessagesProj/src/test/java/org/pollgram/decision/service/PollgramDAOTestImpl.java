@@ -20,38 +20,61 @@ import java.util.List;
 public class PollgramDAOTestImpl implements PollgramDAO {
 
     private static final String LOG_TAG = "DecisionDAOImpl";
+    private static int myId = 0;
+
+    static final long DECISION_ID_1 = myId++;
+    static final int DECISION_ID_EMPTY_LONG_DESC = myId++;
+    static final int DECISION_ID_NULL_LONG_DESC = myId++;
+    static final int DECISION_ID_MULTILINE_LONG_DESC = myId++;
+    static final int DECISION_ID_QUOTED_LONG_DESC = myId++;
+
 
     // TODO remove stub field
     private final List<Decision> decisions = new ArrayList<>();
     private final List<Option> textOptions = new ArrayList<>();
     private final List<Vote> votes = new ArrayList<>();
 
-    PollgramDAOTestImpl(int chatId, int creatorId){
-        int id = 1;
+    PollgramDAOTestImpl(int chatId, int creatorId) {
         /// just for test
 
         Date date = new Date();
+        int id = 1;
 
-        decisions.add(new Decision(id++,chatId, creatorId,"what present do we buy ?", id+" i'm huge bla bla bla",date ,true));
-        decisions.add(new Decision(id++, chatId, creatorId, "Where do we go ?", "",date, true));
-        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", null,date, true));
-        decisions.add(new Decision(id++, chatId, creatorId, "When will the party be ?", "this is\na multine\nfucking dscription",date, true));
-        decisions.add(new Decision(id++, chatId, creatorId, "Do we add Slomp to the group ?", id + "huge bla bla bla",date, false));
+        decisions.add(new Decision(DECISION_ID_1, chatId, creatorId, "what present do we buy ?", " i am huge bla bla bla", date, true));
+        textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", DECISION_ID_1));
+        textOptions.add(new TextOption(id++, "Phone", "The new StonexOne is AWESOME !!!", DECISION_ID_1));
+        textOptions.add(new TextOption(id++, "Trip", "Yeah a trip trought Europe can be a nice idea", DECISION_ID_1));
+        textOptions.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/", DECISION_ID_1));
 
-        textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", decisions.get(0).getId()));
-        textOptions.add(new TextOption(id++, "Phone", "The new StonexOne is AWESOME !!!", decisions.get(0).getId()));
-        textOptions.add(new TextOption(id++, "Trip", "Yeah a trip trought Europe can be a nice idea", decisions.get(0).getId()));
-        textOptions.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/", decisions.get(0).getId()));
+        decisions.add(new Decision(DECISION_ID_EMPTY_LONG_DESC, chatId, creatorId, "Where do we go ?", "", date, true));
+        textOptions.add(new TextOption(id++, "it's a pair of Ski", "They cost 385EUR i saw them at the corner shop", DECISION_ID_EMPTY_LONG_DESC));
+        textOptions.add(new TextOption(id++, "Phone", "The new StonexOne's AWESOME !!!", DECISION_ID_EMPTY_LONG_DESC));
+        textOptions.add(new TextOption(id++, "that's a trip. It's", "Yeah a trip trought Europe can be a nice idea", DECISION_ID_EMPTY_LONG_DESC));
+        textOptions.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/", DECISION_ID_EMPTY_LONG_DESC));
+
+        decisions.add(new Decision(DECISION_ID_NULL_LONG_DESC, chatId, creatorId, "When will the party be ?", null, date, true));
+
+        decisions.add(new Decision(DECISION_ID_MULTILINE_LONG_DESC, chatId, creatorId, "When will the party be ?", "this is\na multine\nfucking dscription", date, true));
+        textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", DECISION_ID_MULTILINE_LONG_DESC));
+        textOptions.add(new TextOption(id++, "Phone", "The new StonexOne is AWESOME !!!", DECISION_ID_MULTILINE_LONG_DESC));
+        textOptions.add(new TextOption(id++, "Trip", "Yeah a trip trought Europe can be a nice idea", DECISION_ID_MULTILINE_LONG_DESC));
+        textOptions.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/", DECISION_ID_MULTILINE_LONG_DESC));
+
+        decisions.add(new Decision(DECISION_ID_QUOTED_LONG_DESC, chatId, creatorId, "Do we add Slomp to the group ?", "i'm a huge bla bla", date, true));
+        textOptions.add(new TextOption(id++, "Ski", "They cost 385EUR i saw them at the corner shop", DECISION_ID_QUOTED_LONG_DESC));
+        textOptions.add(new TextOption(id++, "Phone", "The new StonexOne is AWESOME !!!", DECISION_ID_QUOTED_LONG_DESC));
+        textOptions.add(new TextOption(id++, "Trip", "Yeah a trip trought Europe can be a nice idea", DECISION_ID_QUOTED_LONG_DESC));
+        textOptions.add(new TextOption(id++, "A stupid idea", "it is late and i have no more ideas ;-/", DECISION_ID_QUOTED_LONG_DESC));
 
     }
 
     @Override
     public Decision save(Decision d) {
-        Decision foundDecision = getDecision(d.getTitle(),d.getChatId());
+        Decision foundDecision = getDecision(d.getTitle(), d.getChatId());
         return save(d, foundDecision, decisions);
     }
 
-    private<T extends DBBean> T save(T d, T found, List<T> list) {
+    private <T extends DBBean> T save(T d, T found, List<T> list) {
         if (found == null)
             list.add(d);
         else {
@@ -64,7 +87,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
     @Override
     public Decision getDecision(long decisionId) {
-        for (Decision d : decisions){
+        for (Decision d : decisions) {
             if (d.getId() == decisionId)
                 return d;
         }
@@ -74,7 +97,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     @Override
     public List<Decision> getDecisions(int chatId, @Nullable Boolean open) {
         List<Decision> outList = new ArrayList<>();
-        for(Decision d : decisions)
+        for (Decision d : decisions)
             if (open == null || d.isOpen() == open.booleanValue())
                 outList.add(d);
         return outList;
@@ -90,29 +113,31 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
     @Override
     public List<Option> getOptions(Decision decision) {
-        return  getOptions(decision.getId());
+        return getOptions(decision.getId());
 
     }
 
     @Override
     public List<Option> getOptions(long decisionId) {
-        if (decisionId == decisions.get(0).getId() || decisionId == decisions.get(2).getId())
-            return textOptions;
-        else
-            return new ArrayList<>();
+        List<Option> outList = new ArrayList<>();
+        for (Option o : textOptions) {
+            if (o.getDecisionId() == decisionId)
+                outList.add(o);
+        }
+        return outList;
     }
 
     private Vote getVote(int userId, Option option) {
         // TODO so stub
-        long stubId = option.getId()*17;
-        Boolean voteValue = option.getId()%2 ==0 ? true : (option.getId()%3 ==0 ? null : false);
+        long stubId = option.getId() * 17;
+        Boolean voteValue = option.getId() % 2 == 0 ? true : (option.getId() % 3 == 0 ? null : false);
         return new Vote(stubId, voteValue, new Date(), userId, option.getId());
     }
 
 
     public List<TLRPC.User> getUsers(int[] usersIds) {
         List<TLRPC.User> users = new ArrayList<>();
-        for (int i = 0 ; i< usersIds.length ; i++){
+        for (int i = 0; i < usersIds.length; i++) {
             users.add(MessagesController.getInstance().getUser(usersIds[i]));
         }
         return users;
@@ -122,7 +147,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     public List<Vote> getUserVoteForDecision(long decisionId, int userId) {
         List<Vote> votes = new ArrayList<>();
         for (Option c : getOptions(decisionId)) {
-            votes.add(getVote(userId,c));
+            votes.add(getVote(userId, c));
         }
         return votes;
     }
@@ -160,7 +185,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
     @Override
     public Decision getDecision(String decisionTitle, int chatId) {
-        for (Decision d : decisions){
+        for (Decision d : decisions) {
             if (d.getTitle().equals(decisionTitle) && d.getChatId() == chatId)
                 return d;
         }
@@ -169,18 +194,18 @@ public class PollgramDAOTestImpl implements PollgramDAO {
 
     @Override
     public Option getOption(String optionTitle, Decision decision) {
-        for (Option o : textOptions){
-            if (o.getTitle().equals(optionTitle) &&  o.getDecisionId() == decision.getId())
-                return  o;
+        for (Option o : textOptions) {
+            if (o.getTitle().equals(optionTitle) && o.getDecisionId() == decision.getId())
+                return o;
         }
         return null;
     }
 
     @Override
     public Vote getVote(long optionId, int userId) {
-        for (Vote v : votes){
+        for (Vote v : votes) {
             if (v.getOptionId() == optionId && v.getUserId() == userId)
-                return  v;
+                return v;
         }
         return null;
     }

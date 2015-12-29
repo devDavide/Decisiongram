@@ -15,6 +15,7 @@ import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.tgnet.TLRPC;
 
+import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -116,19 +117,45 @@ public class MessagesManagerTest {
     }
 
     @Test
-    public void testNewDecision() throws ParseException, PollgramParseException {
-        for (Decision decision : dao.getDecisions(chat.id, null)) {
-            if (!decision.isOpen())
-                continue;
-            List<Option> options = dao.getOptions(decision);
-            String message = messageManager.buildNotifyNewDecision(decision, options);
+    public void testDecision1() throws PollgramParseException {
+        testNewDecision(dao.getDecision(PollgramDAOTestImpl.DECISION_ID_1));
+    }
 
-            PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
-            Assert.assertEquals(type, PollgramMessagesManager.MessageType.NEW_DECISION);
+    @Test
+    public void testDecisionEmptyLongDescription() throws PollgramParseException {
+        testNewDecision(dao.getDecision(PollgramDAOTestImpl.DECISION_ID_EMPTY_LONG_DESC));
+    }
 
-            assertNewDecision(decision, options, message);
-            assertNewDecision(decision, options, messageManager.reformatMessage(message));
-        }
+    @Test
+    public void testDecisionNullLongDescription() throws PollgramParseException {
+        testNewDecision(dao.getDecision(PollgramDAOTestImpl.DECISION_ID_NULL_LONG_DESC));
+    }
+
+    @Test
+    public void testDecisionMultilineLongDescription() throws PollgramParseException {
+        testNewDecision(dao.getDecision(PollgramDAOTestImpl.DECISION_ID_MULTILINE_LONG_DESC));
+    }
+
+    @Test
+    public void testDecisionQuotedLongDescription() throws PollgramParseException {
+        testNewDecision(dao.getDecision(PollgramDAOTestImpl.DECISION_ID_QUOTED_LONG_DESC));
+    }
+
+    private void testNewDecision(Decision decision) throws PollgramParseException {
+        if (decision == null)
+            throw new InvalidParameterException("decision can not be null");
+
+        if (!decision.isOpen())
+            throw new InvalidParameterException("decision can not be closed");
+
+        List<Option> options = dao.getOptions(decision);
+        String message = messageManager.buildNotifyNewDecision(decision, options);
+
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(type, PollgramMessagesManager.MessageType.NEW_DECISION);
+
+        assertNewDecision(decision, options, message);
+        assertNewDecision(decision, options, messageManager.reformatMessage(message));
     }
 
     private void assertNewDecision(Decision decision, List<Option> options, String message) throws PollgramParseException {

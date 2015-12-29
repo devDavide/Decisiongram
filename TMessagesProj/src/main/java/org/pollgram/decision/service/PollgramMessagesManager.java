@@ -69,6 +69,16 @@ public interface PollgramMessagesManager {
      */
     void addDecisionURLSpan(MessageType type, Spannable charSequence);
 
+    /**
+     * remove unnecessary part of the message, like the link for downloading Pollgram from the market
+     * that is needed just for Telegram client different than Pollgram
+     * @param message
+     * @return
+     */
+    String reformatMessage(String message);
+
+    String parseMessageField(String decisionTitle);
+
 
     /**
      * @param messageObject
@@ -83,13 +93,6 @@ public interface PollgramMessagesManager {
      */
     MessageType getMessageType(String msg);
 
-    /**
-     * remove unnecessary part of the message, like the link for downloading Pollgram from the market
-     * that is needed just for Telegram client different than Pollgram
-     * @param message
-     * @return
-     */
-    String reformatMessage(String message);
 
     /**
      * Build message for notify a vote transaction
