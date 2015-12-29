@@ -4,6 +4,7 @@ import android.content.Context;
 import android.text.TextUtils;
 import android.util.TypedValue;
 import android.view.Gravity;
+import android.widget.EditText;
 import android.widget.TextView;
 
 import org.pollgram.R;
@@ -75,6 +76,19 @@ class UIUtils {
                 Gravity.TOP | Gravity.LEFT, 36, 0, 40, 0));
 
         return subtitleTextView;
+    }
+
+    /**
+     * @param ed
+     * @return a string from and edit text trimming it and removing non necessary newline suffix
+     */
+    public static String getText(EditText ed){
+        if (ed == null || ed.getText() == null)
+            return null;
+        String text = ed.getText().toString().trim();
+        if (text.charAt(text.length()-1) == '\n')
+            text = text.substring(1,text.length()-2);
+        return text;
     }
 
 

@@ -64,7 +64,7 @@ public class Vote extends DBBean {
 
     @Override
     public String toString() {
-        return "vote : " + vote;
+        return vote == null ? null : Boolean.toString(vote);
     }
 
     @Override

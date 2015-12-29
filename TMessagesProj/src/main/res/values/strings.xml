@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 
-
-
 <resources>
     <string name="AppName">Pollgram</string>
     <string name="LanguageName">English</string>
@@ -1042,6 +1040,7 @@
     <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
     <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?</string>
     <string name="you">you</string>
+    <string name="closeDecisionQuestion">Only %1$d users out of %2$d voted yet.\nAfter closing the decision it will be no longer possible for other users to vote, unless the decision will be reopened.\nAre you sure to close this decision ?</string>
 
     <!-- END of Pollgram text -->
 

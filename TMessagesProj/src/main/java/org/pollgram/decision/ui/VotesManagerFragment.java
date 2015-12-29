@@ -35,9 +35,9 @@ public class VotesManagerFragment extends BaseFragment {
 
     // menu ids
     private static int nextId = 1;
-    private static final int ID_CLOSE_DECISOIN = nextId++;
-    private static final int ID_REOPEN_DECISOIN = nextId++;
-    private static final int ID_DELETE_DECISOIN = nextId++;
+    private static final int ID_CLOSE_DECISION = nextId++;
+    private static final int ID_REOPEN_DECISION = nextId++;
+    private static final int ID_DELETE_DECISION = nextId++;
 
 
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
@@ -82,9 +82,9 @@ public class VotesManagerFragment extends BaseFragment {
         tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
-        menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISOIN, context.getString(R.string.closeDecision), 0);
-        menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISOIN, context.getString(R.string.reopenDecision), 0);
-        menuDeleteDecisionItem =headerItem.addSubItem(ID_DELETE_DECISOIN, context.getString(R.string.deleteDecision), 0);
+        menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION, context.getString(R.string.closeDecision), 0);
+        menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISION, context.getString(R.string.reopenDecision), 0);
+        menuDeleteDecisionItem =headerItem.addSubItem(ID_DELETE_DECISION, context.getString(R.string.deleteDecision), 0);
         
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -94,7 +94,7 @@ public class VotesManagerFragment extends BaseFragment {
                     finishFragment();
                     return;
                 }
-                if (id == ID_DELETE_DECISOIN) {
+                if (id == ID_DELETE_DECISION) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage(R.string.deleteDecisionQuestion).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -109,21 +109,41 @@ public class VotesManagerFragment extends BaseFragment {
                             // nothing to do11
                         }
                     }).show();
+                    return;
                 }
-                int stringId;
-                if (id == ID_CLOSE_DECISOIN) {
-                    pollgramService.notifyClose(decision);
-                    stringId = R.string.decisionClosed;
-                } else if (id == ID_REOPEN_DECISOIN) {
+                if (id == ID_CLOSE_DECISION) {
+                    int voteCount = pollgramDAO.getUserVoteCount(decision);
+                    int membersCount = participantsUserIds.length;
+                    if (voteCount == membersCount) {
+                        // all users voted al least one option for the current decision
+                        closeDecision();
+                    } else {
+                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
+                        builder.setMessage(context.getString(R.string.closeDecisionQuestion, voteCount, membersCount));
+                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                closeDecision();
+                            }
+                        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // nothing to do11
+                            }
+                        }).show();
+                    }
+
+                } else if (id == ID_REOPEN_DECISION) {
                     pollgramService.notifyReopen(decision);
-                    stringId = R.string.decisionReopened;
+                    Toast.makeText(context, context.getString(R.string.decisionReopened), Toast.LENGTH_SHORT).show();
+                    votesManagerTabsFragment.updateView();
+                    updateView();
                 } else {
+
                     Log.e(LOG_TAG, "Unknown action id[" + id + "]");
                     return;
                 }
-                votesManagerTabsFragment.updateView();
-                updateView();
-                Toast.makeText(context, context.getString(stringId), Toast.LENGTH_SHORT).show();
+
             }
         });
         fragmentView = new SizeNotifierFrameLayout(context);
@@ -149,6 +169,14 @@ public class VotesManagerFragment extends BaseFragment {
 
         return rootView;
     }
+
+    private void closeDecision() {
+        pollgramService.notifyClose(decision);
+        Toast.makeText(getParentActivity(), getParentActivity().getString(R.string.decisionClosed), Toast.LENGTH_SHORT).show();
+        votesManagerTabsFragment.updateView();
+        updateView();
+    }
+
 
     private void updateView(){
         Context ctx = getParentActivity();

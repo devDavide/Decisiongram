@@ -58,7 +58,6 @@ public class NewDecisionFragment extends BaseFragment {
     private String decisionTitle;
     private ActionBarMenuItem nextItemMenu;
 
-
     public NewDecisionFragment(Bundle args) {
         super(args);
     }
@@ -199,8 +198,9 @@ public class NewDecisionFragment extends BaseFragment {
         return;
     }
 
+
     private void nextStep() {
-        String title = edTitle.getText().toString();
+        String title = UIUtils.getText(edTitle);
         if (title == null || title.trim().isEmpty()){
             Toast.makeText(getParentActivity(), R.string.pleaseSelectATitle, Toast.LENGTH_SHORT).show();
             return;
@@ -212,7 +212,7 @@ public class NewDecisionFragment extends BaseFragment {
         }
 
         decisionTitle = title;
-        decisionLongDescription = edLongDescription.getText().toString();
+        decisionLongDescription = UIUtils.getText(edLongDescription);
         showPage2();
     }
 
