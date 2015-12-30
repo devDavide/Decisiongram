@@ -91,11 +91,9 @@ public class OptionDetailFragment extends BaseFragment {
         edLongDesc.setText(option.getLongDescription());
         tvMissing.setText(context.getString(R.string.missingVoteDesc, missingVoteCount, percs.emptyPerc * 100 ));
         tvPositive.setText(context.getString(R.string.positiveVoteDesc, positiveVoteCount, percs.positivePerc * 100));
-        tvPositive.setTextColor(StackedBar.POSITIVE_VOTE_COLOR);
         tvNegative.setText(context.getString(R.string.negativeVoteDesc, negativeVoteCount, percs.negativePerc * 100));
-        tvNegative.setTextColor(StackedBar.NEGATIVE_VOTE_COLOR);
 
-        stackedBar.setText("123456789123");
+        stackedBar.setText("123456789");
         stackedBarContainer.addView(stackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         return fragmentView;
