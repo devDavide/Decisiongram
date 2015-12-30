@@ -157,7 +157,7 @@ public class VotesManagerFragment extends BaseFragment {
         updateView();
 
         android.support.v4.app.FragmentTransaction transaction = getParentActivity().getSupportFragmentManager().beginTransaction();
-        votesManagerTabsFragment = new VotesManagerTabsFragment(){
+        votesManagerTabsFragment = new VotesManagerTabsFragment(this){
             @Override
             protected void onVoteSaved() {
                 updateView();

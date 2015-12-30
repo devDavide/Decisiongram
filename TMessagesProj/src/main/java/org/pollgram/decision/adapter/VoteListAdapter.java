@@ -1,6 +1,7 @@
 package org.pollgram.decision.adapter;
 
 import android.content.Context;
+import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -17,7 +18,9 @@ import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.ui.OptionDetailFragment;
 import org.pollgram.decision.ui.StackedBar;
+import org.telegram.ui.ActionBar.BaseFragment;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -35,6 +38,8 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
     private final LayoutInflater inflater;
+    private final BaseFragment baseFragment;
+    private final int[] participantsUserIds;
     private boolean editable;
     private int maxVote;
     private List<Vote> votes;
@@ -43,12 +48,15 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private OnVoteChangeListener onVoteChangeListener;
     private UsersDecisionVotes usersDecisionVotes;
 
+
     public interface OnVoteChangeListener {
         void voteChanges(boolean areThereChangesToSave);
     }
 
-    public VoteListAdapter(Context context, boolean editable) {
-        super(context, LAYOUT_RES_ID);
+    public VoteListAdapter(BaseFragment baseFragment, int[] participantsUserIds,  boolean editable) {
+        super(baseFragment.getParentActivity(), LAYOUT_RES_ID);
+        this.baseFragment = baseFragment;
+        this.participantsUserIds = participantsUserIds;
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.editable = editable;
         this.onVoteChangeListener = new OnVoteChangeListener() {
@@ -147,16 +155,29 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
             }
         });
 
+        View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong(OptionDetailFragment.PAR_OPTION_ID, o.getId());
+                bundle.putLong(OptionDetailFragment.PAR_DECISION_ID, o.getDecisionId());
+                bundle.putIntArray(OptionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
+                baseFragment.presentFragment(new OptionDetailFragment(bundle));
+            }
+        };
         // TODO optionImage
 
         // Set values
         optionTitle.setText(o.getTitle());
+        optionTitle.setOnClickListener(openOptionDetailOnClickLister);
+        optionSubtitle.setText(o.getLongDescription());
+        optionSubtitle.setOnClickListener(openOptionDetailOnClickLister);
 
         int positiveVoteCount = getPositiveVoteCount(o);
         optionVoteCount.setText(formatVoteCount(positiveVoteCount));
         //noinspection ResourceType
         starImageView.setVisibility(getStartVisibility(positiveVoteCount));
-        optionSubtitle.setText(o.getLongDescription());
+
 
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
                 positiveVoteCount, usersDecisionVotes.getUserThatVoteCount());

@@ -47,8 +47,6 @@ public interface PollgramDAO {
 
     List<Option> getOptions(long decisionId);
 
-    List<Vote> getUserVoteForDecision(long decisionId, int userId);
-
     /**
      * Votes for given decisionId and userId. UserId can be null, in this case will reurn the
      * votes for any user

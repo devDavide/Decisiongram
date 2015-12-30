@@ -202,11 +202,6 @@ class PollgramDAODBImpl implements PollgramDAO {
         return outList;
     }
 
-    @Override
-    public List<Vote> getUserVoteForDecision(long decisionId, int userId) {
-        return getVotes(decisionId, userId);
-    }
-
     /**
      * Votes for given decisionId and userId. UserId can be null, in this case will reurn the
      * votes for any user

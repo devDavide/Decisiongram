@@ -1041,6 +1041,11 @@
     <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?</string>
     <string name="you">you</string>
     <string name="closeDecisionQuestion">Only %1$d users out of %2$d voted yet.\nAfter closing the decision it will be no longer possible for other users to vote, unless the decision will be reopened.\nAre you sure to close this decision ?</string>
+    <string name="optionDetailTitle">Option detail</string>
+    <string name="missingVoteDesc">Missing: %1$d (%2$.1f%%)</string>
+    <string name="positiveVoteDesc">Positive: %1$d (%2$.1f%%)</string>
+    <string name="negativeVoteDesc">Negative: %1$d (%2$.1f%%)</string>
+    <string name="voteSummary">Votes Summary</string>
 
     <!-- END of Pollgram text -->
 

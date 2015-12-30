@@ -14,6 +14,9 @@ public class StackedBar extends TextView {
     private static final String LOG_TAG ="DRAW_VIEW";
 
     private static final String PROTOTYPE_TEXT_VALUE = "aaaa\naaaa\naaaa\naaaa" ;
+    static final int MISSING_VOTE_COLOR = Color.WHITE;
+    static final int POSITIVE_VOTE_COLOR = Color.GREEN;
+    static final int NEGATIVE_VOTE_COLOR = Color.RED;
 
     private final Percs percs;
     private final Paint paint;
@@ -70,7 +73,9 @@ public class StackedBar extends TextView {
         paint = new Paint();
     }
 
-
+    public Percs getPercs() {
+        return percs;
+    }
 
     @Override
     protected void onLayout(boolean changed, int left, int top, int right, int bottom) {
@@ -102,17 +107,17 @@ public class StackedBar extends TextView {
         myBottom -= externalStroke;
         width -= (externalStroke *2);
         height -= (externalStroke*2);
-        paint.setColor(Color.WHITE);
+        paint.setColor(MISSING_VOTE_COLOR);
         canvas.drawRect(left, top, myRight, myBottom, paint);
 
-        paint.setColor(Color.GREEN);
+        paint.setColor(POSITIVE_VOTE_COLOR);
         float myLeft = left;
         float myTop = top + (height * percs.emptyPerc);
         myRight = left + width;
         myBottom = myTop + (height * percs.positivePerc) ;
         canvas.drawRect(myLeft, myTop, myRight, myBottom, paint);
 
-        paint.setColor(Color.RED);
+        paint.setColor(NEGATIVE_VOTE_COLOR);
         myTop = myBottom;
         myBottom = top + height;
         canvas.drawRect(myLeft, myTop, myRight, myBottom, paint);

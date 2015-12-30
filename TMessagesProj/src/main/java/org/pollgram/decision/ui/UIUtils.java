@@ -86,8 +86,9 @@ class UIUtils {
         if (ed == null || ed.getText() == null)
             return null;
         String text = ed.getText().toString().trim();
-        if (text.charAt(text.length()-1) == '\n')
-            text = text.substring(1,text.length()-2);
+
+        if (text.length() > 2 && text.charAt(text.length()-1)== '\n')
+            text = text.substring(0,text.length()-2);
         return text;
     }
 

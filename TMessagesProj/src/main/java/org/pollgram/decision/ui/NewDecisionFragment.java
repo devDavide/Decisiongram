@@ -57,6 +57,7 @@ public class NewDecisionFragment extends BaseFragment {
     private String decisionLongDescription;
     private String decisionTitle;
     private ActionBarMenuItem nextItemMenu;
+    private LayoutInflater layoutInflater;
 
     public NewDecisionFragment(Bundle args) {
         super(args);
@@ -81,7 +82,8 @@ public class NewDecisionFragment extends BaseFragment {
         fragmentView = new SizeNotifierFrameLayout(context);
         ActionBarMenu menu = actionBar.createMenu();
         nextItemMenu = menu.addItem(NEXT_MENU_ITEM_ID, 0);
-        newOptionAdapter = new NewOptionsAdapter(getParentActivity());
+        newOptionAdapter = new NewOptionsAdapter(context);
+        layoutInflater = LayoutInflater.from(context);
         getParentActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 
         showPage1();
@@ -115,8 +117,8 @@ public class NewDecisionFragment extends BaseFragment {
             }
 
         });
-        LayoutInflater li = LayoutInflater.from(getParentActivity());
-        View myView = li.inflate(R.layout.new_decision_step1_layout, (ViewGroup) fragmentView);
+
+        View myView = layoutInflater.inflate(R.layout.new_decision_step1_layout, (ViewGroup) fragmentView);
 
         edTitle = (EditText) myView.findViewById(R.id.new_decision_ed_title);
         edTitle.setText(decisionTitle);
@@ -173,9 +175,7 @@ public class NewDecisionFragment extends BaseFragment {
 
         });
 
-
-        LayoutInflater li = LayoutInflater.from(getParentActivity());
-        ViewGroup myView = (ViewGroup) li.inflate(R.layout.new_decision_step2_layout, (ViewGroup) fragmentView);
+        ViewGroup myView = (ViewGroup) layoutInflater.inflate(R.layout.new_decision_step2_layout, (ViewGroup) fragmentView);
         ListView newOptionListView = (ListView) myView.findViewById(R.id.new_decisions_option_list_view);
         newOptionListView.setAdapter(newOptionAdapter);
     }

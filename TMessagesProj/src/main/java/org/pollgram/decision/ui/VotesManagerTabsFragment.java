@@ -48,6 +48,7 @@ import org.pollgram.decision.service.PollgramService;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.UserConfig;
 import org.telegram.tgnet.TLRPC;
+import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.AvatarDrawable;
 import org.telegram.ui.Components.BackupImageView;
 import org.telegram.ui.Components.LayoutHelper;
@@ -58,6 +59,7 @@ import java.util.Date;
 public abstract class VotesManagerTabsFragment extends Fragment {
 
     static final String LOG_TAG = "SlidingTabs";
+    private final BaseFragment parentFragment;
 
     private SlidingTabLayout slidingTabLayout;
     private ViewPager viewPager;
@@ -70,8 +72,11 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private ViewGroup optionTableViewContainer;
     private long groupChatId;
     private VoteListAdapter voteListAdapter;
+    private int[] participantsUserIds;
 
-    public VotesManagerTabsFragment() {
+
+    public VotesManagerTabsFragment(BaseFragment parentFragment) {
+        this.parentFragment = parentFragment;
     }
 
     @Override
@@ -82,7 +87,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         pollgramService = PollgramFactory.getPollgramService();
         groupChatId = getArguments().getLong(VotesManagerFragment.PAR_GROUP_CHAT_ID);
         long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
-        int[] participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
+        participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
         usersDecisionVotes = pollgramService.getUsersDecisionVotes(decisionId, participantsUserIds);
         currentUserId = UserConfig.getCurrentUser().id;
     }
@@ -203,7 +208,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         View rootView;
         rootView = inflater.inflate(R.layout.votes_manager_list_tab, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.decision_option_lw_options);
-        voteListAdapter = new VoteListAdapter(getActivity(),
+        voteListAdapter = new VoteListAdapter(parentFragment, participantsUserIds,
                 usersDecisionVotes.getDecision().isOpen());
         voteListAdapter.setData(usersDecisionVotes, currentUserId);
         listView.setAdapter(voteListAdapter);
