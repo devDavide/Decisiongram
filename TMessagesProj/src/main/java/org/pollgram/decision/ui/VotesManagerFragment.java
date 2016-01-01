@@ -118,8 +118,14 @@ public class VotesManagerFragment extends BaseFragment {
                         // all users voted al least one option for the current decision
                         closeDecision();
                     } else {
+                        StringBuilder message =  new StringBuilder();
+                        if (voteCount == 1)
+                            message.append(context.getString(R.string.closeDecisionQuestionPrefixSingle, voteCount, membersCount));
+                        else
+                            message.append(context.getString(R.string.closeDecisionQuestionPrefixMulti, voteCount, membersCount));
+                        message.append(context.getString(R.string.closeDecisionQuestionSuffix));
                         AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage(context.getString(R.string.closeDecisionQuestion, voteCount, membersCount));
+                        builder.setMessage(message.toString());
                         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {

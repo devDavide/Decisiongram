@@ -30,7 +30,10 @@ import java.util.StringTokenizer;
 class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     private static final String LOG_TAG = "MessageTransactions";
 
-    private static final String GOOGLE_PLAY_POOLGRAM_URL = "https://play.google.com/store/apps/details?id=org.pollgram";
+    // TODO update
+    //private static final String GOOGLE_PLAY_POOLGRAM_URL = "https://play.google.com/store/apps/details?id=org.pollgram";
+    private static final String GOOGLE_PLAY_POOLGRAM_URL = "https://www.dropbox.com/s/nsze0j0lvnsdngb/Pollgram.apk?dl=0";
+
 
     private static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
     protected static final char QUOTE_CHAR = '\'';

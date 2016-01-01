@@ -16,7 +16,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:id="@+id/new_option_ed_title"
-        android:hint="@string/insertTitleHint"
+        android:hint="@string/insertOptionTitleHint"
         android:singleLine = "true"
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/imageView"

@@ -951,4 +951,110 @@
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.2.0:\n\n- Nuovi Canali - una nuova modalità per diffondere i tuoi messaggi ad un pubblico infinito (rimpiazzano le vecchie liste broadcast).\n\nPiù info: https://telegram.org/blog/channels</string>
     <string name="updateBuild">614</string>
+
+
+    <!-- START of Pollgram text -->
+
+    <!-- START of POLLGRAM transaction messages -->
+    <string name="downloadPollgramFromMarket">Scarica Pollgram qui </string>
+    <string name="yes">si</string>
+    <string name="no">no</string>
+
+    <string name="tmsg_RemindToVoteP1">Hey</string>
+    <!-- between P1 and P2 goes the username -->
+    <string name="tmsg_RemindToVoteP2">puoi votare per favore per la decisione</string>
+    <!-- between P2 and P3 goes the decision title -->
+    <string name="tmsg_RemindToVoteP3">Grazie</string>
+
+    <string name="tmsg_NewDecisionMsgPrefix">Ho creato la nuova decisione</string>
+    <!-- between MsgPrefix and OptionsPrefix goes the decision title, and long description -->
+    <string name="tmsg_NewDecisionOptionsPrefix">Le opzioni disponibili sono:</string>
+    <!-- after OptionsPrefix goes options -->
+
+    <string name="tmsg_Vote">Ho votato per la decisione</string>
+    <!-- after tmsg_Vote goes the decision title -->
+
+    <string name="tmsg_CloseDecisionP1">La decisione</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_CloseDecisionP2">, è stata chiusa. L\'opzione che ha ricevuto più voti è</string>
+    <!--after P2 goes the winning option title -->
+    <string name="tmsg_CloseDecisionNoOptionDesc">nessuna opzione</string>
+    <string name="tmsg_CloseDecisionP3">con</string>
+    <string name="tmsg_CloseDecisionP4"> voti.</string>
+
+    <string name="tmsg_ReopenDecisionPrefix">La decisione</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_ReopenDecisionSuffix">è sata riaperta. È nuovamente possibile votare.</string>
+
+    <string name="tmsg_DeleteDecisionPrefix">La decisione</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_DeleteDecisionSuffix">è stata rimossa definitivamente.</string>
+
+    <!-- END of POLLGRAM transaction messages -->
+
+    <!-- START MessageType descriptions -->
+    <string name="MessageType_REMIND_TO_VOTE">Promemoria voto</string>
+    <string name="MessageType_NEW_DECISION">Nuova decisione</string>
+    <string name="MessageType_VOTE">Voto</string>
+    <string name="MessageType_CLOSE_DECISION">Chiusura decisione</string>
+    <string name="MessageType_REOPEN_DECISION">Riapertura decisione</string>
+    <string name="MessageType_DELETE_DECISION">Cancellazione decisione</string>
+    <!-- END MessageType descriptions -->
+
+
+    <string name="howManyMemberVote">%1$d su %2$d hanno votato</string>
+    <string name="createdByUserOnDayNewLine">Creata da %1$s \nil %2$s</string>
+    <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
+    <string name="decisionStatus">La decisione è %1$s</string>
+    <string name="statusOpen">aperta</string>
+    <string name="statusClose">chiusa</string>
+    <string name="groupDecision">Decisioni del gruppo</string>
+    <string name="decisionsCount">%1$d aperte, %2$d chiuse</string>
+
+    <string name="viewCloseDecision">Mostra decisioni chiuse</string>
+    <string name="hideCloseDecision">Nascondi decisioni chiuse</string>
+
+    <string name="optionTabName">Opzioni</string>
+    <string name="tableViewTabName">Tabella Voti</string>
+    <string name="saveVotes">Salva</string>
+    <string name="voteSaved">Voti salvati</string>
+    <string name="noVoteDesc">\?</string>
+    <string name="noOptionPresent">Non ci sono opzioni\n per questa decisione</string>
+    <string name="remindToUserSent">Promeoria inviato a %1$s</string>
+    <string name="closeDecision">Chiudi decisione</string>
+    <string name="reopenDecision">Riapri decisione</string>
+    <string name="deleteDecision">Cancella decision</string>
+
+    <string name="decisionClosed">Decisione chiusa</string>
+    <string name="decisionReopened">Decisione riaperta</string>
+    <string name="decisionDeleted">Decisione cancellata</string>
+    <string name="decisionNotFound">Decisione %1$s not trovata, potrebbe essere stata cancellata.</string>
+    <string name="title">Titolo</string>
+    <string name="notes">Note</string>
+    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.</string>
+    <string name="insertTitleHint">Inserire il titolo qui</string>
+    <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
+    <string name="insertLongDescriptionHint">Inserire qui le note aggiuntive</string>
+    <string name="newDecision">Nuova decisione</string>
+    <string name="selectOptions">Selezionare le opzioni</string>
+    <string name="pleaseSelectATitle">Scegliere un titolo</string>
+    <string name="newOption">Nuova opzione</string>
+    <string name="decisionSaved">La decisione è stata salvata</string>
+    <string name="pleaseSelectATitleForOption">È necessario selezionafdre un titolo per l\'ultima opzione, prima aggiungerne una nuova.</string>
+    <string name="decisionAlreadyExist">Attenzione! Esiste già una decisione con questo titolo per questo!</string>
+    <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
+    <string name="saveDecisionQuestion">Salvare la decisione %1$s con %2$d \opzioni ?</string>
+    <string name="you">te</string>
+    <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d hano votato.</string>
+    <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hano votato.</string>
+    <string name="closeDecisionQuestionSuffix">\nDopo aver chiuso la decisione non sarà più possibile per gli altri utenti votare a meno che la decisione non venga riaperta.\nSei sicuro di chiudere questa decisione ?</string>
+    <string name="optionDetailTitle">Dettagli opzione</string>
+    <string name="missingVoteDesc">Mancanti: %1$d\n (%2$.1f%%)</string>
+    <string name="positiveVoteDesc">Positivi: %1$d\n (%2$.1f%%)</string>
+    <string name="negativeVoteDesc">Negativi: %1$d\n (%2$.1f%%)</string>
+    <string name="voteSummary">Riepilogo voti</string>
+
+    <!-- END of Pollgram text -->
+
+
 </resources>
