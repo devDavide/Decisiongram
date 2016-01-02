@@ -290,6 +290,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 TextView tvOption = new TextView(getContext());
                 tvOption.setText(option.getTitle());
                 tvOption.setTypeface(tvOption.getTypeface(), Typeface.BOLD);
+                tvOption.setBackgroundResource(R.drawable.cell_normal);
                 UIUtils.setDynamicTextSize(tvOption);
                 add2Row(row, tvOption, firstRowHeight);
             }
@@ -310,7 +311,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
                 ImageView starImageView = new ImageView(getContext());
                 starImageView.setImageResource(R.drawable.assign_manager);
-                starImageView.setVisibility(usersDecisionVotes.isWinningOption(option) ? View.VISIBLE : View.INVISIBLE);
+                starImageView.setVisibility(usersDecisionVotes.isWinningOption(option) ? View.VISIBLE : View.GONE);
                 starImageView.setPadding(AndroidUtilities.dp(4), 0, AndroidUtilities.dp(4), 0);
                 rowLayout.addView(starImageView);
 
@@ -322,6 +323,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 tvVoteCount.setHeight(secondRowHeight);
                 rowLayout.addView(tvVoteCount);
 
+                rowLayout.setBackgroundResource(R.drawable.cell_normal);
                 add2Row(row, rowLayout,secondRowHeight);
             }
             tableLayout.addView(row);
