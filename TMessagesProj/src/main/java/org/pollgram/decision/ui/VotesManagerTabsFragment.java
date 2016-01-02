@@ -282,20 +282,16 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
         // build first row
         {
-            int firstRowHeight = AndroidUtilities.dp(40);
+            int firstRowHeight = AndroidUtilities.dp(50);
             TableRow row = newRow();
             // first cell is empty
             TextView emptyCell = new TextView(getContext());
             for (Option option : usersDecisionVotes.getOptions()) {
-                TextView tvChoice = new TextView(getContext());
-                tvChoice.setText(option.getTitle());
-                tvChoice.setGravity(Gravity.CENTER);
-                tvChoice.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
-                tvChoice.setTypeface(tvChoice.getTypeface(), Typeface.BOLD);
-                tvChoice.setEllipsize(TextUtils.TruncateAt.END);
-                tvChoice.setLines(1);
-                tvChoice.setWidth(AndroidUtilities.dp(80));
-                add2Row(row, tvChoice, firstRowHeight);
+                TextView tvOption = new TextView(getContext());
+                tvOption.setText(option.getTitle());
+                tvOption.setTypeface(tvOption.getTypeface(), Typeface.BOLD);
+                UIUtils.setDynamicTextSize(tvOption);
+                add2Row(row, tvOption, firstRowHeight);
             }
             tableLayout.addView(row);
             fixedColumn.addView(emptyCell, ViewGroup.LayoutParams.WRAP_CONTENT, firstRowHeight);
@@ -307,12 +303,26 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
             TableRow row = newRow();
             for (Option option : usersDecisionVotes.getOptions()) {
+                LinearLayout rowLayout = new LinearLayout(getContext());
+                rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, secondRowHeight));
+                rowLayout.setOrientation(LinearLayout.HORIZONTAL);
+                rowLayout.setGravity(Gravity.CENTER);
+
+                ImageView starImageView = new ImageView(getContext());
+                starImageView.setImageResource(R.drawable.assign_manager);
+                starImageView.setVisibility(usersDecisionVotes.isWinningOption(option) ? View.VISIBLE : View.INVISIBLE);
+                starImageView.setPadding(AndroidUtilities.dp(4), 0, AndroidUtilities.dp(4), 0);
+                rowLayout.addView(starImageView);
+
+
                 TextView tvVoteCount = new TextView(getContext());
                 tvVoteCount.setTextSize(18);
                 tvVoteCount.setGravity(Gravity.CENTER);
                 tvVoteCount.setText(Integer.toString(usersDecisionVotes.getPositiveVoteCount(option)));
                 tvVoteCount.setHeight(secondRowHeight);
-                add2Row(row, tvVoteCount, secondRowHeight);
+                rowLayout.addView(tvVoteCount);
+
+                add2Row(row, rowLayout,secondRowHeight);
             }
             tableLayout.addView(row);
             fixedColumn.addView(emptyCell, ViewGroup.LayoutParams.WRAP_CONTENT, secondRowHeight);

@@ -36,6 +36,7 @@ public class UsersDecisionVotes {
     private final List<TLRPC.User> users;
     private final List<Option> options;
     private final Map<UserIdOptionKey, Vote> voteMap = new HashMap<>();
+    private int maxVote;
 
     public UsersDecisionVotes(Decision decision, List<TLRPC.User> users, List<Option> optionsPar, List<Vote> votes) {
         this.decision = decision;
@@ -60,6 +61,13 @@ public class UsersDecisionVotes {
             voteMap.put(new UserIdOptionKey(v.getUserId(), option.getId()), v);
         }
         Collections.sort(options,optionsComparator);
+
+        // calculate max votes
+        maxVote = 0;
+        for (Option o : getOptions()){
+            maxVote = Math.max(maxVote, getPositiveVoteCount(o));
+        }
+
     }
 
     public Decision getDecision(){
@@ -118,8 +126,10 @@ public class UsersDecisionVotes {
     public void setVote(int userID, Option option, Vote vote){
         voteMap.put(new UserIdOptionKey(userID,option.getId()), vote);
         // update cache
-        cachedPositiveVoteCount.put(option,calculateVoteCount(option));
+        Integer positiveVoteCout = calculateVoteCount(option);
+        cachedPositiveVoteCount.put(option, positiveVoteCout);
         Collections.sort(options, optionsComparator);
+        maxVote = Math.max(maxVote, positiveVoteCout);
     }
 
     private final Map<Option, Integer> cachedPositiveVoteCount = new HashMap<>();
@@ -157,5 +167,10 @@ public class UsersDecisionVotes {
         }
         Log.d(LOG_TAG, "Option ["+optionId+"] not found.");
         return null;
+    }
+
+    public boolean isWinningOption(Option o){
+        int count = getPositiveVoteCount(o);
+        return  count != 0 && count == maxVote;
     }
 }

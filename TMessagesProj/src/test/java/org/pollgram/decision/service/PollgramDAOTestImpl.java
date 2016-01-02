@@ -144,17 +144,12 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
-    public List<Vote> getUserVoteForDecision(long decisionId, int userId) {
+    public List<Vote> getVotes(long decisionId, @Nullable Integer userId) {
         List<Vote> votes = new ArrayList<>();
         for (Option c : getOptions(decisionId)) {
             votes.add(getVote(userId, c));
         }
         return votes;
-    }
-
-    @Override
-    public List<Vote> getVotes(long decisionId, @Nullable Integer userId) {
-        return null;
     }
 
     @Override

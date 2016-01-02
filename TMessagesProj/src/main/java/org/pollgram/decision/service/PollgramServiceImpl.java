@@ -220,7 +220,7 @@ public class PollgramServiceImpl implements PollgramService {
         long peer = -groupChatId;
         MessageObject replyToMsg = null;
         TLRPC.WebPage webPAge = null;
-        boolean searchLinks = true;
+        boolean searchLinks = false;
         boolean asAdmin = false;
         SendMessagesHelper.getInstance().sendMessage(message, peer, replyToMsg, webPAge, searchLinks, asAdmin);
         Log.i(LOG_TAG, "sent message [" + message + "] in group [" + groupChatId + "]");

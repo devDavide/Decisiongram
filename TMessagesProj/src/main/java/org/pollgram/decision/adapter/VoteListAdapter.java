@@ -41,7 +41,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private final BaseFragment baseFragment;
     private final int[] participantsUserIds;
     private boolean editable;
-    private int maxVote;
     private List<Vote> votes;
     private List<Boolean> originalVotes;
     private Map<Option,Vote> newVotes;
@@ -74,19 +73,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         for (Vote v : votes){
             originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
         }
-        updateMaxVote();
-    }
-
-    private void updateMaxVote() {
-        maxVote = 0;
-        for (Option o : usersDecisionVotes.getOptions()){
-            maxVote = Math.max(maxVote, getPositiveVoteCount(o));
-        }
-    }
-
-    private int getPositiveVoteCount(Option o) {
-        int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
-        return  positiveVoteCount;
     }
 
     public void setEditable(boolean editable) {
@@ -150,7 +136,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
                 usersDecisionVotes.setVote(vote.getUserId(),o, vote);
                 onVoteChangeListener.voteChanges(!newVotes.isEmpty());
-                updateMaxVote();
                 notifyDataSetChanged();
             }
         });
@@ -173,10 +158,10 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         optionSubtitle.setText(o.getLongDescription());
         optionSubtitle.setOnClickListener(openOptionDetailOnClickLister);
 
-        int positiveVoteCount = getPositiveVoteCount(o);
+        int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
         optionVoteCount.setText(formatVoteCount(positiveVoteCount));
         //noinspection ResourceType
-        starImageView.setVisibility(getStartVisibility(positiveVoteCount));
+        starImageView.setVisibility(usersDecisionVotes.isWinningOption(o) ? View.VISIBLE : View.INVISIBLE);
 
 
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
@@ -186,11 +171,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
         return rowView;
-    }
-
-    private int getStartVisibility(int positiveVoteCount) {
-        return positiveVoteCount == maxVote && positiveVoteCount > 0 ?
-                View.VISIBLE : View.INVISIBLE;
     }
 
     private String formatVoteCount(int positiveVoteCount) {

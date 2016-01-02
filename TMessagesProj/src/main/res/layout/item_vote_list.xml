@@ -24,6 +24,7 @@
         android:layout_alignParentTop="true"
         android:layout_toRightOf="@+id/item_option_iv_image"
         android:paddingLeft="8dp"
+        android:ellipsize="end"
         android:maxLines="2"
         android:text="Title that can dskfjsdkl dklsjfklsdjf klsjsklfdlong"
         android:textAppearance="?android:attr/textAppearanceLarge"
