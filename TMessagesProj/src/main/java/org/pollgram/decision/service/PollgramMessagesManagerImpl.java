@@ -266,7 +266,12 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         if (type == null) {
             return message;
         }
-        message = message.replace(getTailingString(), "");
+        // remove GOOGLE_PLAY_POOLGRAM_URL
+        int end = message.lastIndexOf('\n')-1;
+        if (end > 0) {
+            if (message.substring(end).contains("http"))
+                message = message.substring(0, end);
+        }
         // Test will fail if uncomment the follwing row
         // message = parseMessageField(message);
         return message;
