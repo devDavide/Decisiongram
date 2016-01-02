@@ -1023,7 +1023,7 @@
     <string name="remindToUserSent">Promeoria inviato a %1$s</string>
     <string name="closeDecision">Chiudi decisione</string>
     <string name="reopenDecision">Riapri decisione</string>
-    <string name="deleteDecision">Cancella decision</string>
+    <string name="deleteDecision">Cancella decisione</string>
 
     <string name="decisionClosed">Decisione chiusa</string>
     <string name="decisionReopened">Decisione riaperta</string>
@@ -1031,7 +1031,7 @@
     <string name="decisionNotFound">Decisione %1$s not trovata, potrebbe essere stata cancellata.</string>
     <string name="title">Titolo</string>
     <string name="notes">Note</string>
-    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.</string>
+    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.\nContinuare ?</string>
     <string name="insertTitleHint">Inserire il titolo qui</string>
     <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
     <string name="insertLongDescriptionHint">Inserire qui le note aggiuntive</string>
@@ -1045,14 +1045,15 @@
     <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
     <string name="saveDecisionQuestion">Salvare la decisione %1$s con %2$d \opzioni ?</string>
     <string name="you">te</string>
-    <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d hano votato.</string>
-    <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hano votato.</string>
+    <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d ha votato.</string>
+    <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hanno votato.</string>
     <string name="closeDecisionQuestionSuffix">\nDopo aver chiuso la decisione non sarà più possibile per gli altri utenti votare a meno che la decisione non venga riaperta.\nSei sicuro di chiudere questa decisione ?</string>
-    <string name="optionDetailTitle">Dettagli opzione</string>
+    <string name="optionDetailTitle">Dettaglio opzione</string>
     <string name="missingVoteDesc">Mancanti: %1$d\n (%2$.1f%%)</string>
     <string name="positiveVoteDesc">Positivi: %1$d\n (%2$.1f%%)</string>
     <string name="negativeVoteDesc">Negativi: %1$d\n (%2$.1f%%)</string>
     <string name="voteSummary">Riepilogo voti</string>
+    <string name="decisionDetailTitle">Dettaglio decisione</string>
 
     <!-- END of Pollgram text -->
 

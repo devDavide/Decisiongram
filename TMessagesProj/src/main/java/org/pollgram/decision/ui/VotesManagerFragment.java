@@ -80,6 +80,14 @@ public class VotesManagerFragment extends BaseFragment {
         // TODO add real icon
         // set up action bar
         tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
+        actionBar.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong(DecisionDetailFragment.PAR_DECISION_ID, decision.getId());
+                presentFragment(new DecisionDetailFragment(bundle));
+            }
+        });
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION, context.getString(R.string.closeDecision), 0);
