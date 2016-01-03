@@ -1,5 +1,5 @@
 /*
- * This is the source code of Telegram for Android v. 2.x.x.
+ * This is the source code of Telegram for Android v. 3.x.x.
  * It is licensed under GNU GPL v. 2 or later.
  * You should have received a copy of the license in this archive (see LICENSE).
  *
@@ -24,7 +24,7 @@ public class FileLoader {
     public interface FileLoaderDelegate {
         void fileUploadProgressChanged(String location, float progress, boolean isEncrypted);
 
-        void fileDidUploaded(String location, TLRPC.InputFile inputFile, TLRPC.InputEncryptedFile inputEncryptedFile, byte[] key, byte[] iv);
+        void fileDidUploaded(String location, TLRPC.InputFile inputFile, TLRPC.InputEncryptedFile inputEncryptedFile, byte[] key, byte[] iv, long totalFileSize);
 
         void fileDidFailedUpload(String location, boolean isEncrypted);
 
@@ -81,6 +81,10 @@ public class FileLoader {
         mediaDirs = dirs;
     }
 
+    public File checkDirectory(int type) {
+        return mediaDirs.get(type);
+    }
+
     public File getDirectory(int type) {
         File dir = mediaDirs.get(type);
         if (dir == null && type != MEDIA_DIR_CACHE) {
@@ -108,6 +112,7 @@ public class FileLoader {
                 }
                 uploadSizes.remove(location);
                 if (operation != null) {
+                    uploadOperationPathsEnc.remove(location);
                     uploadOperationQueue.remove(operation);
                     uploadSmallOperationQueue.remove(operation);
                     operation.cancel();
@@ -171,7 +176,7 @@ public class FileLoader {
                 }
                 operation.delegate = new FileUploadOperation.FileUploadOperationDelegate() {
                     @Override
-                    public void didFinishUploadingFile(FileUploadOperation operation, final TLRPC.InputFile inputFile, final TLRPC.InputEncryptedFile inputEncryptedFile, final byte[] key, final byte[] iv) {
+                    public void didFinishUploadingFile(final FileUploadOperation operation, final TLRPC.InputFile inputFile, final TLRPC.InputEncryptedFile inputEncryptedFile, final byte[] key, final byte[] iv) {
                         fileLoaderQueue.postRunnable(new Runnable() {
                             @Override
                             public void run() {
@@ -200,7 +205,7 @@ public class FileLoader {
                                     }
                                 }
                                 if (delegate != null) {
-                                    delegate.fileDidUploaded(location, inputFile, inputEncryptedFile, key, iv);
+                                    delegate.fileDidUploaded(location, inputFile, inputEncryptedFile, key, iv, operation.getTotalFileSize());
                                 }
                             }
                         });
@@ -746,14 +751,15 @@ public class FileLoader {
         return "";
     }
 
-    public void deleteFiles(final ArrayList<File> files) {
+    public void deleteFiles(final ArrayList<File> files, final int type) {
         if (files == null || files.isEmpty()) {
             return;
         }
         fileLoaderQueue.postRunnable(new Runnable() {
             @Override
             public void run() {
-                for (File file : files) {
+                for (int a = 0; a < files.size(); a++) {
+                    File file = files.get(a);
                     if (file.exists()) {
                         try {
                             if (!file.delete()) {
@@ -763,6 +769,19 @@ public class FileLoader {
                             FileLog.e("tmessages", e);
                         }
                     }
+                    try {
+                        File qFile = new File(file.getParentFile(), "q_" + file.getName());
+                        if (qFile.exists()) {
+                            if (!qFile.delete()) {
+                                qFile.deleteOnExit();
+                            }
+                        }
+                    } catch (Exception e) {
+                        FileLog.e("tmessages", e);
+                    }
+                }
+                if (type == 2) {
+                    ImageLoader.getInstance().clearMemory();
                 }
             }
         });

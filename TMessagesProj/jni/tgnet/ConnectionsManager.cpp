@@ -13,7 +13,6 @@
 #include <algorithm>
 #include <fcntl.h>
 #include <memory.h>
-#include <signal.h>
 #include <openssl/rand.h>
 #include <zlib.h>
 #include "ConnectionsManager.h"
@@ -38,12 +37,8 @@ jmethodID jclass_ByteBuffer_allocateDirect = 0;
 
 static bool done = false;
 
-void signal_handler(int param) {
-
-}
-
 ConnectionsManager::ConnectionsManager() {
-    if ((epolFd = epoll_create(64)) == -1) {
+    if ((epolFd = epoll_create(128)) == -1) {
         DEBUG_E("unable to create epoll instance");
         exit(1);
     }
@@ -57,15 +52,46 @@ ConnectionsManager::ConnectionsManager() {
         }
     }
 
-    if ((epollEvents = new epoll_event[64]) == nullptr) {
+    if ((epollEvents = new epoll_event[128]) == nullptr) {
         DEBUG_E("unable to allocate epoll events");
         exit(1);
     }
 
-    struct sigaction action;
-    memset(&action, 0, sizeof(action));
-    action.sa_handler = signal_handler;
-    sigaction(SIGRTMIN, &action, NULL);
+    pipeFd = new int[2];
+    if (pipe(pipeFd) != 0) {
+        DEBUG_E("unable to create pipe");
+        exit(1);
+    }
+
+    flags = fcntl(pipeFd[0], F_GETFL);
+    if (flags == -1) {
+        DEBUG_E("fcntl get pipefds[0] failed");
+        exit(1);
+    }
+    if (fcntl(pipeFd[0], F_SETFL, flags | O_NONBLOCK) == -1) {
+        DEBUG_E("fcntl set pipefds[0] failed");
+        exit(1);
+    }
+
+    flags = fcntl(pipeFd[1], F_GETFL);
+    if (flags == -1) {
+        DEBUG_E("fcntl get pipefds[1] failed");
+        exit(1);
+    }
+    if (fcntl(pipeFd[1], F_SETFL, flags | O_NONBLOCK) == -1) {
+        DEBUG_E("fcntl set pipefds[1] failed");
+        exit(1);
+    }
+
+    EventObject *eventObject = new EventObject(pipeFd, EventObjectPipe);
+
+    epoll_event eventMask = {};
+    eventMask.events = EPOLLIN;
+    eventMask.data.ptr = eventObject;
+    if (epoll_ctl(epolFd, EPOLL_CTL_ADD, pipeFd[0], &eventMask) != 0) {
+        DEBUG_E("can't add pipe to epoll");
+        exit(1);
+    }
 
     networkBuffer = new NativeByteBuffer((uint32_t) READ_BUFFER_SIZE);
     if (networkBuffer == nullptr) {
@@ -130,7 +156,7 @@ void ConnectionsManager::checkPendingTasks() {
 
 void ConnectionsManager::select() {
     checkPendingTasks();
-    int eventsCount = epoll_wait(epolFd, epollEvents, 64, callEvents(getCurrentTimeMillis()));
+    int eventsCount = epoll_wait(epolFd, epollEvents, 128, callEvents(getCurrentTimeMillis()));
     checkPendingTasks();
     int64_t now = getCurrentTimeMillis();
     callEvents(now);
@@ -249,9 +275,8 @@ void ConnectionsManager::removeEvent(EventObject *eventObject) {
 }
 
 void ConnectionsManager::wakeup() {
-    if (threadStarted) {
-        pthread_kill(networkThread, SIGRTMIN);
-    }
+    char ch = 'x';
+    write(pipeFd[1], &ch, 1);
 }
 
 void *ConnectionsManager::ThreadProc(void *data) {
@@ -267,7 +292,6 @@ void *ConnectionsManager::ThreadProc(void *data) {
             networkManager->sendPing(datacenter, true);
         }
     }
-    networkManager->threadStarted = true;
     do {
         networkManager->select();
     } while (!done);
@@ -795,7 +819,9 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
 
             for (requestsIter iter = runningRequests.begin(); iter != runningRequests.end(); iter++) {
                 Request *request = iter->get();
-                if (request->messageId < response->first_msg_id && request->connectionType & connection->getConnectionType() && request->datacenterId == datacenter->getDatacenterId()) {
+                Datacenter *requestDatacenter = getDatacenterWithId(request->datacenterId);
+                if (request->messageId < response->first_msg_id && request->connectionType & connection->getConnectionType() && requestDatacenter != nullptr && requestDatacenter->getDatacenterId() == datacenter->getDatacenterId()) {
+                    DEBUG_D("clear request %p - %s", request->rawRequest, typeid(*request->rawRequest).name());
                     request->clear(true);
                 }
             }
@@ -884,8 +910,9 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
         RpcError *error = hasResult ? dynamic_cast<RpcError *>(response->result.get()) : nullptr;
         if (error != nullptr) {
             DEBUG_E("connection(%p, dc%u, type %d) rpc error %d: %s", connection, datacenter->getDatacenterId(), connection->getConnectionType(), error->error_code, error->error_message.c_str());
-            uint32_t migrateToDatacenterId = DEFAULT_DATACENTER_ID;
             if (error->error_code == 303) {
+                uint32_t migrateToDatacenterId = DEFAULT_DATACENTER_ID;
+                
                 static std::vector<std::string> migrateErrors;
                 if (migrateErrors.empty()) {
                     migrateErrors.push_back("NETWORK_MIGRATE_");
@@ -902,11 +929,11 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
                         migrateToDatacenterId = val;
                     }
                 }
-            }
-
-            if (migrateToDatacenterId != DEFAULT_DATACENTER_ID) {
-                ignoreResult = true;
-                moveToDatacenter(migrateToDatacenterId);
+                
+                if (migrateToDatacenterId != DEFAULT_DATACENTER_ID) {
+                    ignoreResult = true;
+                    moveToDatacenter(migrateToDatacenterId);
+                }
             }
         }
 
@@ -917,6 +944,7 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
             for (requestsIter iter = runningRequests.begin(); iter != runningRequests.end(); iter++) {
                 Request *request = iter->get();
                 if (request->respondsToMessageId(resultMid)) {
+                    DEBUG_D("got response for request %p - %s", request->rawRequest, typeid(*request->rawRequest).name());
                     bool discardResponse = false;
                     bool isError = false;
                     bool allowInitConnection = true;
@@ -926,7 +954,7 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
                         NativeByteBuffer *unpacked_data = nullptr;
                         TLObject *result = response->result.get();
                         if (typeid(*result) == typeid(TL_gzip_packed)) {
-                            TL_gzip_packed *innerResponse = (TL_gzip_packed *) response->result.get();
+                            TL_gzip_packed *innerResponse = (TL_gzip_packed *) result;
                             unpacked_data = decompressGZip(innerResponse->packed_data.get());
                             TLObject *object = TLdeserialize(request->rawRequest, unpacked_data->limit(), unpacked_data);
                             if (object != nullptr) {
@@ -939,16 +967,14 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
                         TL_error *error2 = hasResult ? dynamic_cast<TL_error *>(response->result.get()) : nullptr;
                         if (error != nullptr) {
                             allowInitConnection = false;
-                            DEBUG_E("rpc error %d: %s", error->error_code, error->error_message.c_str());
+                            DEBUG_E("request %p rpc error %d: %s", request, error->error_code, error->error_message.c_str());
 
-                            if (error->error_code == 500 || error->error_code < 0) {
-                                if (!(request->requestFlags & RequestFlagFailOnServerErrors)) {
-                                    request->serverFailureCount++;
+                            if ((request->requestFlags & RequestFlagFailOnServerErrors) == 0) {
+                                if (error->error_code == 500 || error->error_code < 0) {
                                     discardResponse = true;
-                                    request->minStartTime = request->startTime + request->serverFailureCount > 10 ? 10 : request->serverFailureCount;
-                                }
-                            } else if (error->error_code == 420) {
-                                if (!(request->requestFlags & RequestFlagFailOnServerErrors)) {
+                                    request->minStartTime = request->startTime + (request->serverFailureCount > 10 ? 10 : request->serverFailureCount);
+                                    request->serverFailureCount++;
+                                } else if (error->error_code == 420) {
                                     int32_t waitTime = 2;
                                     static std::string floodWait = "FLOOD_WAIT_";
                                     if (error->error_message.find(floodWait) != std::string::npos) {
@@ -960,14 +986,23 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
                                     }
 
                                     discardResponse = true;
-                                    request->failedByFloodWait = true;
+                                    request->failedByFloodWait = waitTime;
+                                    request->startTime = 0;
                                     request->minStartTime = (int32_t) (getCurrentTimeMillis() / 1000 + waitTime);
+                                } else if (error->error_code == 400) {
+                                    static std::string waitFailed = "MSG_WAIT_FAILED";
+                                    if (error->error_message.find(waitFailed) != std::string::npos) {
+                                        discardResponse = true;
+                                        request->minStartTime = (int32_t) (getCurrentTimeMillis() / 1000 + 1);
+                                        request->startTime = 0;
+                                    }
                                 }
                             }
-
-                            implicitError = new TL_error();
-                            implicitError->code = error->error_code;
-                            implicitError->text = error->error_message;
+                            if (!discardResponse) {
+                                implicitError = new TL_error();
+                                implicitError->code = error->error_code;
+                                implicitError->text = error->error_message;
+                            }
                         } else if (error2 == nullptr) {
                             if (request->rawRequest == nullptr || response->result == nullptr) {
                                 allowInitConnection = false;
@@ -1090,7 +1125,7 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
             int64_t time = (int64_t) (messageId / 4294967296.0 * 1000);
             int64_t currentTime = getCurrentTimeMillis();
             timeDifference = (int32_t) ((time - currentTime) / 1000 - currentPingTime / 2);
-            lastOutgoingMessageId = messageId > lastOutgoingMessageId ? messageId : lastOutgoingMessageId;
+            lastOutgoingMessageId = messageId > (lastOutgoingMessageId ? messageId : lastOutgoingMessageId);
         }
         int64_t resultMid = response->bad_msg_id;
         if (resultMid != 0) {
@@ -1099,10 +1134,10 @@ void ConnectionsManager::processServerResponse(TLObject *message, int64_t messag
                 if ((request->connectionType & ConnectionTypeDownload) == 0) {
                     continue;
                 }
-                if (request->respondsToMessageId(resultMid)) {
+                Datacenter *requestDatacenter = getDatacenterWithId(request->datacenterId);
+                if (requestDatacenter != nullptr && requestDatacenter->getDatacenterId() == datacenter->getDatacenterId()) {
                     request->retryCount = 0;
                     request->failedBySalt = true;
-                    break;
                 }
             }
         }
@@ -1339,12 +1374,6 @@ void ConnectionsManager::sendRequest(TLObject *object, onCompleteFunc onComplete
 }
 
 #ifdef ANDROID
-int32_t ConnectionsManager::sendRequest(TLObject *object, onCompleteFunc onComplete, onQuickAckFunc onQuickAck, uint32_t flags, uint32_t datacenterId, ConnectionType connetionType, bool immediate, jobject ptr1, jobject ptr2) {
-    int32_t requestToken = lastRequestToken++;
-    sendRequest(object, onComplete, onQuickAck, flags, datacenterId, connetionType, immediate, requestToken, ptr1, ptr2);
-    return requestToken;
-}
-
 void ConnectionsManager::sendRequest(TLObject *object, onCompleteFunc onComplete, onQuickAckFunc onQuickAck, uint32_t flags, uint32_t datacenterId, ConnectionType connetionType, bool immediate, int32_t requestToken, jobject ptr1, jobject ptr2) {
     if (!currentUserId && !(flags & RequestFlagWithoutLogin)) {
         DEBUG_D("can't do request without login %s", typeid(*object).name());
@@ -1365,11 +1394,13 @@ void ConnectionsManager::sendRequest(TLObject *object, onCompleteFunc onComplete
         return;
     }
     scheduleTask([&, requestToken, object, onComplete, onQuickAck, flags, datacenterId, connetionType, immediate, ptr1, ptr2] {
+        DEBUG_D("send request %p - %s", object, typeid(*object).name());
         Request *request = new Request(requestToken, connetionType, flags, datacenterId, onComplete, onQuickAck);
         request->rawRequest = object;
         request->ptr1 = ptr1;
         request->ptr2 = ptr2;
         request->rpcRequest = wrapInLayer(object, getDatacenterWithId(datacenterId), request);
+        DEBUG_D("send request wrapped %p - %s", request->rpcRequest.get(), typeid(*request->rpcRequest.get()).name());
         requestsQueue.push_back(std::unique_ptr<Request>(request));
         if (immediate) {
             processRequestQueue(0, 0);
@@ -1462,7 +1493,7 @@ void ConnectionsManager::cancelRequestInternal(int32_t token, bool notifyServer,
         Request *request = iter->get();
         if (request->requestToken == token) {
             request->cancelled = true;
-            DEBUG_D("cancelled queued rpc request %s", typeid(*request->rawRequest).name());
+            DEBUG_D("cancelled queued rpc request %p - %s", request->rawRequest, typeid(*request->rawRequest).name());
             requestsQueue.erase(iter);
             if (removeFromClass) {
                 removeRequestFromGuid(token);
@@ -1480,7 +1511,7 @@ void ConnectionsManager::cancelRequestInternal(int32_t token, bool notifyServer,
                 sendRequest(dropAnswer, nullptr, nullptr, RequestFlagEnableUnauthorized | RequestFlagWithoutLogin | RequestFlagFailOnServerErrors, request->datacenterId, request->connectionType, true);
             }
             request->cancelled = true;
-            DEBUG_D("cancelled running rpc request %s", typeid(*request->rawRequest).name());
+            DEBUG_D("cancelled running rpc request %p - %s", request->rawRequest, typeid(*request->rawRequest).name());
             runningRequests.erase(iter);
             if (removeFromClass) {
                 removeRequestFromGuid(token);
@@ -1756,7 +1787,9 @@ void ConnectionsManager::processRequestQueue(uint32_t connectionTypes, uint32_t 
             continue;
         }
 
-        bool forceThisRequest = request->connectionType & connectionTypes && request->datacenterId == dc;
+        uint32_t requestConnectionType = request->connectionType & 0x0000ffff;
+        
+        bool forceThisRequest = (connectionTypes & requestConnectionType) && requestDatacenter->getDatacenterId() == dc;
 
         if (typeInfo == typeid(TL_get_future_salts) || typeInfo == typeid(TL_destroy_session)) {
             if (request->messageId != 0) {
@@ -1766,7 +1799,12 @@ void ConnectionsManager::processRequestQueue(uint32_t connectionTypes, uint32_t 
             forceThisRequest = false;
         }
 
-        if (((abs(currentTime - request->startTime) > maxTimeout) && (currentTime > request->minStartTime || abs(currentTime - request->minStartTime) > 60)) || forceThisRequest) {
+        if (forceThisRequest || (abs(currentTime - request->startTime) > maxTimeout &&
+                                 (currentTime >= request->minStartTime ||
+                                  (request->failedByFloodWait != 0 && (request->minStartTime - currentTime) > request->failedByFloodWait) ||
+                                  (request->failedByFloodWait == 0 && abs(currentTime - request->minStartTime) >= 60))
+                                 )
+            ) {
             if (!forceThisRequest && request->connectionToken > 0) {
                 if (request->connectionType & ConnectionTypeGeneric && request->connectionToken == connection->getConnectionToken()) {
                     DEBUG_D("request token is valid, not retrying %s", typeInfo.name());
@@ -1787,25 +1825,29 @@ void ConnectionsManager::processRequestQueue(uint32_t connectionTypes, uint32_t 
 
             request->retryCount++;
 
-            if (!request->failedBySalt && request->connectionType & ConnectionTypeDownload) {
-                uint32_t retryMax = 10;
-                if (!(request->requestFlags & RequestFlagForceDownload)) {
-                    if (request->failedByFloodWait) {
-                        retryMax = 1;
-                    } else {
-                        retryMax = 6;
+            if (!request->failedBySalt) {
+                if (request->connectionType & ConnectionTypeDownload) {
+                    uint32_t retryMax = 10;
+                    if (!(request->requestFlags & RequestFlagForceDownload)) {
+                        if (request->failedByFloodWait) {
+                            retryMax = 1;
+                        } else {
+                            retryMax = 6;
+                        }
+                    }
+                    if (request->retryCount >= retryMax) {
+                        DEBUG_E("timed out %s", typeInfo.name());
+                        TL_error *error = new TL_error();
+                        error->code = -123;
+                        error->text = "RETRY_LIMIT";
+                        request->onComplete(nullptr, error);
+                        delete error;
+                        iter = runningRequests.erase(iter);
+                        continue;
                     }
                 }
-                if (request->retryCount >= retryMax) {
-                    DEBUG_E("timed out %s", typeInfo.name());
-                    TL_error *error = new TL_error();
-                    error->code = -123;
-                    error->text = "RETRY_LIMIT";
-                    request->onComplete(nullptr, error);
-                    delete error;
-                    iter = runningRequests.erase(iter);
-                    continue;
-                }
+            } else {
+                request->failedBySalt = false;
             }
 
             if (request->messageSeqNo == 0) {
@@ -1825,7 +1867,7 @@ void ConnectionsManager::processRequestQueue(uint32_t connectionTypes, uint32_t 
             networkMessage->needQuickAck = (request->requestFlags & RequestFlagNeedQuickAck) != 0;
 
             request->connectionToken = connection->getConnectionToken();
-            switch (request->connectionType & 0x0000ffff) {
+            switch (requestConnectionType) {
                 case ConnectionTypeGeneric:
                     addMessageToDatacenter(requestDatacenter->getDatacenterId(), networkMessage, genericMessagesToDatacenters);
                     break;
@@ -2074,9 +2116,11 @@ void ConnectionsManager::processRequestQueue(uint32_t connectionTypes, uint32_t 
                         TL_invokeAfterMsg *request = new TL_invokeAfterMsg();
                         request->msg_id = lastSentMessageRpcId;
                         if (message->outgoingBody != nullptr) {
+                            DEBUG_D("wrap outgoingBody(%p, %s) to TL_invokeAfterMsg", message->outgoingBody, typeid(*message->outgoingBody).name());
                             request->outgoingQuery = message->outgoingBody;
                             message->outgoingBody = nullptr;
                         } else {
+                            DEBUG_D("wrap body(%p, %s) to TL_invokeAfterMsg", message->body.get(), typeid(*message->body.get()).name());
                             request->query = std::move(message->body);
                         }
                         message->body = std::unique_ptr<TLObject>(request);
@@ -2345,7 +2389,7 @@ void ConnectionsManager::setDelegate(ConnectiosManagerDelegate *connectiosManage
     delegate = connectiosManagerDelegate;
 }
 
-void ConnectionsManager::init(uint32_t version, int32_t layer, int32_t apiId, std::string deviceModel, std::string systemVersion, std::string appVersion, std::string langCode, std::string configPath, int32_t userId, bool isPaused) {
+void ConnectionsManager::init(uint32_t version, int32_t layer, int32_t apiId, std::string deviceModel, std::string systemVersion, std::string appVersion, std::string langCode, std::string configPath, std::string logPath, int32_t userId, bool isPaused) {
     currentVersion = version;
     currentLayer = layer;
     currentApiId = apiId;
@@ -2355,12 +2399,17 @@ void ConnectionsManager::init(uint32_t version, int32_t layer, int32_t apiId, st
     currentAppVersion = appVersion;
     currentLangCode = langCode;
     currentUserId = userId;
+    currentLogPath = logPath;
     if (isPaused) {
         lastPauseTime = getCurrentTimeMillis();
     }
 
     if (!currentConfigPath.empty() && currentConfigPath.find_last_of('/') != currentConfigPath.size() - 1) {
         currentConfigPath += "/";
+    }
+    
+    if (!logPath.empty()) {
+        FileLog::init(logPath);
     }
 
     loadConfig();

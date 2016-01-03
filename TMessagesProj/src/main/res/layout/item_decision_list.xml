@@ -11,7 +11,7 @@
         android:layout_alignParentTop="true"
         android:layout_alignParentLeft="true"
         android:layout_alignParentStart="true"
-        android:background="@drawable/check_list"
+        android:background="@drawable/decision_icon"
         android:padding="2dp"
         android:paddingLeft="2dp"
         android:paddingTop="2dp"

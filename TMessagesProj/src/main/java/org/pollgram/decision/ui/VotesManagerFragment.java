@@ -79,7 +79,7 @@ public class VotesManagerFragment extends BaseFragment {
     public View createView(final Context context) {
         // TODO add real icon
         // set up action bar
-        tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.check_list);
+        tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.decision_icon);
         actionBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
