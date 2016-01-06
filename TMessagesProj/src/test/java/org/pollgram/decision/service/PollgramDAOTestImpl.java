@@ -246,9 +246,6 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     public WinningOption getWinningOption(Decision decision) {
         List<Option> options = getOptions(decision);
         int max = 0;
-        for (Option o : options) {
-            return new WinningOption(max, o);
-        }
-        return  null;
+        return new WinningOption(max, options);
     }
 }

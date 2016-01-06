@@ -122,11 +122,11 @@ public interface PollgramDAO {
      */
     class WinningOption{
         public final int voteCount;
-        public final Option option;
+        public final List<Option> options;
 
-        public WinningOption(int voteCount, Option option) {
+        public WinningOption(int voteCount, List<Option> options) {
             this.voteCount = voteCount;
-            this.option = option;
+            this.options = options;
         }
     }
 

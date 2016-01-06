@@ -18,6 +18,7 @@ import org.telegram.tgnet.TLRPC;
 import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
 import java.util.HashMap;
@@ -165,20 +166,31 @@ public class MessagesManagerTest {
     }
 
     @Test
-    public void testCloseDecision() throws PollgramParseException {
-        Option winningOption = dao.getOptions(decision).get(0);
+    public void testCloseDecisionMultipleWinningOptions() throws PollgramParseException {
+        List<Option> winningOptions = dao.getOptions(decision);
         int voteCount = 5;
-        String message = messageManager.buildCloseDecision(decision, winningOption, voteCount);
+        String message = messageManager.buildCloseDecision(decision, winningOptions, voteCount);
         Assert.assertEquals(messageManager.getMessageType(message), PollgramMessagesManager.MessageType.CLOSE_DECISION);
 
-        assertCloseDecision(decision, winningOption, message);
-        assertCloseDecision(decision, winningOption, messageManager.reformatMessage(message));
+        assertCloseDecision(decision, winningOptions, message);
+        assertCloseDecision(decision, winningOptions, messageManager.reformatMessage(message));
     }
 
-    private void assertCloseDecision(Decision decision, Option winningOption, String message) throws PollgramParseException {
+    @Test
+    public void testCloseDecisionSingleWinningOptions() throws PollgramParseException {
+        List<Option> winningOptions = Arrays.asList(dao.getOptions(decision).get(0));
+        int voteCount = 5;
+        String message = messageManager.buildCloseDecision(decision, winningOptions, voteCount);
+        Assert.assertEquals(messageManager.getMessageType(message), PollgramMessagesManager.MessageType.CLOSE_DECISION);
+
+        assertCloseDecision(decision, winningOptions, message);
+        assertCloseDecision(decision, winningOptions, messageManager.reformatMessage(message));
+    }
+
+    private void assertCloseDecision(Decision decision, List<Option> winningOption, String message) throws PollgramParseException {
         PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(message, chat.id);
         Assert.assertEquals(decision, result.decision);
-        Assert.assertEquals(winningOption, result.winningOption);
+        Assert.assertEquals(winningOption, result.winningOptions);
     }
 
     @Test

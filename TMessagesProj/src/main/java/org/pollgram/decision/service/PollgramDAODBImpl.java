@@ -124,25 +124,42 @@ class PollgramDAODBImpl implements PollgramDAO {
     @Override
     public WinningOption getWinningOption(Decision decision) {
         SQLiteDatabase db = helper.getReadableDatabase();
-        String voteCountFieldName= "max_vote_count";
+        String voteCountFieldName= "vote_count";
         Cursor c = null;
         try {
-            c =db.rawQuery("SELECT "+PGSqlLiteHelper.T_TextOption.cloumns(null)+" , max(vote_count) as "+voteCountFieldName+" FROM (" +
-                            "SELECT "+PGSqlLiteHelper.T_TextOption.cloumns("o")+",  count (*) as vote_count " +
-                            "FROM decision d inner join text_option o " +
-                            "on d." + PGSqlLiteHelper.T_Decision.ID + " = o." + PGSqlLiteHelper.T_TextOption.FK_DECISION + " " +
-                            "inner join vote v " +
-                            "on o." + PGSqlLiteHelper.T_TextOption.ID + " = v." + PGSqlLiteHelper.T_Vote.FK_OPTION + " " +
-                            "where d." + PGSqlLiteHelper.T_Decision.ID + " = ? " +
-                            "and "+ PGSqlLiteHelper.T_Vote.VOTE + " = ? " +
-                            "group by " + PGSqlLiteHelper.T_Vote.FK_OPTION+
+            c =db.rawQuery("SELECT "+PGSqlLiteHelper.T_TextOption.cloumns("o")+",  count (*) as "+voteCountFieldName+
+                            " FROM decision d inner join text_option o " +
+                            " on d." + PGSqlLiteHelper.T_Decision.ID + " = o." + PGSqlLiteHelper.T_TextOption.FK_DECISION + " " +
+                            " inner join vote v " +
+                            " on o." + PGSqlLiteHelper.T_TextOption.ID + " = v." + PGSqlLiteHelper.T_Vote.FK_OPTION + " " +
+                            " where d." + PGSqlLiteHelper.T_Decision.ID + " = ? " +
+                            " and "+ PGSqlLiteHelper.T_Vote.VOTE + " = ? " +
+                            " group by " + PGSqlLiteHelper.T_Vote.FK_OPTION +
+                            " having vote_count = (" +
+                              " Select max(votes) FROM (\n" +
+                                 " SELECT count (*) as  votes" +
+                                " FROM decision d inner join text_option o " +
+                                " on d." + PGSqlLiteHelper.T_Decision.ID + " = o." + PGSqlLiteHelper.T_TextOption.FK_DECISION + " " +
+                                " inner join vote v " +
+                                " on o." + PGSqlLiteHelper.T_TextOption.ID + " = v." + PGSqlLiteHelper.T_Vote.FK_OPTION + " " +
+                                " where d." + PGSqlLiteHelper.T_Decision.ID + " = ? " +
+                                " and "+ PGSqlLiteHelper.T_Vote.VOTE + " = ? " +
+                                " group by " + PGSqlLiteHelper.T_Vote.FK_OPTION +
+                                ") " +
                             ")",
-                    new String[]{Long.toString(decision.getId()), PGSqlLiteHelper.toString(true)});
+                    new String[]{Long.toString(decision.getId()), PGSqlLiteHelper.toString(true),
+                            Long.toString(decision.getId()), PGSqlLiteHelper.toString(true)});
             if (!c.moveToFirst())
                 return null;
-            else
-              return new WinningOption(c.getInt(c.getColumnIndex(voteCountFieldName)),
-                      helper.TEXT_OPTION_MAPPER.from(c));
+            else {
+                List<Option> options = new ArrayList<>();
+                int voteCount = c.getInt(c.getColumnIndex(voteCountFieldName));
+                while (!c.isAfterLast()) {
+                    options.add(helper.TEXT_OPTION_MAPPER.from(c));
+                    c.moveToNext();
+                }
+                return new WinningOption(voteCount,options);
+            }
         } finally {
             if (db != null)
                 db.close();

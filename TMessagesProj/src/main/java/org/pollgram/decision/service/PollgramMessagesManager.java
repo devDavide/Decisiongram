@@ -123,11 +123,11 @@ public interface PollgramMessagesManager {
     /**
      * build a message for notifying that the passed decision is now closed and is no more possible to vote
      * @param decision
-     * @param  winningOption the option that received more votes so far
+     * @param  winningOptions the options that received more votes so far
      * @param voteCount
      * @return the message ready to be sent
      */
-    String buildCloseDecision(Decision decision, Option winningOption, int voteCount);
+    String buildCloseDecision(Decision decision, List<Option> winningOptions, int voteCount);
 
     /**
      * build a message for notifying that the passed decision is has been reopened and is no more possible to vote
@@ -183,11 +183,11 @@ public interface PollgramMessagesManager {
      */
     class ClosedDecisionDate {
         final Decision decision;
-        final Option winningOption;
+        final List<Option> winningOptions;
 
-        public ClosedDecisionDate(Decision decision, Option winningOption) {
+        public ClosedDecisionDate(Decision decision, List<Option> winningOptions) {
             this.decision = decision;
-            this.winningOption = winningOption;
+            this.winningOptions = winningOptions;
         }
     }
 

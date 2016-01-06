@@ -1058,7 +1058,9 @@
 
     <string name="tmsg_CloseDecisionP1">La decisione</string>
     <!-- between Prefix and Suffix goes the decision title -->
-    <string name="tmsg_CloseDecisionP2">, è stata chiusa. L\'opzione che ha ricevuto più voti è</string>
+    <string name="tmsg_CloseDecisionP2">, è stata chiusa.</string>
+    <string name="tmsg_CloseDecisionP2Single">L\'opzione che ha ricevuto più voti è :</string>
+    <string name="tmsg_CloseDecisionP2Multi">Le opzioni che hanno ricevuto più voti sono :</string>
     <!--after P2 goes the winning option title -->
     <string name="tmsg_CloseDecisionNoOptionDesc">nessuna opzione</string>
     <string name="tmsg_CloseDecisionP3">con</string>

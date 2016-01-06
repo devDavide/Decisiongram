@@ -111,7 +111,7 @@ public class PollgramServiceImpl implements PollgramService {
         decision.setOpen(false);
         decision = pollgramDAO.save(decision);
         PollgramDAO.WinningOption winningOption = pollgramDAO.getWinningOption(decision);
-        String message = messageManager.buildCloseDecision(decision, winningOption.option, winningOption.voteCount);
+        String message = messageManager.buildCloseDecision(decision, winningOption.options, winningOption.voteCount);
         sendMessage(decision.getChatId(), message);
     }
 

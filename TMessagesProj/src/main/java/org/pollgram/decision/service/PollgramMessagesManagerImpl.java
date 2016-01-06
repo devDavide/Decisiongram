@@ -151,18 +151,25 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public String buildCloseDecision(Decision decision, Option winningOption, int voteCount) {
+    public String buildCloseDecision(Decision decision, List<Option> winningOptions, int voteCount) {
         StringBuilder body = new StringBuilder();
         body.append(getResString(R.string.tmsg_CloseDecisionP1));
         body.append(' ');
         body.append(format(decision));
         body.append(getResString(R.string.tmsg_CloseDecisionP2));
         body.append(' ');
+        body.append(getResString(winningOptions.size() == 1 ? R.string.tmsg_CloseDecisionP2Single : R.string.tmsg_CloseDecisionP2Multi));
+        body.append(' ');
         if (voteCount == 0)
             body.append(format(getResString(R.string.tmsg_CloseDecisionNoOptionDesc)));
-        else
-            body.append(format(winningOption));
-        body.append(' ');
+        else {
+            for (Option o : winningOptions) {
+                body.append(NEW_LINE);
+                body.append(BULLET_LIST_EMOJI);
+                body.append(format(o));
+            }
+        }
+        body.append(NEW_LINE);
         body.append(getResString(R.string.tmsg_CloseDecisionP3));
         body.append(' ');
         body.append(voteCount);
@@ -399,28 +406,32 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public ClosedDecisionDate getCloseDecision(String msg, long currentChat) throws PollgramParseException {
         Decision decision;
-        Option winningOption;
+        List<Option> optionList;
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg);
             strTok.nextToken();//skip this token
             String title = strTok.nextToken();
-            strTok.nextToken();//skip this token
-            String optionTitle = strTok.nextToken();//skip this token
-
-            String longDescription = strTok.nextToken();
             decision = pollgramDAO.getDecision(title, currentChat);
             if (decision == null)
                 throw new PollgramParseException("Decision not found for title  [" + title + "]");
-            winningOption = pollgramDAO.getOption(optionTitle, decision);
-            if (winningOption == null)
-                throw new PollgramParseException("winningOption not found for decision  [" + title + "]");
+
+            optionList = new ArrayList<>();
+            while (strTok.hasMoreTokens()){
+                strTok.nextToken();//skip this token
+                if (!strTok.hasMoreTokens())
+                    break;
+                String optTitle = strTok.nextToken();
+                Option to = pollgramDAO.getOption(optTitle,decision);
+                if (to != null)
+                    optionList.add(to);
+            }
 
         } catch (NoSuchElementException e) {
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
             throw new PollgramParseException("Token not found", e);
         }
-        Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] winningOption[" + winningOption + "]");
-        return new ClosedDecisionDate(decision, winningOption);
+        Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] winningOption[" + optionList + "]");
+        return new ClosedDecisionDate(decision, optionList);
     }
 
     @Override
