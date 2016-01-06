@@ -9,6 +9,7 @@ import org.pollgram.R;
 import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.ui.VotesManagerFragment;
@@ -26,7 +27,12 @@ import org.telegram.ui.Components.URLSpanNoUnderline;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 /**
  * Created by davide on 10/11/15.
@@ -141,14 +147,38 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     @Override
+    public boolean isPollgramMessage(MessageObject message) {
+        long groupChatId = messageManager.getMessageGroupId(message);
+        if (groupChatId == -1)
+            return false;
+
+        String text = message.messageText.toString();
+        return messageManager.getMessageType(text) != null;
+    }
+
+    @Override
+    public Date getMessageDate(MessageObject messageObject) {
+        if (messageObject == null)
+            return null;
+        if (messageObject.messageOwner == null)
+            return null;
+        return new Date((long) (messageObject.messageOwner.date) * 1000);
+    }
+
+    @Override
     public void processMessage(MessageObject message) {
+        processMessage(message, true);
+    }
+
+    @Override
+    public void processMessage(MessageObject message, boolean showToastOnError) {
         Log.d(LOG_TAG, "parsing message [" + message.messageText + "]");
         if (message.messageOwner == null) {
             Log.d(NOT_PARSED_TAG,"message.messageOwner not set");
             return;
         }
 
-        int groupChatId = messageManager.getMessageGroupId(message);
+        long groupChatId = messageManager.getMessageGroupId(message);
         if (groupChatId == -1){
             Log.d(NOT_PARSED_TAG,"group chat id not found");
             return;
@@ -161,8 +191,15 @@ public class PollgramServiceImpl implements PollgramService {
             return;
         }
 
+        int messageId = message.messageOwner.id;
+        if (pollgramDAO.hasBeenParsed(groupChatId, messageId)) {
+            Log.d(NOT_PARSED_TAG,"it has already been parsed message["+messageId+"] group["+groupChatId+"]");
+            return;
+        }
+
         int userId = message.messageOwner.from_id;
-        Date messageDate = new Date((long)(message.messageOwner.date)*1000);
+        Date messageDate = getMessageDate(message);
+        boolean parsedSuccessfully = true;
 
         try {
             switch (msgType) {
@@ -208,12 +245,21 @@ public class PollgramServiceImpl implements PollgramService {
                         pollgramDAO.save(v);
                     break;
                 }
+                default: {
+                    Log.e(NOT_PARSED_TAG,"unknown message type["+msgType+"]");
+                }
             }
+
         } catch (PollgramParseException e){
-            Toast.makeText(ApplicationLoader.applicationContext,
-                    "Error process message: "+ e.getMessage(), Toast.LENGTH_LONG).show();
+            parsedSuccessfully = false;
+            if (showToastOnError) {
+                Toast.makeText(ApplicationLoader.applicationContext,
+                        "Error process message: " + e.getMessage(), Toast.LENGTH_LONG).show();
+            }
             Log.e(LOG_TAG,"Error parsing message ["+text+"]",e);
         }
+
+        pollgramDAO.setMessageAsParsed(groupChatId,messageId, parsedSuccessfully);
     }
 
     protected void sendMessage(long groupChatId, String message) {
@@ -269,7 +315,7 @@ public class PollgramServiceImpl implements PollgramService {
         if (type == null) {
             throw new PollgramDAOException("Not a pollgram message");
         }
-        int groupChatId = messageManager.getMessageGroupId(messageObject);
+        long groupChatId = messageManager.getMessageGroupId(messageObject);
         if (groupChatId == -1) {
             throw new PollgramDAOException("Not a group chat message");
         }
@@ -292,4 +338,46 @@ public class PollgramServiceImpl implements PollgramService {
         return  bundle;
     }
 
+
+    @Override
+    public void processMessages(final long dialog_id, List<MessageObject> objects) {
+        long groupChatId = messageManager.getMessageGroupId(dialog_id);
+        Log.i(LOG_TAG, "Messages not imported yet for group [" + groupChatId + "] importing " + objects.size() + " messages");
+        SortedMap<Date, MessageObject> timeOrderedPollgramMessages = new TreeMap<Date, MessageObject>();
+        for (MessageObject messageObject : objects) {
+            if (isPollgramMessage(messageObject)) {
+                Date d = getMessageDate(messageObject);
+                timeOrderedPollgramMessages.put(d, messageObject);
+            }
+        }
+        for (Date d : timeOrderedPollgramMessages.keySet()) {
+            MessageObject messageObject = timeOrderedPollgramMessages.get(d);
+            Log.d("Pollgram", "Parsing message date[" + d + "] message["+messageObject.messageText+"]");
+            processMessage(messageObject, false);
+        }
+    }
+
+    @Override
+    public List<MessageObject> getUnParsedMessages(final long dialog_id, Map<Integer, MessageObject> dialogMessagesByIds,
+                                                   List<MessageObject> excludeMessages) {
+        Set<Integer> excludeMessagesSet = new HashSet<>();
+        for (MessageObject mo : excludeMessages) {
+            if (mo.messageOwner != null)
+                excludeMessagesSet.add(mo.messageOwner.id);
+        }
+
+        long groupChatId = messageManager.getMessageGroupId(dialog_id);
+        List<ParsedMessage> unparsed = pollgramDAO.getUnparsedMessages(groupChatId);
+        List<MessageObject> outList = new ArrayList<>();
+        for (ParsedMessage pm : unparsed){
+            if (excludeMessagesSet.contains(pm.getMessageId()))
+                continue;
+            MessageObject msgObj = dialogMessagesByIds.get(pm.getMessageId());
+            if (msgObj == null)
+                Log.w(LOG_TAG, "Message not found in dialogMessagesByIds map for id ["+pm.getMessageId()+"]");
+            else
+                outList.add(msgObj);
+        }
+        return outList;
+    }
 }

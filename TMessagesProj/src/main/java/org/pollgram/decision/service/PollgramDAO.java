@@ -4,6 +4,7 @@ import android.support.annotation.Nullable;
 
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.Vote;
 
 import java.util.List;
@@ -70,7 +71,7 @@ public interface PollgramDAO {
      * @param chatId
      * @return null if no decision was found
      */
-    Decision getDecision(String decisionTitle, int chatId);
+    Decision getDecision(String decisionTitle, long chatId);
 
     Option getOption(String optionTitle, Decision decision);
 
@@ -92,6 +93,29 @@ public interface PollgramDAO {
      * @param decision
      */
     void delete(Decision decision);
+
+    /**
+     *
+     * @param groupChatId
+     * @param id
+     * @return whether the message has been parsed succesfully
+     */
+    boolean hasBeenParsed(final long groupChatId, int id);
+
+    /**
+     * set a message as parsed
+     * @param groupChatId
+     * @param messageId
+     * @param parsedSuccessfully the message has been parsed successfully
+     */
+    ParsedMessage setMessageAsParsed(final long groupChatId, int messageId, boolean parsedSuccessfully);
+
+    /**
+     * @param groupChatId
+     * @return the list of the messages that has not been parsed yet
+     */
+    List<ParsedMessage> getUnparsedMessages(final long groupChatId);
+
 
     /**
      * Result for method getWinningOption

@@ -290,9 +290,14 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 TextView tvOption = new TextView(getContext());
                 tvOption.setText(option.getTitle());
                 tvOption.setTypeface(tvOption.getTypeface(), Typeface.BOLD);
-                tvOption.setBackgroundResource(R.drawable.cell_normal);
                 UIUtils.setDynamicTextSize(tvOption);
-                add2Row(row, tvOption, firstRowHeight);
+
+                LinearLayout rowLayout = new LinearLayout(getContext());
+                rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, firstRowHeight));
+                rowLayout.setBackgroundResource(R.drawable.cell_normal);
+                rowLayout.addView(tvOption);
+
+                add2Row(row, rowLayout, firstRowHeight);
             }
             tableLayout.addView(row);
             fixedColumn.addView(emptyCell, ViewGroup.LayoutParams.WRAP_CONTENT, firstRowHeight);
