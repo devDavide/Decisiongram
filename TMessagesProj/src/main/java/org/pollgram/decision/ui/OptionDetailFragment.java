@@ -26,6 +26,9 @@ public class OptionDetailFragment extends BaseFragment {
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
     public static final String PAR_PARTICIPANT_IDS  = "PAR_PARTICIPANT_IDS" ;
     public static final String PAR_OPTION_ID = "PAR_OPTION_ID";
+    public static final String PAR_POSITIVE_VOTE_COUNT = "PAR_POSITIVE_VOTE_COUNT";
+    public static final String PAR_USER_THAT_VOTE_COUNT = "PAR_USER_THAT_VOTE_COUNT";
+
     private static final String LOG_TAG = "OptionDetailFrame";
 
     private TextOption option;
@@ -48,12 +51,11 @@ public class OptionDetailFragment extends BaseFragment {
         UsersDecisionVotes usersDecisionVotes = PollgramFactory.getPollgramService().getUsersDecisionVotes(decisionId, members);
         option = (TextOption) usersDecisionVotes.getOption(optionId);
 
-        voteCount = usersDecisionVotes.getUserThatVoteCount();
+        voteCount = getArguments().getInt(PAR_USER_THAT_VOTE_COUNT);
         membersCount = members.length;
-        positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(option);
+        positiveVoteCount = getArguments().getInt(PAR_POSITIVE_VOTE_COUNT);
         negativeVoteCount = voteCount- positiveVoteCount;
         missingVoteCount = membersCount - voteCount;
-
 
         return super.onFragmentCreate();
     }

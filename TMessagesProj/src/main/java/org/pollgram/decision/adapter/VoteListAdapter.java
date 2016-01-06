@@ -134,11 +134,24 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                     newVotes.put(o, vote);
                 }
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
-                usersDecisionVotes.setVote(vote.getUserId(),o, vote);
+                usersDecisionVotes.setVote(vote.getUserId(), o, vote);
                 onVoteChangeListener.voteChanges(!newVotes.isEmpty());
                 notifyDataSetChanged();
             }
         });
+
+
+        final int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
+        final int userThatVoteCount = usersDecisionVotes.getUserThatVoteCount();
+        optionVoteCount.setText(formatVoteCount(positiveVoteCount));
+        //noinspection ResourceType
+        starImageView.setVisibility(usersDecisionVotes.isWinningOption(o) ? View.VISIBLE : View.INVISIBLE);
+
+        StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
+                positiveVoteCount, userThatVoteCount);
+        stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
+
 
         View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
             @Override
@@ -147,6 +160,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 bundle.putLong(OptionDetailFragment.PAR_OPTION_ID, o.getId());
                 bundle.putLong(OptionDetailFragment.PAR_DECISION_ID, o.getDecisionId());
                 bundle.putIntArray(OptionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
+                bundle.putInt(OptionDetailFragment.PAR_POSITIVE_VOTE_COUNT, positiveVoteCount);
+                bundle.putInt(OptionDetailFragment.PAR_USER_THAT_VOTE_COUNT, userThatVoteCount);
+
                 baseFragment.presentFragment(new OptionDetailFragment(bundle));
             }
         };
@@ -157,18 +173,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         optionTitle.setOnClickListener(openOptionDetailOnClickLister);
         optionSubtitle.setText(o.getLongDescription());
         optionSubtitle.setOnClickListener(openOptionDetailOnClickLister);
-
-        int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
-        optionVoteCount.setText(formatVoteCount(positiveVoteCount));
-        //noinspection ResourceType
-        starImageView.setVisibility(usersDecisionVotes.isWinningOption(o) ? View.VISIBLE : View.INVISIBLE);
-
-
-        StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
-                positiveVoteCount, usersDecisionVotes.getUserThatVoteCount());
-        stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-
-        optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
         return rowView;
     }
