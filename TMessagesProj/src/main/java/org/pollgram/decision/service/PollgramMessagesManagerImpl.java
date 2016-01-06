@@ -53,10 +53,9 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     String getTailingString(){
-        Context c = ApplicationLoader.applicationContext;
         return new StringBuilder().append(NEW_LINE).
                 append(NEW_LINE).
-                append(c.getString(R.string.downloadPollgramFromMarket)).
+                append(getResString(R.string.downloadPollgramFromMarket)).
                 append(' ').
                 append(GOOGLE_PLAY_POOLGRAM_URL).
                 toString();
@@ -115,11 +114,18 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         return strValue;
     }
 
+    private String getResString(int resId){
+        String s = context.getString(resId);
+        if (s == null)
+            return  null;
+        return s.replace(Character.toString(QUOTE_CHAR), Character.toString(ESCAPE_QUOTE_CHAR));
+    }
+
     private String getBooleanValue(Boolean b) {
         StringBuilder sb = new StringBuilder();
         sb.append(b ? TRUE_EMOJI : FALSE_EMOJI);
         sb.append(" ");
-        sb.append(ApplicationLoader.applicationContext.getString(b ? R.string.yes : R.string.no));
+        sb.append(getResString(b ? R.string.yes : R.string.no));
         return sb.toString();
     }
 
@@ -130,15 +136,15 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public String buildRemindMessage(String userAsString, Decision decision) {
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(R.string.tmsg_RemindToVoteP1));
+        body.append(getResString(R.string.tmsg_RemindToVoteP1));
         body.append(' ');
         body.append(userAsString);
         body.append(' ');
-        body.append(context.getString(R.string.tmsg_RemindToVoteP2));
+        body.append(getResString(R.string.tmsg_RemindToVoteP2));
         body.append(NEW_LINE);
         body.append(format(decision));
         body.append(NEW_LINE);
-        body.append(context.getString(R.string.tmsg_RemindToVoteP3));
+        body.append(getResString(R.string.tmsg_RemindToVoteP3));
         body.append(' ');
         body.append(WINKING_FACE_EMOJI);
         return  buildMessage(MessageType.REMIND_TO_VOTE, body.toString());
@@ -147,21 +153,21 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public String buildCloseDecision(Decision decision, Option winningOption, int voteCount) {
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(R.string.tmsg_CloseDecisionP1));
+        body.append(getResString(R.string.tmsg_CloseDecisionP1));
         body.append(' ');
         body.append(format(decision));
-        body.append(context.getString(R.string.tmsg_CloseDecisionP2));
+        body.append(getResString(R.string.tmsg_CloseDecisionP2));
         body.append(' ');
         if (voteCount == 0)
-            body.append(format(context.getString(R.string.tmsg_CloseDecisionNoOptionDesc)));
+            body.append(format(getResString(R.string.tmsg_CloseDecisionNoOptionDesc)));
         else
             body.append(format(winningOption));
         body.append(' ');
-        body.append(context.getString(R.string.tmsg_CloseDecisionP3));
+        body.append(getResString(R.string.tmsg_CloseDecisionP3));
         body.append(' ');
         body.append(voteCount);
         body.append(' ');
-        body.append(context.getString(R.string.tmsg_CloseDecisionP4));
+        body.append(getResString(R.string.tmsg_CloseDecisionP4));
 
         return  buildMessage(MessageType.CLOSE_DECISION, body.toString());
     }
@@ -180,18 +186,18 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
     private String buildDeleteOrReopenMessage(MessageType type, Decision decision, int prefixStringRes, int suffixStringRes){
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(prefixStringRes));
+        body.append(getResString(prefixStringRes));
         body.append(' ');
         body.append(format(decision));
         body.append(NEW_LINE);
-        body.append(context.getString(suffixStringRes));
+        body.append(getResString(suffixStringRes));
         return buildMessage(type, body.toString());
     }
 
     @Override
     public String buildNotifyVoteMessage(Decision decision, Collection<Vote> votes2Save) {
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(R.string.tmsg_Vote));
+        body.append(getResString(R.string.tmsg_Vote));
         body.append(NEW_LINE);
         body.append(format(decision));
         body.append(NEW_LINE);
@@ -213,7 +219,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public String buildNotifyNewDecision(Decision decision, List<Option> options) {
         StringBuilder body = new StringBuilder();
-        body.append(context.getString(R.string.tmsg_NewDecisionMsgPrefix));
+        body.append(getResString(R.string.tmsg_NewDecisionMsgPrefix));
         body.append(NEW_LINE);
         body.append(format(decision));
         body.append(',');
@@ -221,7 +227,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         body.append(format(decision.getLongDescription()));
         body.append('.');
         body.append(NEW_LINE);
-        body.append(context.getString(R.string.tmsg_NewDecisionOptionsPrefix));
+        body.append(getResString(R.string.tmsg_NewDecisionOptionsPrefix));
         body.append(NEW_LINE);
         for(Option o : options){
             body.append(BULLET_LIST_EMOJI);
@@ -301,27 +307,29 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public int getMessageGroupId(MessageObject messageObject) {
+    public long getMessageGroupId(MessageObject messageObject) {
         if (messageObject.messageOwner == null)
             return -1;
 
 
         if (messageObject.getDialogId() > 0){
-            Log.d(LOG_TAG,"message.messageOwner.dialog_id positive, in not a group chat");
             return -1;
         }
 
-        int groupChatId = (int)(messageObject.getDialogId() * -1);
-        if (ChatObject.isChannel(groupChatId)){
-            Log.d(LOG_TAG,"is a channel");
+        return getMessageGroupId(messageObject.getDialogId());
+    }
+
+    @Override
+    public long getMessageGroupId(long dialog_id) {
+        long groupChatId = dialog_id * -1;
+        if (ChatObject.isChannel((int) groupChatId)){
             return -1;
         }
-
         return groupChatId;
     }
 
     @Override
-    public Collection<Vote> getVotes(String msg, int currentChat, Date messageDate ,int userId) throws PollgramParseException {
+    public Collection<Vote> getVotes(String msg, long currentChat, Date messageDate ,int userId) throws PollgramParseException {
 
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg, true);
@@ -358,7 +366,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public NewDecisionData getNewDecision(String msg, int currentChat, int userId, Date messageDate) throws PollgramParseException {
+    public NewDecisionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
@@ -389,7 +397,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public ClosedDecisionDate getCloseDecision(String msg, int currentChat) throws PollgramParseException {
+    public ClosedDecisionDate getCloseDecision(String msg, long currentChat) throws PollgramParseException {
         Decision decision;
         Option winningOption;
         try {
@@ -416,14 +424,14 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public Decision getDeleteDecision(String text, int groupChatId) throws PollgramParseException {
+    public Decision getDeleteDecision(String text, long groupChatId) throws PollgramParseException {
         Decision d = getDecisionInDeleteOrReopenMessage(text, groupChatId);
         Log.d(LOG_TAG, "getDeleteDecision Decision[" + d + "]");
         return d;
     }
 
     @Override
-    public Decision getReopenDecision(String text, int groupChatId) throws PollgramParseException {
+    public Decision getReopenDecision(String text, long groupChatId) throws PollgramParseException {
         Decision d = getDecisionInDeleteOrReopenMessage(text,groupChatId);
         Log.d(LOG_TAG, "getReopenDecision Decision["+d+"]");
         return d;
@@ -435,7 +443,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
      * @param groupChatId
      * @return
      */
-    private Decision getDecisionInDeleteOrReopenMessage(String msg, int groupChatId) throws PollgramParseException {
+    private Decision getDecisionInDeleteOrReopenMessage(String msg, long groupChatId) throws PollgramParseException {
         Decision decision;
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg);

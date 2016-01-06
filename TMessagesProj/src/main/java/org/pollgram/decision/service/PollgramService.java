@@ -11,7 +11,9 @@ import org.telegram.messenger.MessageObject;
 import org.telegram.tgnet.TLRPC;
 
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by davide on 10/11/15.
@@ -34,6 +36,26 @@ public interface PollgramService {
     void notifyReopen(Decision decision);
 
     void notifyDelete(Decision decision);
+
+    /**
+     * @param message
+     * @return whether the messsage is a pollgram transaction message
+     */
+    boolean isPollgramMessage(MessageObject message);
+
+    /**
+     * @param messageObject
+     * @return the reference date of the passed message
+     */
+    Date getMessageDate(MessageObject messageObject);
+
+    /**
+     * Process a message and return the new message, performing some transformation if needed.
+     * @param message the input message
+     * @param showToastOnError show a Toast if an error will occur
+     * @return the input message transformed if needed
+     */
+    void processMessage(MessageObject message, boolean showToastOnError);
 
     /**
      * Process a message and return the new message, performing some transformation if needed.
@@ -63,4 +85,20 @@ public interface PollgramService {
      */
     String asString(TLRPC.User user);
 
+    /**
+     * runs the initial import of messages in the group..only inf not did before
+     * @param objects
+     */
+    void processMessages(final long dialog_id, List<MessageObject> objects);
+
+    /**
+     *
+     * @param dialog_id
+     * @param dialogMessagesByIds
+     * @param excludeMessages
+     * @return the messages that has not been parsed successfully, since now, that are included in
+     * dialogMessagesByIds but not in excludeMessages
+     */
+    List<MessageObject> getUnParsedMessages(final long dialog_id, Map<Integer, MessageObject> dialogMessagesByIds,
+                                            List<MessageObject> excludeMessages);
 }

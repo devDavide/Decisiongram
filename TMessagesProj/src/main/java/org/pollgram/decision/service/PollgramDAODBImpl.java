@@ -7,6 +7,7 @@ import android.util.Log;
 
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.TimeRangeOption;
 import org.pollgram.decision.data.Vote;
@@ -39,16 +40,36 @@ class PollgramDAODBImpl implements PollgramDAO {
         // TODO remove it one day
         Log.i(LOG_TAG, "Put Stub test data");
 
-        Date creationDate = new Date();
-        Decision decision1 =  new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true);
+        {
+            Date creationDate = new Date();
+            Decision decision1 = new Decision(chatId, creatorId, "what present do we buy ?", "huge bla bla bla", creationDate, true);
 
-        List<Option> options = new ArrayList<>();
-        options.add(new TextOption("Ski", "They cost 385EUR i saw them at the corner shop", decision1.getId()));
-        options.add(new TextOption("Phone", "The new StonexOne is AWESOME !!!", decision1.getId()));
-        options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
-        options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
+            List<Option> options = new ArrayList<>();
+            options.add(new TextOption("Ski", "They cost 385EUR i saw them at the corner shop", decision1.getId()));
+            options.add(new TextOption("Phone", "The new StonexOne is AWESOME !!!", decision1.getId()));
+            options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
+            options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
 
-        PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
+            PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
+        }
+
+        {
+            Date creationDate = new Date();
+            Decision decision1 = new Decision(chatId, creatorId, "Where do we'd like to go skiing ?",
+                    "Lorem ipsum dolor sit amet, vix te deserunt ullamcorper. Ut probatus dignissim sea, vocent discere vivendum ad mea. Eam ut blandit scribentur, ius an salutatus reprimique. Ut eros rationibus nec, ex deserunt invenire quo.\n" +
+                            "\n" +
+                            "Id nulla tacimates mandamus est, duo agam luptatum philosophia ex, wisi vidit reprehendunt quo ea. Ei sed omnis nostrum probatus, quis liber expetendis id sea. Pro id nibh recusabo, has suas volutpat cu. Copiosae detraxit petentium has ne. ", creationDate, true);
+
+            List<Option> options = new ArrayList<>();
+            options.add(new TextOption("Val di fiemme obereggen, ovvero pameago", "L'è sempre bel e ghe el park davert", decision1.getId()));
+            options.add(new TextOption("Cortina d'ampezzo", "Lorem ipsum dolor sit amet, vix te deserunt ullamcorper. Ut probatus dignissim sea, vocent discere vivendum ad mea. Eam ut blandit scribentur, ius an salutatus reprimique. Ut eros rationibus nec, ex deserunt invenire quo.\n" +
+                    "\n" +
+                    "Id nulla tacimates mandamus est, duo agam luptatum philosophia ex, wisi vidit reprehendunt quo ea. Ei sed omnis nostrum probatus, quis liber expetendis id sea. Pro id nibh recusabo, has suas volutpat cu. Copiosae detraxit petentium has ne.", decision1.getId()));
+            options.add(new TextOption("Le funivie del'ghiacciaio della valle di stubai che si trova in austria vicino ad innsbruck", "è un po lungo il viaggio ma potrebbe essere assai fico", decision1.getId()));
+            options.add(new TextOption("Sul piste del passo del Broccon", null, decision1.getId()));
+
+            PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
+        }
     }
 
     @Override
@@ -148,14 +169,14 @@ class PollgramDAODBImpl implements PollgramDAO {
     }
 
     @Override
-    public List<Decision> getDecisions(int chatId, @Nullable Boolean open) {
-        String selection = PGSqlLiteHelper.T_Decision.FULL_CHAT_ID + " = ? ";
+    public List<Decision> getDecisions(long chatId, @Nullable Boolean open) {
+        String selection = PGSqlLiteHelper.T_Decision.GROUP_ID + " = ? ";
         String[] selectionArgs;
         if (open != null) {
             selection = PGSqlLiteHelper.T_Decision.OPEN + "= ? and " + selection;
-            selectionArgs = new String[]{PGSqlLiteHelper.toString(open), Integer.toString(chatId)};
+            selectionArgs = new String[]{PGSqlLiteHelper.toString(open), Long.toString(chatId)};
         } else {
-            selectionArgs = new String[]{Integer.toString(chatId)};
+            selectionArgs = new String[]{Long.toString(chatId)};
         }
 
         return helper.query(helper.DECISION_MAPPER, selection, selectionArgs, null, null,
@@ -257,10 +278,10 @@ class PollgramDAODBImpl implements PollgramDAO {
     }
 
     @Override
-    public Decision getDecision(String decisionTitle, int chatId) {
+    public Decision getDecision(String decisionTitle, long chatId) {
         return helper.findFirst(helper.DECISION_MAPPER,
-                PGSqlLiteHelper.T_Decision.TITLE + " = ? AND " + PGSqlLiteHelper.T_Decision.FULL_CHAT_ID + " = ?",
-                new String[]{decisionTitle, Integer.toString(chatId)});
+                PGSqlLiteHelper.T_Decision.TITLE + " = ? AND " + PGSqlLiteHelper.T_Decision.GROUP_ID + " = ?",
+                new String[]{decisionTitle, Long.toString(chatId)});
     }
 
     @Override
@@ -281,5 +302,43 @@ class PollgramDAODBImpl implements PollgramDAO {
                 new String[]{Long.toString(optionId), Integer.toString(userId)});
     }
 
+    @Override
+    public boolean hasBeenParsed(final long groupChatId, int messageId) {
+        ParsedMessage pm = getParseMessage(groupChatId,messageId);
+        return pm == null ? false : pm.isParsedSuccessfully();
+    }
+
+    private  ParsedMessage getParseMessage(final long groupChatId, int messageId){
+        return helper.findFirst(PGSqlLiteHelper.PARSED_MESSAGES_MAPPER,
+                PGSqlLiteHelper.T_ParsedMessages.GROUP_ID + " = ? and " +
+                        PGSqlLiteHelper.T_ParsedMessages.MESSAGE_ID + " = ? ",
+                new String[]{Long.toString(groupChatId), Integer.toString(messageId)});
+    }
+
+    @Override
+    public ParsedMessage setMessageAsParsed(final long groupChatId, int messageId, boolean parsedSuccessfully) {
+        ParsedMessage newValue = new ParsedMessage(groupChatId,messageId, parsedSuccessfully);
+        return save(newValue);
+    }
+
+    private ParsedMessage save(ParsedMessage newValue){
+        ParsedMessage foundParseMessage = getParseMessage(newValue.getGroupId(),newValue.getMessageId());
+        if (foundParseMessage == null)
+            return helper.insert(newValue, helper.PARSED_MESSAGES_MAPPER);
+        else{
+            newValue.setId(foundParseMessage.getId());
+            helper.update(newValue, helper.PARSED_MESSAGES_MAPPER);
+            return newValue;
+        }
+    }
+
+    @Override
+    public List<ParsedMessage> getUnparsedMessages(final long groupChatId) {
+        return helper.query(PGSqlLiteHelper.PARSED_MESSAGES_MAPPER,
+                PGSqlLiteHelper.T_ParsedMessages.GROUP_ID + " = ? and " +
+                        PGSqlLiteHelper.T_ParsedMessages.PARSED_SUCCESSFULLY + " = ? ",
+                new String[]{Long.toString(groupChatId), PGSqlLiteHelper.toString(false)});
+
+    }
 }
 

@@ -8,6 +8,7 @@ import android.util.Log;
 
 import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Decision;
+import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.ApplicationLoader;
@@ -30,13 +31,13 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String ID = DEFAULT_ID_FILE_NAME;
         static final String TITLE = "title";
         static final String LONG_DESCRIPTION = "long_description";
-        static final String FULL_CHAT_ID = "full_chat_id";
+        static final String GROUP_ID = "group_id";
         static final String USER_CREATOR_ID = "user_creator_id";
         static final String CREATION_DATE = "creation_date";
         static final String OPEN = "open";
 
         public static String cloumns(String tableAlias) {
-            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, FULL_CHAT_ID,CREATION_DATE, USER_CREATOR_ID, OPEN);
+            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, GROUP_ID,CREATION_DATE, USER_CREATOR_ID, OPEN);
         }
     }
 
@@ -62,6 +63,19 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
 
         static String cloumns(String tableAlias){
             return createColumns(tableAlias, ID,VOTE,VOTE_TIME,USER_ID,FK_OPTION);
+        }
+    }
+
+    static class T_ParsedMessages {
+        static final String TABLE_NAME = "parsedMessages";
+        static final String ID = DEFAULT_ID_FILE_NAME;
+        static final String GROUP_ID = "group_id";
+        static final String MESSAGE_ID = "message_id";
+        static final String PARSED_SUCCESSFULLY = "parsed_successfully";
+
+
+        static String cloumns(String tableAlias){
+            return createColumns(tableAlias, ID,GROUP_ID,MESSAGE_ID,PARSED_SUCCESSFULLY);
         }
     }
 
@@ -134,11 +148,11 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             long id = getLong(c, T_Decision.ID);
             String title = getString(c, T_Decision.TITLE);
             String description = getString(c, T_Decision.LONG_DESCRIPTION);
-            int fullChatId = getInt(c, T_Decision.FULL_CHAT_ID);
+            long groupChatId = getLong(c, T_Decision.GROUP_ID);
             int userCreatorId = getInt(c, T_Decision.USER_CREATOR_ID);
             Date creationDate = getDate(c, T_Decision.CREATION_DATE);
             boolean isOpen = getBoolean(c, T_Decision.OPEN);
-            return new Decision(id, fullChatId, userCreatorId, title, description, creationDate, isOpen);
+            return new Decision(id, groupChatId, userCreatorId, title, description, creationDate, isOpen);
         }
 
         @Override
@@ -146,7 +160,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             ContentValues cv = new ContentValues();
             cv.put(T_Decision.TITLE, d.getTitle());
             cv.put(T_Decision.LONG_DESCRIPTION, d.getLongDescription());
-            cv.put(T_Decision.FULL_CHAT_ID, d.getChatId());
+            cv.put(T_Decision.GROUP_ID, d.getChatId());
             cv.put(T_Decision.USER_CREATOR_ID, d.getUserCreatorId());
             cv.put(T_Decision.CREATION_DATE, d.getCreationDate().getTime());
             cv.put(T_Decision.OPEN, d.isOpen());
@@ -183,6 +197,40 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             cv.put(T_TextOption.TITLE, to.getTitle());
             cv.put(T_TextOption.LONG_DESCRIPTION, to.getLongDescription());
             cv.put(T_TextOption.FK_DECISION, to.getDecisionId());
+            return cv;
+        }
+
+    };
+
+    /**
+     * DBObjectMapper for TextOption
+     */
+    static final DBObjectMapper<ParsedMessage> PARSED_MESSAGES_MAPPER = new DBObjectMapper<ParsedMessage>() {
+        @Override
+        public String getTableName() {
+            return T_ParsedMessages.TABLE_NAME;
+        }
+
+        @Override
+        public String getIdFiledName() {
+            return T_ParsedMessages.ID;
+        }
+
+        @Override
+        public ParsedMessage from(Cursor c) {
+            long id = getLong(c, T_ParsedMessages.ID);
+            int groupId = getInt(c, T_ParsedMessages.GROUP_ID);
+            int messageID = getInt(c, T_ParsedMessages.MESSAGE_ID);
+            boolean parsedSuccessfully = getBoolean(c, T_ParsedMessages.PARSED_SUCCESSFULLY);
+            return new ParsedMessage(id, groupId, messageID, parsedSuccessfully);
+        }
+
+        @Override
+        public ContentValues toCV(ParsedMessage to) {
+            ContentValues cv = new ContentValues();
+            cv.put(T_ParsedMessages.GROUP_ID, to.getGroupId());
+            cv.put(T_ParsedMessages.MESSAGE_ID, to.getMessageId());
+            cv.put(T_ParsedMessages.PARSED_SUCCESSFULLY, to.isParsedSuccessfully());
             return cv;
         }
 
@@ -328,11 +376,11 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_Decision.ID + " INTEGER PRIMARY KEY, " +
                 T_Decision.TITLE + " TEXT, " +
                 T_Decision.LONG_DESCRIPTION + " TEXT, " +
-                T_Decision.FULL_CHAT_ID + " INTEGER," +
+                T_Decision.GROUP_ID + " INTEGER," +
                 T_Decision.USER_CREATOR_ID + " INTEGER," +
                 T_Decision.CREATION_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 T_Decision.OPEN + " INTEGER, " +
-                "UNIQUE ("+T_Decision.TITLE+","+T_Decision.FULL_CHAT_ID+")" +
+                "UNIQUE (" + T_Decision.TITLE + "," + T_Decision.GROUP_ID + ")" +
                 ") ;");
         db.execSQL("CREATE TABLE " + T_TextOption.TABLE_NAME + " (" +
                 T_TextOption.ID + " INTEGER PRIMARY KEY, " +
@@ -349,7 +397,14 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_Vote.FK_OPTION + " INTEGER, " +
                 T_Vote.USER_ID + " INTEGER, " +
                 "FOREIGN KEY(" + T_Vote.FK_OPTION + ")REFERENCES " +
-                    T_TextOption.TABLE_NAME + " (" + T_TextOption.ID + ") ON DELETE CASCADE ) ;");
+                T_TextOption.TABLE_NAME + " (" + T_TextOption.ID + ") ON DELETE CASCADE ) ;");
+        db.execSQL("CREATE TABLE " + T_ParsedMessages.TABLE_NAME + "(" +
+                T_ParsedMessages.ID + " INTEGER PRIMARY KEY," +
+                T_ParsedMessages.GROUP_ID + " INTEGER," +
+                T_ParsedMessages.MESSAGE_ID + " INTEGER, " +
+                T_ParsedMessages.PARSED_SUCCESSFULLY + " INTEGER, " +
+                "UNIQUE (" + T_ParsedMessages.GROUP_ID + "," + T_ParsedMessages.MESSAGE_ID + ")" +
+                " );");
         Log.i(LOG_TAG, "Db creation completed");
 
     }

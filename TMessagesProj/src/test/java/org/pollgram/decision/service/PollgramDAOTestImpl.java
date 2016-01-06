@@ -5,12 +5,14 @@ import android.support.annotation.Nullable;
 import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.MessagesController;
 import org.telegram.tgnet.TLRPC;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -95,7 +97,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
-    public List<Decision> getDecisions(int chatId, @Nullable Boolean open) {
+    public List<Decision> getDecisions(long chatId, @Nullable Boolean open) {
         List<Decision> outList = new ArrayList<>();
         for (Decision d : decisions)
             if (open == null || d.isOpen() == open.booleanValue())
@@ -179,7 +181,7 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
-    public Decision getDecision(String decisionTitle, int chatId) {
+    public Decision getDecision(String decisionTitle, long chatId) {
         for (Decision d : decisions) {
             if (d.getTitle().equals(decisionTitle) && d.getChatId() == chatId)
                 return d;
@@ -226,7 +228,27 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
+    public boolean hasBeenParsed(long groupChatId, int id) {
+        return true;
+    }
+
+    @Override
+    public ParsedMessage setMessageAsParsed(long groupChatId, int messageId, boolean parsedSuccessfully) {
+        return new ParsedMessage(groupChatId,messageId,parsedSuccessfully);
+    }
+
+    @Override
+    public List<ParsedMessage> getUnparsedMessages(long groupChatId) {
+        return Arrays.asList();
+    }
+
+    @Override
     public WinningOption getWinningOption(Decision decision) {
-        return null;
+        List<Option> options = getOptions(decision);
+        int max = 0;
+        for (Option o : options) {
+            return new WinningOption(max, o);
+        }
+        return  null;
     }
 }

@@ -10,16 +10,16 @@ public class Decision extends  DBBean {
     private final Date creationDate;
     private String title;
     private final String longDescription;
-    private final int fullChatId;
+    private final long groupCharId;
     private final int userCreatorId;
     private boolean open;
 
     // icon/image will be retrived externally by url or file.
     // Like the file containing the decision image can be named like decisio_<id>.png, and cached on the fs
 
-    public Decision(int fullChatId, int userCreatorId, String title, String longDescription,
+    public Decision(long groupCharId, int userCreatorId, String title, String longDescription,
                     Date creationDate, boolean open) {
-        this.fullChatId = fullChatId;
+        this.groupCharId = groupCharId;
         this.title = title;
         this.longDescription = longDescription;
         this.userCreatorId = userCreatorId;
@@ -27,9 +27,9 @@ public class Decision extends  DBBean {
         this.open = open;
     }
 
-    public Decision(long id, int fullChatId, int userCreatorId, String title, String longDescription,
+    public Decision(long id, long groupCharId, int userCreatorId, String title, String longDescription,
                     Date creationDate, boolean open) {
-        this(fullChatId,userCreatorId,title, longDescription, creationDate, open);
+        this(groupCharId,userCreatorId,title, longDescription, creationDate, open);
         setId(id);
 
     }
@@ -37,8 +37,8 @@ public class Decision extends  DBBean {
     /*
      * @return the id of an TLRPC.ChatFull
      */
-    public int getChatId() {
-        return fullChatId;
+    public long getChatId() {
+        return groupCharId;
     }
 
     /**
@@ -80,7 +80,7 @@ public class Decision extends  DBBean {
 
         Decision decision = (Decision) o;
 
-        if (fullChatId != decision.fullChatId) return false;
+        if (groupCharId != decision.groupCharId) return false;
         if (getUserCreatorId() != decision.getUserCreatorId()) return false;
         if (isOpen() != decision.isOpen()) return false;
         if (getTitle() != null ? !getTitle().equals(decision.getTitle()) : decision.getTitle() != null)
@@ -103,7 +103,7 @@ public class Decision extends  DBBean {
         int result = super.hashCode();
         result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
         result = 31 * result + (getLongDescription() != null ? getLongDescription().hashCode() : 0);
-        result = 31 * result + fullChatId;
+        result = (int) (31 * result + groupCharId);
         result = 31 * result + (int) (getUserCreatorId() ^ (getUserCreatorId() >>> 32));
         result = 31 * result + (isOpen() ? 1 : 0);
         return result;
@@ -112,7 +112,7 @@ public class Decision extends  DBBean {
     @Override
     public String toString() {
         return "Decision{" +
-                "fullChatId=" + fullChatId +
+                "groupCharId=" + groupCharId +
                 ", userCreatorId=" + userCreatorId +
                 ", longDescription='" + longDescription + '\'' +
                 ", title='" + title + '\'' +

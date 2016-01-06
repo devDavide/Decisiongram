@@ -84,7 +84,9 @@ public interface PollgramMessagesManager {
      * @param messageObject
      * @return the group chat id of this message or -1 if this message is not a group chat message
      */
-    int getMessageGroupId(MessageObject messageObject);
+    long getMessageGroupId(MessageObject messageObject);
+
+    long getMessageGroupId(long dialog_id);
 
     /**
      * @param msg message to parse
@@ -150,7 +152,7 @@ public interface PollgramMessagesManager {
      * @return a collection of the vote contained in the message
      * @throws ParseException is the message is not well formed
      */
-    Collection<Vote> getVotes(String msg, int currentChat, Date messageDate, int userId) throws PollgramParseException;
+    Collection<Vote> getVotes(String msg, long currentChat, Date messageDate, int userId) throws PollgramParseException;
 
     /**
      * Retrun vale for getNewDecision method
@@ -174,7 +176,7 @@ public interface PollgramMessagesManager {
      * @param messageDate the message date
      * @return the decision and its options
      */
-    NewDecisionData getNewDecision(String msg, int currentChat, int userId, Date messageDate) throws PollgramParseException;
+    NewDecisionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException;
 
     /**
      * Return value for getCloseDecision
@@ -195,7 +197,7 @@ public interface PollgramMessagesManager {
      * @param groupChatId
      * @return the data for close decision message
      */
-    ClosedDecisionDate getCloseDecision(String text, int groupChatId) throws PollgramParseException;
+    ClosedDecisionDate getCloseDecision(String text, long groupChatId) throws PollgramParseException;
 
     /**
      * * Only if getMessageType(text) == MessageType_DELETE_DECISION
@@ -203,7 +205,7 @@ public interface PollgramMessagesManager {
      * @param groupChatId
      * @return the decision to delete
      */
-    Decision getDeleteDecision(String text, int groupChatId) throws PollgramParseException;
+    Decision getDeleteDecision(String text, long groupChatId) throws PollgramParseException;
 
     /**
      * Only if getMessageType(text) == MessageType_REOPEN_DECISION
@@ -211,6 +213,6 @@ public interface PollgramMessagesManager {
      * @param groupChatId
      * @return the decision to reopen
      */
-    Decision getReopenDecision(String text, int groupChatId) throws PollgramParseException;
+    Decision getReopenDecision(String text, long groupChatId) throws PollgramParseException;
 
 }
