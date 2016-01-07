@@ -1008,7 +1008,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
             });
             actionBar.addView(decisionManagerButton, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.RIGHT | Gravity.TOP, 56, 28, 42, 0));
+                    Gravity.RIGHT | Gravity.TOP, 56, 30, 42, 0));
         }
 
         avatarContainer = new FrameLayoutFixed(context);
@@ -1179,8 +1179,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         // Poolgram custom items
         if (isGroupChat()){
-            headerItem.addSubItem(new_decision, getParentActivity().getString(R.string.newDecision),R.drawable.decision);
-            headerItem.addSubItem(show_decision, getParentActivity().getString(R.string.showDecision),R.drawable.decision);
+            headerItem.addSubItem(new_decision, getParentActivity().getString(R.string.newDecision),R.drawable.decision_icon_small);
+            headerItem.addSubItem(show_decision, getParentActivity().getString(R.string.showDecision),R.drawable.decision_dark);
         }
         if (currentUser != null) {
             addContactItem = headerItem.addSubItem(share_contact, "", 0);
