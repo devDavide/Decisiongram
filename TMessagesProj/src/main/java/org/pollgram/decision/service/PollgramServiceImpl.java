@@ -211,6 +211,7 @@ public class PollgramServiceImpl implements PollgramService {
                     }
                     if (pollgramDAO.getDecision(resut.decision.getTitle(),resut.decision.getChatId()) != null){
                         Log.d(LOG_TAG,"New decision already found will not insert twice");
+                        break;
                     }
                     Decision d = pollgramDAO.save(resut.decision);
                     for (Option o : resut.optionList) {
