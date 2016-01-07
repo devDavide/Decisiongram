@@ -35,7 +35,7 @@ import java.util.List;
  */
 public class NewDecisionFragment extends BaseFragment {
 
-    static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID";
+    public static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID";
     private static final short PAGE_1 = 1;
     private static final short PAGE_2 = 2;
 

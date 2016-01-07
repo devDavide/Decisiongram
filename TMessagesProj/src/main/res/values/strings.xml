@@ -1133,6 +1133,7 @@
     <string name="negativeVoteDesc">Negative: %1$d\n (%2$.1f%%)</string>
     <string name="voteSummary">Votes Summary</string>
     <string name="decisionDetailTitle">Decision detail</string>
+    <string name="showDecision">Show decisions</string>
 
     <!-- END of Pollgram text -->
 

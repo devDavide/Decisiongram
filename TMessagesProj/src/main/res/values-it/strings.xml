@@ -1138,6 +1138,7 @@
     <string name="negativeVoteDesc">Negativi: %1$d\n (%2$.1f%%)</string>
     <string name="voteSummary">Riepilogo voti</string>
     <string name="decisionDetailTitle">Dettaglio decisione</string>
+    <string name="showDecision">Mostra decisioni</string>
 
     <!-- END of Pollgram text -->
 </resources>

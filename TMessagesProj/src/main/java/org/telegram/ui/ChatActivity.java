@@ -55,6 +55,7 @@ import org.pollgram.R;
 import org.pollgram.decision.service.PollgramDAOException;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
+import org.pollgram.decision.ui.NewDecisionFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -318,6 +319,10 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int share_contact = 17;
     private final static int mute = 18;
     private final static int reply = 19;
+    // Pollgram IDs start
+    private final static int new_decision = 20;
+    private final static int show_decision = 21;
+    // Pollgram IDs end
 
     private final static int bot_help = 30;
     private final static int bot_settings = 31;
@@ -981,22 +986,25 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     fragment.setChatInfo(info);
                     fragment.setPlayProfileAnimation(true);
                     presentFragment(fragment);
+                } else if (id == new_decision){
+                    Bundle args = new Bundle();
+                    args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, info.id);
+                    presentFragment(new NewDecisionFragment(args));
+                } else if (id == show_decision){
+                    openDecisionListFragment();
                 }
             }
         });
 
-        /// uuuuu add button
-        boolean isChannel = ChatObject.isChannel(currentChat);
-        if (currentChat != null && !isChannel) { // only incase of a group chat
+        /// add Pollgram decision button
+        if (isGroupChat()) { // only incase of a group chat
             decisionManagerButton = new ImageView(context);
             decisionManagerButton.setScaleType(ImageView.ScaleType.CENTER);
             decisionManagerButton.setBackgroundResource(R.drawable.decision);
             decisionManagerButton.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    DecisionsListFragment fragment = new DecisionsListFragment();
-                    fragment.setChatInfo(info);
-                    presentFragment(fragment);
+                    openDecisionListFragment();
                 }
             });
             actionBar.addView(decisionManagerButton, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
@@ -1168,6 +1176,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         }
         if (searchItem != null) {
             headerItem.addSubItem(search, LocaleController.getString("Search", R.string.Search), 0);
+        }
+        // Poolgram custom items
+        if (isGroupChat()){
+            headerItem.addSubItem(new_decision, getParentActivity().getString(R.string.newDecision),R.drawable.decision);
+            headerItem.addSubItem(show_decision, getParentActivity().getString(R.string.showDecision),R.drawable.decision);
         }
         if (currentUser != null) {
             addContactItem = headerItem.addSubItem(share_contact, "", 0);
@@ -2216,6 +2229,16 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         updateSpamView();
 
         return fragmentView;
+    }
+
+    private void openDecisionListFragment() {
+        DecisionsListFragment fragment = new DecisionsListFragment();
+        fragment.setChatInfo(info);
+        presentFragment(fragment);
+    }
+
+    private boolean isGroupChat() {
+        return currentChat != null && !ChatObject.isChannel(currentChat);
     }
 
     private void checkScrollForLoad() {
