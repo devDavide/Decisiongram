@@ -13,7 +13,7 @@ public class TextOption extends Option {
     public TextOption(String title, String longDescription, long decisionId) {
         super(decisionId);
         this.title = title;
-        this.longDescription = longDescription;
+        this.longDescription =  longDescription;
     }
 
     public TextOption(long id, String title, String longDescription, long decisionId) {

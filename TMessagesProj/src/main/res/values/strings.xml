@@ -1135,6 +1135,7 @@
     <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
     <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
     <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
+    <string name="titleAlreadyPresent">There are more than one option, with title \'%1$s\' please remove one.</string>
     <string name="you">you</string>
     <string name="saveDecisionQuestion">Save decision %1$s with options ?</string>
     <string name="addOptionToDecisionQuestion">Are you sure to add %1$d options to decision %2$s ?</string>
@@ -1154,7 +1155,7 @@
     <string name="addNewtOptionsTitle">Add new options</string>
     <string name="nothingToSave">There are no changes to save.</string>
     <string name="thereAreNoDecisionInThisGroup">There are not still no decision in this group.
-        \n\nPollgram's decisions are a powerful tool, for easily taking arrangement between the group\'s members,
+        \n\nPollgram\'s decisions are a powerful tool, for easily taking arrangement between the group\'s members,
         using a poll-based system.
         \n\nPres the \"plus\" button for creating a new decision.</string>
 

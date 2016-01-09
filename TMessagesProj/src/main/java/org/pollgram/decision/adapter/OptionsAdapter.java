@@ -13,12 +13,15 @@ import android.widget.ImageButton;
 import android.widget.Toast;
 
 import org.pollgram.R;
+import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.PollgramException;
 import org.pollgram.decision.data.TextOption;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by davide on 23/12/15.
@@ -54,9 +57,20 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
      * @throws PollgramException if some value is invalid
      */
     public List<Option> getOptions() throws PollgramException{
+        Set<String> titleSet = new HashSet<>();
         List<Option> out = new ArrayList<Option>();
+
+        // check for duplicated titles
+        for(Option o : options){
+            if (titleSet.contains(o.getTitle())){
+                throw new PollgramException(getContext().getString(R.string.titleAlreadyPresent,o.getTitle()));
+            }
+            titleSet.add(o.getTitle());
+        }
+
         for (int i = lastIdx + 1 ; i<options.size() ; i++)
             out.add(options.get(i));
+
         for (int i = 0; i < out.size(); i++) {
             String title = out.get(i).getTitle();
             if (title == null || title.trim().isEmpty()) {
@@ -110,12 +124,21 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             final TextOption o = options.get(position);
             edTitle.setText(o.getTitle());
             edLongDescription.setText(o.getLongDescription());
+            // make grey the lines that are already present and therefore not editable
+            if(o.getId() != DBBean.ID_NOT_SET) {
+//                rowView.setBackgroundColor(Color.LTGRAY);
+                // prevent EditText hint to be showed for existing decision with not long description
+                if (o.getLongDescription() != null || o.getLongDescription().isEmpty()) {
+                    edLongDescription.setText(" ");
+                }
+            }
+
 
             // Register listener
             deleteItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    if  (position <= lastIdx) {
+                    if (position <= lastIdx) {
                         lastIdx--;
                         deletedOptions.add(options.get(position));
                     }
