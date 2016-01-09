@@ -1,6 +1,7 @@
 package org.pollgram.decision.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -150,7 +151,11 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
                 positiveVoteCount, negativeVoteCount);
         stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
+        if (vote.isVote() == null){
+            optionCheckBox.setBackgroundColor(Color.parseColor("#fff8b9"));
+        }
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
+
 
 
         View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
