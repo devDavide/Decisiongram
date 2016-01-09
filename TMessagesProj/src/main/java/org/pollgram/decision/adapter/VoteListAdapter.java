@@ -36,6 +36,7 @@ import java.util.Map;
 public class VoteListAdapter extends ArrayAdapter<Vote> {
 
     private static final String LOG_TAG = "ChoiceAdapter";
+    private static final int VOTED_NOT_SET_COLOR = Color.parseColor("#fff8b9");
 
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
     private final LayoutInflater inflater;
@@ -48,6 +49,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private OnVoteChangeListener onVoteChangeListener;
     private UsersDecisionVotes usersDecisionVotes;
 
+    private boolean firstVotePerformed;
 
     public interface OnVoteChangeListener {
         void voteChanges(boolean areThereChangesToSave);
@@ -59,6 +61,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         this.participantsUserIds = participantsUserIds;
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.editable = editable;
+        this.firstVotePerformed = false;
         this.onVoteChangeListener = new OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
@@ -134,6 +137,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 } else {
                     newVotes.put(o, vote);
                 }
+                firstVotePerformed = true;
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
                 usersDecisionVotes.setVote(vote.getUserId(), o, vote);
                 onVoteChangeListener.voteChanges(!newVotes.isEmpty());
@@ -151,11 +155,10 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
                 positiveVoteCount, negativeVoteCount);
         stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (vote.isVote() == null){
-            optionCheckBox.setBackgroundColor(Color.parseColor("#fff8b9"));
+        if (vote.isVote() == null && !firstVotePerformed){
+            optionCheckBox.setBackgroundColor(VOTED_NOT_SET_COLOR);
         }
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
-
 
 
         View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
@@ -171,7 +174,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 baseFragment.presentFragment(new OptionDetailFragment(bundle));
             }
         };
-        // TODO optionImage
 
         // Set values
         optionTitle.setText(o.getTitle());
