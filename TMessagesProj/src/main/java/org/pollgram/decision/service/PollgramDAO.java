@@ -95,6 +95,12 @@ public interface PollgramDAO {
     void delete(Decision decision);
 
     /**
+     * Delete permanently an option and its votes
+     * @param option
+     */
+    void delete(Option option);
+
+    /**
      *
      * @param groupChatId
      * @param id

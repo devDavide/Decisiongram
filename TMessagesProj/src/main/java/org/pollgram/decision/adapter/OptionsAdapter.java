@@ -28,43 +28,26 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
 
     private final List<TextOption> options;
     private final LayoutInflater inflater;
-    private final EditMode mode;
-    private final int lastIdx;
+    private int lastIdx;
+    private final boolean editable;
+    private List<TextOption> deletedOptions;
 
-    private enum EditMode{
-        /**
-         * It is possible to add  new option ad to delete as well
-         */
-        NEW_DECISION,
-
-        /**
-         * no edit action is allowed, no delete, no add
-         */
-        READ_ONLY,
-
-        /**
-         * it is only possible to add new option, it is not possible to modify or delete the existing
-         */
-        ALLOW_ADD_NEW_OPTION;
-    }
 
     public OptionsAdapter(Context context) {
-        this(context,new ArrayList<TextOption>(), EditMode.NEW_DECISION);
+        this(context,new ArrayList<TextOption>(),true);
         // put one first empty option
         options.add(new TextOption());
     }
 
     public OptionsAdapter(Context context, List<TextOption> options, boolean editable){
-        this(context,options, editable ? EditMode.ALLOW_ADD_NEW_OPTION : EditMode.READ_ONLY);
-    }
-
-    private OptionsAdapter(Context context, List<TextOption> options, EditMode mode){
         super(context, LAYOUT_RES_ID);
         this.options = options;
+        this.deletedOptions  = new ArrayList<>();
         this.lastIdx = options.size() -1;
-        this.mode =mode;
+        this.editable =editable;
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
+
 
     /**
      * @return the list of the selected options
@@ -83,6 +66,13 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
                     throw new PollgramException(getContext().getString(R.string.emptyTitleOnOption, i + 1));
             }
         }
+        return out;
+    }
+
+    public List<Option> getDeletedOptions() {
+        List<Option> out = new ArrayList<Option>();
+        for (TextOption to : deletedOptions)
+            out.add(to);
         return out;
     }
 
@@ -108,8 +98,7 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
                     }
                 }
             });
-            if (EditMode.READ_ONLY.equals(mode))
-                buttonAdd.setEnabled(false);
+            buttonAdd.setEnabled(editable);
         } else {
             // Create view for item
             rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
@@ -126,6 +115,10 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             deleteItem.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
+                    if  (position <= lastIdx) {
+                        lastIdx--;
+                        deletedOptions.add(options.get(position));
+                    }
                     options.remove(position);
                     notifyDataSetChanged();
                 }
@@ -159,24 +152,10 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
                 }
             });
 
-            boolean enable;
-            switch (mode){
-                case NEW_DECISION:
-                    enable = true;
-                    break;
-                case READ_ONLY:
-                     enable = false;
-                    break;
-                case ALLOW_ADD_NEW_OPTION:
-                    enable = position > lastIdx;
-                    break;
-                default:
-                    enable = false;
-
-            }
-            edTitle.setEnabled(enable);
-            edLongDescription.setEnabled(enable);
-            deleteItem.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+            boolean enableFields = position > lastIdx && editable;
+            edTitle.setEnabled(enableFields);
+            edLongDescription.setEnabled(enableFields);
+            deleteItem.setVisibility(editable ? View.VISIBLE : View.INVISIBLE);
 
         }
 

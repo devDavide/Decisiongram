@@ -142,8 +142,21 @@ public class PollgramServiceImpl implements PollgramService {
     public void notifyNewOptions(Decision decision, List<Option> newOptions) {
         Log.d(LOG_TAG, "notifyNewOptions decision[" + decision + "] newoptions[" + newOptions + "]");
         saveNewOptions(decision, newOptions);
-        String message = messageManager.buildAddOptions(decision,newOptions);
+        String message = messageManager.buildAddOptions(decision, newOptions);
         sendMessage(decision.getChatId(), message);
+    }
+
+    @Override
+    public void notifyDeleteOptions(Decision decision, List<Option> deleteOptions) {
+        Log.d(LOG_TAG, "notifyDeleteOptions decision[" + decision + "] deleteOptions[" + deleteOptions + "]");
+        deleteOptions(deleteOptions);
+        String message = messageManager.buildDeleteOptions(decision, deleteOptions);
+        sendMessage(decision.getChatId(), message);
+    }
+
+    private void deleteOptions(List<Option> deleteOptions) {
+        for(Option o : deleteOptions)
+            pollgramDAO.delete(o);
     }
 
     private void saveNewOptions(Decision decision, List<Option> newOptions) {
@@ -232,11 +245,11 @@ public class PollgramServiceImpl implements PollgramService {
                     }
                     break;
                 }
-                case ADD_OPTION:{
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getNewOptionAdded(text,
+                case ADD_OPTIONS:{
+                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getAddedOption(text,
                             groupChatId, userId);
                     if (resut == null){
-                        throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
+                        throw new PollgramParseException("Decision not found for "+msgType+" messsage");
                     }
                     for (Option o : resut.optionList) {
                         o.setDecisionId(resut.decision.getId());
@@ -244,6 +257,18 @@ public class PollgramServiceImpl implements PollgramService {
                     }
                     break;
                 }
+                case DELETE_OPTIONS:{
+                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getDeletedOption(text,
+                            groupChatId, userId);
+                    if (resut == null){
+                        throw new PollgramParseException("Decision not found for "+msgType+" messsage");
+                    }
+                    for (Option o : resut.optionList) {
+                        pollgramDAO.delete(o);
+                    }
+                    break;
+                }
+
                 case REOPEN_DECISION: {
                     Decision decision = messageManager.getReopenDecision(text, groupChatId);
                     decision.setOpen(true);
@@ -258,7 +283,8 @@ public class PollgramServiceImpl implements PollgramService {
                 }
                 case DELETE_DECISION: {
                     Decision decision = messageManager.getDeleteDecision(text, groupChatId);
-                    pollgramDAO.delete(decision);
+                    if (decision != null)
+                        pollgramDAO.delete(decision);
                     break;
                 }
                 case REMIND_TO_VOTE: {

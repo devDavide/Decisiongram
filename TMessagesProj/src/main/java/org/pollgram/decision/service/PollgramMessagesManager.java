@@ -31,13 +31,14 @@ public interface PollgramMessagesManager {
         CLOSE_DECISION(R.string.MessageType_CLOSE_DECISION, (byte) 0xF0, (byte) 0x9F, (byte) 0x9A, (byte) 0xAB), // no entry sign
         REOPEN_DECISION(R.string.MessageType_REOPEN_DECISION, (byte) 0xF0, (byte) 0x9F, (byte) 0x94, (byte) 0x84),    //ANTICLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS
         DELETE_DECISION(R.string.MessageType_DELETE_DECISION, (byte) 0xE2, (byte) 0x9D, (byte) 0x8C),    //CROSS MARK
-        ADD_OPTION(R.string.MessageType_ADD_OPTION,(byte)0xE2, (byte)0x9E, (byte)0x95);// heavy plus sign
+        ADD_OPTIONS(R.string.MessageType_ADD_OPTIONS,(byte)0xE2, (byte)0x9E, (byte)0x95),// heavy plus sign
+        DELETE_OPTIONS(R.string.MessageType_DELTE_OPTIONS, (byte)0xE2, (byte)0x9E, (byte)0x96); //	heavy minus sign
 
         private final String emoji;
         private final int descrStringRes;
         private String descriptionString;
 
-        private MessageType(int descrStringRes, byte... emojiBytes) {
+        MessageType(int descrStringRes, byte... emojiBytes) {
             this.emoji = EmojiUtils.getEmojiAsString(emojiBytes);
             this.descrStringRes = descrStringRes;
         }
@@ -114,12 +115,20 @@ public interface PollgramMessagesManager {
     String buildNotifyNewDecision(Decision decision, List<Option> options);
 
     /**
-     * build a message for notifying a that some option were added to a decision
+     * build a message for notifying a that some option has been added to a decision
      * @param decision
      * @param newOptions the new options added
      * @return the message ready to be sent
      */
     String buildAddOptions(Decision decision, List<Option> newOptions);
+
+    /**
+     * build a message for notifying a that some option has been deleted from a decision
+     * @param decision
+     * @param deleteOptions
+     * @return
+     */
+    String buildDeleteOptions(Decision decision, List<Option> deleteOptions);
 
     /**
      * build a message in order to remind to userAsString, that he must vote for the decision
@@ -195,8 +204,17 @@ public interface PollgramMessagesManager {
      * @param userId message owner
      * @return the decision and its options
      */
-    DecisionOptionData getNewOptionAdded(String msg, long currentChat, int userId) throws PollgramParseException;
+    DecisionOptionData getAddedOption(String msg, long currentChat, int userId) throws PollgramParseException;
 
+    /**
+     * Only if getMessageType(text) == MessageType_DELTE_OPTIONS
+     * Return the new option that has been deleted for the decision
+     * @param text
+     * @param groupChatId
+     * @param userId
+     * @return
+     */
+    DecisionOptionData getDeletedOption(String text, long groupChatId, int userId) throws PollgramParseException;
 
     /**
      * Return value for getCloseDecision
