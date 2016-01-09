@@ -1115,7 +1115,8 @@
     <string name="decisionNotFound">Decision %1$s not found, it may has been deleted.</string>
     <string name="title">Title</string>
     <string name="notes">Notes</string>
-    <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ? This will remove this decision for ALL users involved, not just yourself.\nAre you sure ?</string>
+    <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ?
+        This will remove this decision for ALL users involved, not just yourself.\nAre you sure ?</string>
     <string name="insertTitleHint">Insert title here</string>
     <string name="insertOptionTitleHint">Insert option\'s title here</string>
     <string name="insertLongDescriptionHint">Insert additional notes here</string>
@@ -1133,7 +1134,8 @@
     <string name="addOptionToDecisionQuestion">Add %1$d  options to decision %2$s ?</string>
     <string name="closeDecisionQuestionPrefixSingle">Only %1$d user out of %2$d voted yet.</string>
     <string name="closeDecisionQuestionPrefixMulti">Only %1$d users out of %2$d voted yet.</string>
-    <string name="closeDecisionQuestionSuffix">\nAfter closing the decision it will be no longer possible for other users to vote, unless the decision will be reopened.\nAre you sure to close this decision ?</string>
+    <string name="closeDecisionQuestionSuffix">\nAfter closing the decision it will be no longer possible for other users to vote,
+        unless the decision will be reopened.\nAre you sure to close this decision ?</string>
     <string name="optionDetailTitle">Option detail</string>
     <string name="missingVoteDesc">Missing: %1$d\n (%2$.1f%%)</string>
     <string name="positiveVoteDesc">Positive: %1$d\n (%2$.1f%%)</string>
@@ -1143,6 +1145,10 @@
     <string name="showDecision">Show decisions</string>
     <string name="editOptions">Manage options</string>
     <string name="addNewtOptionsTitle">Add new options</string>
+    <string name="thereAreNoDecisionInThisGroup">There are not still no decision in this group.
+        \n\nDecisions are a powerful tool, for easily takin arrangement between the group\'s members,
+        using a poll-based system.
+        \n\nPres the \"plus\" button for creating a new decision.</string>
 
     <!-- END of Pollgram text -->
 

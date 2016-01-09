@@ -57,6 +57,7 @@ public class DecisionsListFragment extends BaseFragment {
     private PollgramDAO pollgramDAO;
     private int[] participantsUserIds;
     private TextView tvSubtitle;
+    private TextView tvNodecisionPresent;
 
     public DecisionsListFragment(){
     }
@@ -118,6 +119,7 @@ public class DecisionsListFragment extends BaseFragment {
         TextView tvTitle = (TextView) myView.findViewById(R.id.decision_list_tv_title);
         ViewGroup imageContainer = (ViewGroup)myView.findViewById(R.id.decision_icon_container);
         decisionsListView = (ListView) myView.findViewById(R.id.decision_list_list_view);
+        tvNodecisionPresent = (TextView)myView.findViewById(R.id.decision_list_tv_no_decisions_present);
         //myView.setBackground(ApplicationLoader.getCachedWallpaper());
 
         // set up compoent values
@@ -188,8 +190,15 @@ public class DecisionsListFragment extends BaseFragment {
                 filterDecision.add(d);
         }
 
-        tvSubtitle.setText(context.getString(R.string.decisionsCount,openCount, allDecisions.size() - openCount));
+        tvSubtitle.setText(context.getString(R.string.decisionsCount, openCount, allDecisions.size() - openCount));
         decisionsListView.setAdapter(new DecisionAdapter(context, filterDecision, currentChat.participants_count));
+        if (filterDecision.size() == 0){
+            decisionsListView.setVisibility(View.GONE);
+            tvNodecisionPresent.setVisibility(View.VISIBLE);
+        } else {
+            decisionsListView.setVisibility(View.VISIBLE);
+            tvNodecisionPresent.setVisibility(View.GONE);
+        }
     }
 
 

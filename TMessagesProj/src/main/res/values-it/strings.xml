@@ -1148,6 +1148,10 @@
     <string name="showDecision">Mostra decisioni</string>
     <string name="editOptions">Gestione opzioni</string>
     <string name="addNewtOptionsTitle">Aggiungi nuove opzioni</string>
+    <string name="thereAreNoDecisionInThisGroup">Non ci sono ancora decisioni in questo gruppo.
+        \n\nCreare una decisione permette in maniera semplice, di trovare un accordo su di una qualsivoglia questione
+        tra i membri del gruppo, utilizzando un sistema basato su sondaggi.
+        \n\nPremi il pulsante \"più\" per creare una nuova decisione.</string>
 
     <!-- END of Pollgram text -->
 </resources>
