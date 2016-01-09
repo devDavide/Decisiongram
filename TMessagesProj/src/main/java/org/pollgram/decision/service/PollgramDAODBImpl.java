@@ -101,6 +101,24 @@ class PollgramDAODBImpl implements PollgramDAO {
     }
 
     @Override
+    public void delete(Option option) {
+        Log.d(LOG_TAG, "Delete option ["+option+"]");
+        SQLiteDatabase db = helper.getWritableDatabase();
+        String[] optionIdPar = new String[]{Long.toString(option.getId())};
+        try {
+            db.delete(PGSqlLiteHelper.T_Vote.TABLE_NAME,
+                    PGSqlLiteHelper.T_Vote.FK_OPTION + " = ? ",
+                    optionIdPar);
+            db.delete(PGSqlLiteHelper.T_TextOption.TABLE_NAME,
+                    PGSqlLiteHelper.T_TextOption.ID + " =  ? ",
+                    optionIdPar);
+        } finally {
+            if (db != null)
+                db.close();
+        }
+    }
+
+    @Override
     public void delete(Decision decision) {
         Log.d(LOG_TAG, "Delete all decision data for decision["+decision+"]");
         SQLiteDatabase db = helper.getWritableDatabase();
@@ -152,7 +170,7 @@ class PollgramDAODBImpl implements PollgramDAO {
                     new String[]{Long.toString(decision.getId()), PGSqlLiteHelper.toString(true),
                             Long.toString(decision.getId()), PGSqlLiteHelper.toString(true)});
             if (!c.moveToFirst())
-                return null;
+                return new WinningOption(0, new ArrayList<Option>());
             else {
                 List<Option> options = new ArrayList<>();
                 int voteCount = c.getInt(c.getColumnIndex(voteCountFieldName));

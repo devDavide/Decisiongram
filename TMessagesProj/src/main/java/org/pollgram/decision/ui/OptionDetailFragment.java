@@ -27,7 +27,7 @@ public class OptionDetailFragment extends BaseFragment {
     public static final String PAR_PARTICIPANT_IDS  = "PAR_PARTICIPANT_IDS" ;
     public static final String PAR_OPTION_ID = "PAR_OPTION_ID";
     public static final String PAR_POSITIVE_VOTE_COUNT = "PAR_POSITIVE_VOTE_COUNT";
-    public static final String PAR_USER_THAT_VOTE_COUNT = "PAR_USER_THAT_VOTE_COUNT";
+    public static final String PAR_NEGATIVE_VOTE_COUNT = "PAR_NEGATIVE_VOTE_COUNT";
 
     private static final String LOG_TAG = "OptionDetailFrame";
 
@@ -51,10 +51,10 @@ public class OptionDetailFragment extends BaseFragment {
         UsersDecisionVotes usersDecisionVotes = PollgramFactory.getPollgramService().getUsersDecisionVotes(decisionId, members);
         option = (TextOption) usersDecisionVotes.getOption(optionId);
 
-        voteCount = getArguments().getInt(PAR_USER_THAT_VOTE_COUNT);
         membersCount = members.length;
+        negativeVoteCount = getArguments().getInt(PAR_NEGATIVE_VOTE_COUNT);
         positiveVoteCount = getArguments().getInt(PAR_POSITIVE_VOTE_COUNT);
-        negativeVoteCount = voteCount- positiveVoteCount;
+        voteCount = negativeVoteCount + positiveVoteCount;
         missingVoteCount = membersCount - voteCount;
 
         return super.onFragmentCreate();
@@ -88,12 +88,12 @@ public class OptionDetailFragment extends BaseFragment {
         LinearLayout stackedBarContainer = (LinearLayout)myView.findViewById(R.id.option_detail_stacked_bar_layout_container);
 
         StackedBar stackedBar = new StackedBar(context, membersCount, positiveVoteCount ,voteCount);
-        StackedBar.Percs percs = stackedBar.getPercs();
+        StackedBar.Percentages percentages = stackedBar.getPercentages();
         edTitle.setText(option.getTitle());
         edLongDesc.setText(option.getLongDescription());
-        tvMissing.setText(context.getString(R.string.missingVoteDesc, missingVoteCount, percs.emptyPerc * 100 ));
-        tvPositive.setText(context.getString(R.string.positiveVoteDesc, positiveVoteCount, percs.positivePerc * 100));
-        tvNegative.setText(context.getString(R.string.negativeVoteDesc, negativeVoteCount, percs.negativePerc * 100));
+        tvMissing.setText(context.getString(R.string.missingVoteDesc, missingVoteCount, percentages.emptyPerc * 100 ));
+        tvPositive.setText(context.getString(R.string.positiveVoteDesc, positiveVoteCount, percentages.positivePerc * 100));
+        tvNegative.setText(context.getString(R.string.negativeVoteDesc, negativeVoteCount, percentages.negativePerc * 100));
 
         stackedBar.setText("123456789");
         stackedBarContainer.addView(stackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);

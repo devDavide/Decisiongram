@@ -1078,6 +1078,10 @@
     <!-- between Prefix and Suffix goes the decision title -->
     <string name="tmsg_AddOptionSuffix">le seguenti opzioni:</string>
 
+    <string name="tmsg_DeleteOptionPrefix">Ho cancellato dalla decisione</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_DeleteOptionSuffix">le seguenti opzioni:</string>
+
     <!-- END of POLLGRAM transaction messages -->
 
     <!-- START MessageType descriptions -->
@@ -1087,7 +1091,8 @@
     <string name="MessageType_CLOSE_DECISION">Chiusura decisione</string>
     <string name="MessageType_REOPEN_DECISION">Riapertura decisione</string>
     <string name="MessageType_DELETE_DECISION">Cancellazione decisione</string>
-    <string name="MessageType_ADD_OPTION">Add options</string>
+    <string name="MessageType_ADD_OPTIONS">Aggiunta opzioni</string>
+    <string name="MessageType_DELTE_OPTIONS">Cancellazione opzioni</string>
     <!-- END MessageType descriptions -->
 
 
@@ -1135,6 +1140,7 @@
     <string name="emptyTitleOnLastOption">Prego selezionare un titolo per l\'ultima opzione.</string>
     <string name="saveDecisionQuestion">Salvare la decisione %1$s con %2$d \opzioni ?</string>
     <string name="addOptionToDecisionQuestion">Aggiungere %1$d opzioni alla decisione %2$s ?</string>
+    <string name="addRemoveOptionToDecisionQuestion">Sei sicuro di\naggiungere %1$d opzioni \ne rimuovere %2$d opzioni\n dalla decisione %3$s ?</string>
     <string name="you">te</string>
     <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d ha votato.</string>
     <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hanno votato.</string>
@@ -1148,6 +1154,7 @@
     <string name="showDecision">Mostra decisioni</string>
     <string name="editOptions">Gestione opzioni</string>
     <string name="addNewtOptionsTitle">Aggiungi nuove opzioni</string>
+    <string name="nothingToSave">Non ci sono modifiche da salvare.</string>
 
     <!-- END of Pollgram text -->
 </resources>

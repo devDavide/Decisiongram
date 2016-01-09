@@ -45,7 +45,7 @@ public class EditOptionsFragment extends BaseFragment {
     private PollgramDAO pollgramDAO;
     private PollgramService pollgramService;
 
-    private OptionsAdapter newOptionAdapter;
+    private OptionsAdapter optionsAdapter;
     private Decision decision;
     private List<TextOption> options;
 
@@ -69,9 +69,9 @@ public class EditOptionsFragment extends BaseFragment {
 
 
     @Override
-    public View createView(Context context) {
+    public View createView(final Context context) {
         // init
-        newOptionAdapter = new OptionsAdapter(context, options, decision.isEditable());
+        optionsAdapter = new OptionsAdapter(context, options, decision.isEditable());
 
         fragmentView = new SizeNotifierFrameLayout(context);
         ActionBarMenu menu = actionBar.createMenu();
@@ -90,22 +90,38 @@ public class EditOptionsFragment extends BaseFragment {
                         finishFragment();
                         break;
                     case SAVE_MENU_ITEM_ID:
-                        final List<Option> options;
+                        final List<Option> newOptions;
+                        final List<Option> deletedOptions;
                         try {
-                            options = newOptionAdapter.getOptions();
+                            newOptions = optionsAdapter.getOptions();
                         } catch (PollgramException e) {
                             Log.w(LOG_TAG, "Error in getOption", e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             return;
                         }
+                        deletedOptions = optionsAdapter.getDeletedOptions();
+                        Log.i(LOG_TAG, "option added["+newOptions+"] option deleted["+deletedOptions+"]");
+
+                        String message;
+
+                        if (deletedOptions.size() == 0) {
+                            if (newOptions.size() == 0){
+                                Toast.makeText(context,R.string.nothingToSave,Toast.LENGTH_SHORT);
+                                return;
+                            }
+                            message = context.getString(R.string.addOptionToDecisionQuestion,
+                                    newOptions.size(), decision.getTitle());
+                        } else
+                            message = context.getString(R.string.addRemoveOptionToDecisionQuestion,
+                                    newOptions.size(), deletedOptions.size(), decision.getTitle());
+
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-                        builder.setMessage(getParentActivity().getString(R.string.addOptionToDecisionQuestion,
-                                options.size(), decision.getTitle()));
+                        builder.setMessage(message);
                         builder.setPositiveButton(R.string.yes,
                                 new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        saveDecision(options);
+                                        saveDecision(newOptions,deletedOptions);
                                     }
                                 }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
                             @Override
@@ -124,14 +140,19 @@ public class EditOptionsFragment extends BaseFragment {
 
         ViewGroup myView = (ViewGroup) layoutInflater.inflate(R.layout.edit_optios_layout, (ViewGroup) fragmentView);
         ListView newOptionListView = (ListView) myView.findViewById(R.id.edit_option_list_view);
-        newOptionListView.setAdapter(newOptionAdapter);
+        newOptionListView.setAdapter(optionsAdapter);
 
         return fragmentView;
     }
 
 
-    private void saveDecision(List<Option> options) {
-        pollgramService.notifyNewOptions(decision, options);
+    private void saveDecision(List<Option> newOptions, List<Option> deleteOptions) {
+        if (newOptions.size() > 0)
+            pollgramService.notifyNewOptions(decision, newOptions);
+
+        if (deleteOptions.size() > 0)
+            pollgramService.notifyDeleteOptions(decision, deleteOptions);
+
         Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
         super.finishFragment();
         return;

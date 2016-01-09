@@ -17,8 +17,6 @@
         android:layout_toRightOf="@+id/decision_icon_container"
         android:layout_toEndOf="@+id/decision_icon_container" />
 
-
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="wrap_content"

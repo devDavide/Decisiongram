@@ -20,15 +20,29 @@ import java.util.Map;
  */
 public interface PollgramService {
 
-
     UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds);
 
     UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users);
 
+    /**
+     * remind the user to vote for the passed decision
+     * @param decision
+     * @param user
+     */
     void remindUserToVote(Decision decision, TLRPC.User user);
 
+    /**
+     * notify the creation of a new decision
+     * @param decision
+     * @param options
+     */
     void notifyNewDecision(Decision decision, List<Option> options);
 
+    /**
+     * Notify a set of votes for the passed decision
+     * @param decision
+     * @param votes2Save
+     */
     void notifyVote(Decision decision, Collection<Vote> votes2Save);
 
     void notifyClose(Decision decision);
@@ -38,6 +52,8 @@ public interface PollgramService {
     void notifyDelete(Decision decision);
 
     void notifyNewOptions(Decision decision, List<Option> newOptions);
+
+    void notifyDeleteOptions(Decision decision, List<Option> deleteOptions);
 
     /**
      * @param message
@@ -103,4 +119,5 @@ public interface PollgramService {
      */
     List<MessageObject> getUnParsedMessages(final long dialog_id, Map<Integer, MessageObject> dialogMessagesByIds,
                                             List<MessageObject> excludeMessages);
+
 }

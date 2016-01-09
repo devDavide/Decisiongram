@@ -1,6 +1,8 @@
 package org.pollgram.decision.service;
 
 import android.content.Context;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.text.Spannable;
 import android.util.Log;
 
@@ -239,17 +241,29 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         return buildMessage(MessageType.NEW_DECISION, body.toString());
     }
 
-
     @Override
     public String buildAddOptions(Decision decision, List<Option> options) {
+        String body = buildAddDeleteOptionsMessage(decision,options,
+                R.string.tmsg_AddOptionPrefix, R.string.tmsg_AddOptionSuffix);
+        return buildMessage(MessageType.ADD_OPTIONS, body);
+    }
+
+    @Override
+    public String buildDeleteOptions(Decision decision, List<Option> deleteOptions) {
+        String body = buildAddDeleteOptionsMessage(decision,deleteOptions,
+                R.string.tmsg_DeleteOptionPrefix, R.string.tmsg_DeleteOptionSuffix);
+        return buildMessage(MessageType.DELETE_OPTIONS, body);
+    }
+
+    private String buildAddDeleteOptionsMessage(Decision decision, List<Option> deleteOptions, int prefixStr, int suffixStr){
         StringBuilder body = new StringBuilder();
-        body.append(getResString(R.string.tmsg_AddOptionPrefix));
+        body.append(getResString(prefixStr));
         body.append(NEW_LINE);
         body.append(format(decision));
         body.append(' ');
-        body.append(getResString(R.string.tmsg_AddOptionSuffix));
-        addOptionsToMsg(options, body);
-        return buildMessage(MessageType.ADD_OPTION, body.toString());
+        body.append(getResString(suffixStr));
+        addOptionsToMsg(deleteOptions, body);
+        return body.toString();
     }
 
     private void addOptionsToMsg(List<Option> options, StringBuilder body) {
@@ -413,7 +427,17 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
 
 
     @Override
-    public DecisionOptionData getNewOptionAdded(String msg, long currentChat, int userId) throws PollgramParseException {
+    public DecisionOptionData getAddedOption(String msg, long currentChat, int userId) throws PollgramParseException {
+        return getAddDeleteOptionFromDecision(msg, currentChat, userId);
+    }
+
+    @Override
+    public DecisionOptionData getDeletedOption(String text, long groupChatId, int userId) throws PollgramParseException {
+        return getAddDeleteOptionFromDecision(text, groupChatId, userId);
+    }
+
+    @NonNull
+    private DecisionOptionData getAddDeleteOptionFromDecision(String msg, long currentChat, int userId) throws PollgramParseException {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
@@ -434,8 +458,8 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         }
         Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] optionList[" + optionList + "]");
         return new DecisionOptionData(decision, optionList);
-
     }
+
 
     private void addOption2List(List<Option> optionList, StringTokenizer strTok) {
         while (strTok.hasMoreTokens()){
@@ -491,6 +515,8 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     @Override
     public Decision getReopenDecision(String text, long groupChatId) throws PollgramParseException {
         Decision d = getDecisionInDeleteOrReopenMessage(text,groupChatId);
+        if (d ==null)
+            throw new PollgramParseException( "Decision not found for message[" + text + "]");
         Log.d(LOG_TAG, "getReopenDecision Decision["+d+"]");
         return d;
     }
@@ -501,15 +527,13 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
      * @param groupChatId
      * @return
      */
-    private Decision getDecisionInDeleteOrReopenMessage(String msg, long groupChatId) throws PollgramParseException {
+    private @Nullable Decision getDecisionInDeleteOrReopenMessage(String msg, long groupChatId) throws PollgramParseException {
         Decision decision;
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg);
             strTok.nextToken(); // skipt this token
             String decisionTitle = strTok.nextToken();
             Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
-            if (d ==null)
-                throw new PollgramParseException("Decision not found for title["+decisionTitle+"] and groupChatId["+groupChatId+"]");
             return d;
         } catch (NoSuchElementException e){
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
@@ -526,7 +550,8 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             case DELETE_DECISION:
             case NEW_DECISION:
             case REOPEN_DECISION:
-            case ADD_OPTION:
+            case ADD_OPTIONS:
+            case DELETE_OPTIONS:
                 return message.indexOf(QUOTE_CHAR);
         }
         return  -1;

@@ -126,13 +126,17 @@ public class UsersDecisionVotes {
     public void setVote(int userID, Option option, Vote vote){
         voteMap.put(new UserIdOptionKey(userID,option.getId()), vote);
         // update cache
-        Integer positiveVoteCout = calculateVoteCount(option);
+        Integer positiveVoteCout = calculateVoteCount(option, true);
         cachedPositiveVoteCount.put(option, positiveVoteCout);
+        cachedNegativeVoteCount.put(option, calculateVoteCount(option,false));
+
         Collections.sort(options, optionsComparator);
         maxVote = Math.max(maxVote, positiveVoteCout);
     }
 
     private final Map<Option, Integer> cachedPositiveVoteCount = new HashMap<>();
+    private final Map<Option, Integer> cachedNegativeVoteCount = new HashMap<>();
+
 
     /**
      * @param option
@@ -143,17 +147,31 @@ public class UsersDecisionVotes {
         if (count != null)
             return count;
 
-        count = calculateVoteCount(option);
+        count = calculateVoteCount(option,true);
         cachedPositiveVoteCount.put(option,count);
         return count;
     }
 
-    private int calculateVoteCount(Option option) {
+    /**
+     * @param option
+     * @return the number of positive count for option in index optionIndex
+     */
+    public int getNegativeVoteCount(Option option) {
+        Integer count = cachedNegativeVoteCount.get(option);
+        if (count != null)
+            return count;
+
+        count = calculateVoteCount(option,false);
+        cachedNegativeVoteCount.put(option,count);
+        return count;
+    }
+
+    private int calculateVoteCount(Option option, boolean positive) {
         int count = 0;
         for (UserIdOptionKey key : voteMap.keySet()){
             if (option.getId() == key.getOptionId()){
                 Vote v = voteMap.get(key);
-                if (v.isVote() != null && v.isVote())
+                if (v.isVote() != null && v.isVote() == positive)
                     count++;
             }
         }
