@@ -87,7 +87,7 @@ public class OptionDetailFragment extends BaseFragment {
         TextView tvNegative = (TextView) myView.findViewById(R.id.option_detail_tv_negative_votes_count);
         LinearLayout stackedBarContainer = (LinearLayout)myView.findViewById(R.id.option_detail_stacked_bar_layout_container);
 
-        StackedBar stackedBar = new StackedBar(context, membersCount, positiveVoteCount ,voteCount);
+        StackedBar stackedBar = new StackedBar(context, membersCount, positiveVoteCount ,negativeVoteCount);
         StackedBar.Percentages percentages = stackedBar.getPercentages();
         edTitle.setText(option.getTitle());
         edLongDesc.setText(option.getLongDescription());
