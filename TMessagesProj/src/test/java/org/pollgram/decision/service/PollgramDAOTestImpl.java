@@ -228,6 +228,15 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
+    public void delete(Option option) {
+        for (int i = 0; i< textOptions.size() ; i++)
+            if (textOptions.get(i).getId() == option.getId()){
+                textOptions.remove(i);
+                return;
+        }
+    }
+
+    @Override
     public boolean hasBeenParsed(long groupChatId, int id) {
         return true;
     }

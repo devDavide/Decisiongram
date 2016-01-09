@@ -142,13 +142,13 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
 
 
         final int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
-        final int userThatVoteCount = usersDecisionVotes.getUserThatVoteCount();
+        final int negativeVoteCount = usersDecisionVotes.getNegativeVoteCount(o);
         optionVoteCount.setText(formatVoteCount(positiveVoteCount));
         //noinspection ResourceType
         starImageView.setVisibility(usersDecisionVotes.isWinningOption(o) ? View.VISIBLE : View.INVISIBLE);
 
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
-                positiveVoteCount, userThatVoteCount);
+                positiveVoteCount, negativeVoteCount);
         stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
 
@@ -161,7 +161,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 bundle.putLong(OptionDetailFragment.PAR_DECISION_ID, o.getDecisionId());
                 bundle.putIntArray(OptionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
                 bundle.putInt(OptionDetailFragment.PAR_POSITIVE_VOTE_COUNT, positiveVoteCount);
-                bundle.putInt(OptionDetailFragment.PAR_USER_THAT_VOTE_COUNT, userThatVoteCount);
+                bundle.putInt(OptionDetailFragment.PAR_NEGATIVE_VOTE_COUNT, negativeVoteCount);
 
                 baseFragment.presentFragment(new OptionDetailFragment(bundle));
             }

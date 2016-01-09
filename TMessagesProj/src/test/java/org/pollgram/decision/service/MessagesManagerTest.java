@@ -232,15 +232,36 @@ public class MessagesManagerTest {
         newOptions.add(new TextOption("options 5", "option 5 desc it's even better", decision.getId()));
         String message = messageManager.buildAddOptions(decision, newOptions);
         PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
-        Assert.assertEquals(PollgramMessagesManager.MessageType.ADD_OPTION, type);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.ADD_OPTIONS, type);
         assertAddOptions(message, decision, newOptions);
         assertAddOptions(messageManager.reformatMessage(message), decision, newOptions);
     }
 
     private void assertAddOptions(String message, Decision decision, List<Option> newOptions) throws PollgramParseException {
-        PollgramMessagesManager.DecisionOptionData result = messageManager.getNewOptionAdded(message, chat.id, user.id);
-        Assert.assertEquals(decision,result.decision);
+        PollgramMessagesManager.DecisionOptionData result = messageManager.getAddedOption(message, chat.id, user.id);
+        Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(newOptions, result.optionList);
+    }
+
+    @Test
+    public void testDeleteOptions() throws  PollgramParseException {
+        List<Option> optionToDelte = new ArrayList<>();
+        List<Option> decisionOptions = dao.getOptions(decision);
+        for (int i = 0; i< decisionOptions.size() ; i++){
+            if (i % 2 == 0)
+                optionToDelte.add(decisionOptions.get(i));
+        }
+        String message = messageManager.buildDeleteOptions(decision, optionToDelte);
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.DELETE_OPTIONS, type);
+        assertDeleteOptions(message, decision, optionToDelte);
+        assertDeleteOptions(messageManager.reformatMessage(message), decision, optionToDelte);
+    }
+
+    private void assertDeleteOptions(String message, Decision decision, List<Option> optionToDelte) throws PollgramParseException {
+        PollgramMessagesManager.DecisionOptionData result = messageManager.getDeletedOption(message, chat.id, user.id);
+        Assert.assertEquals(decision,result.decision);
+        Assert.assertEquals(optionToDelte, result.optionList);
     }
 
 }
