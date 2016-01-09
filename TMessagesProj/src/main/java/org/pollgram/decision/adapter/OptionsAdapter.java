@@ -23,7 +23,7 @@ import java.util.List;
 /**
  * Created by davide on 23/12/15.
  */
-public class NewOptionsAdapter extends ArrayAdapter<Option> {
+public class OptionsAdapter extends ArrayAdapter<Option> {
     private static final int LAYOUT_RES_ID = R.layout.item_new_option_list;
 
     private final List<TextOption> options;
@@ -48,17 +48,17 @@ public class NewOptionsAdapter extends ArrayAdapter<Option> {
         ALLOW_ADD_NEW_OPTION;
     }
 
-    public NewOptionsAdapter(Context context) {
+    public OptionsAdapter(Context context) {
         this(context,new ArrayList<TextOption>(), EditMode.NEW_DECISION);
         // put one first empty option
         options.add(new TextOption());
     }
 
-    public NewOptionsAdapter(Context context, List<TextOption> options, boolean editable){
+    public OptionsAdapter(Context context, List<TextOption> options, boolean editable){
         this(context,options, editable ? EditMode.ALLOW_ADD_NEW_OPTION : EditMode.READ_ONLY);
     }
 
-    private NewOptionsAdapter(Context context, List<TextOption> options, EditMode mode){
+    private OptionsAdapter(Context context, List<TextOption> options, EditMode mode){
         super(context, LAYOUT_RES_ID);
         this.options = options;
         this.lastIdx = options.size() -1;

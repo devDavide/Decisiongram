@@ -14,7 +14,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.pollgram.R;
-import org.pollgram.decision.adapter.NewOptionsAdapter;
+import org.pollgram.decision.adapter.OptionsAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.PollgramException;
@@ -54,7 +54,7 @@ public class NewDecisionFragment extends BaseFragment {
     private PollgramService pollgramService;
 
     // page 2
-    private NewOptionsAdapter newOptionAdapter;
+    private OptionsAdapter newOptionAdapter;
     private String decisionLongDescription;
     private String decisionTitle;
     private ActionBarMenuItem nextItemMenu;
@@ -83,7 +83,7 @@ public class NewDecisionFragment extends BaseFragment {
         fragmentView = new SizeNotifierFrameLayout(context);
         ActionBarMenu menu = actionBar.createMenu();
         nextItemMenu = menu.addItem(NEXT_MENU_ITEM_ID, 0);
-        newOptionAdapter = new NewOptionsAdapter(context);
+        newOptionAdapter = new OptionsAdapter(context);
         layoutInflater = LayoutInflater.from(context);
         getParentActivity().getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_PAN);
 

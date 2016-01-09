@@ -13,7 +13,7 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 import org.pollgram.R;
-import org.pollgram.decision.adapter.NewOptionsAdapter;
+import org.pollgram.decision.adapter.OptionsAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.PollgramException;
@@ -45,7 +45,7 @@ public class EditOptionsFragment extends BaseFragment {
     private PollgramDAO pollgramDAO;
     private PollgramService pollgramService;
 
-    private NewOptionsAdapter newOptionAdapter;
+    private OptionsAdapter newOptionAdapter;
     private Decision decision;
     private List<TextOption> options;
 
@@ -71,7 +71,7 @@ public class EditOptionsFragment extends BaseFragment {
     @Override
     public View createView(Context context) {
         // init
-        newOptionAdapter = new NewOptionsAdapter(context, options, decision.isEditable());
+        newOptionAdapter = new OptionsAdapter(context, options, decision.isEditable());
 
         fragmentView = new SizeNotifierFrameLayout(context);
         ActionBarMenu menu = actionBar.createMenu();
