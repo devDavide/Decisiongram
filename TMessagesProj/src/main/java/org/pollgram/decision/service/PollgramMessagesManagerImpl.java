@@ -235,6 +235,24 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         body.append('.');
         body.append(NEW_LINE);
         body.append(getResString(R.string.tmsg_NewDecisionOptionsPrefix));
+        addOptionsToMsg(options, body);
+        return buildMessage(MessageType.NEW_DECISION, body.toString());
+    }
+
+
+    @Override
+    public String buildAddOptions(Decision decision, List<Option> options) {
+        StringBuilder body = new StringBuilder();
+        body.append(getResString(R.string.tmsg_AddOptionPrefix));
+        body.append(NEW_LINE);
+        body.append(format(decision));
+        body.append(' ');
+        body.append(getResString(R.string.tmsg_AddOptionSuffix));
+        addOptionsToMsg(options, body);
+        return buildMessage(MessageType.ADD_OPTION, body.toString());
+    }
+
+    private void addOptionsToMsg(List<Option> options, StringBuilder body) {
         body.append(NEW_LINE);
         for(Option o : options){
             body.append(BULLET_LIST_EMOJI);
@@ -247,7 +265,6 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             }
             body.append(NEW_LINE);
         }
-        return buildMessage(MessageType.NEW_DECISION, body.toString());
     }
 
     /**
@@ -373,7 +390,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public NewDecisionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException {
+    public DecisionOptionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException {
         Decision decision;
         List<Option> optionList = new ArrayList<>();
         try {
@@ -385,22 +402,52 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 String longDescription = strTok.nextToken();
                 decision = new Decision(currentChat, userId, title, longDescription, messageDate, true);
             }
-            while (strTok.hasMoreTokens()){
-                strTok.nextToken();//skip this token
-                if (!strTok.hasMoreTokens())
-                    break;
-                String title = strTok.nextToken();
-                strTok.nextToken();//skip this token
-                String longDesc = strTok.nextToken();
-                Option to = new TextOption(title, longDesc, DBBean.ID_NOT_SET);
-                optionList.add(to);
-            }
+            addOption2List(optionList, strTok);
         } catch (NoSuchElementException e) {
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
             throw new PollgramParseException("Token not found", e);
         }
         Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] optionList[" + optionList + "]");
-        return new NewDecisionData(decision, optionList);
+        return new DecisionOptionData(decision, optionList);
+    }
+
+
+    @Override
+    public DecisionOptionData getNewOptionAdded(String msg, long currentChat, int userId) throws PollgramParseException {
+        Decision decision;
+        List<Option> optionList = new ArrayList<>();
+        try {
+            StringTokenizer strTok = new EscapeStringTokenizer(msg);
+            { //Create decision
+                strTok.nextToken();//skip this token
+                String title = strTok.nextToken();
+                decision = pollgramDAO.getDecision(title,currentChat);
+                if (decision == null)
+                    throw new PollgramParseException("Decision not found for title ["+title+"]");
+                if (!decision.isEditable(userId))
+                    throw new PollgramParseException("Decision is not editable by userid ["+userId+"]");
+            }
+            addOption2List(optionList, strTok);
+        } catch (NoSuchElementException e) {
+            Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
+            throw new PollgramParseException("Token not found", e);
+        }
+        Log.d(LOG_TAG, "getNewDecision decision[" + decision + "] optionList[" + optionList + "]");
+        return new DecisionOptionData(decision, optionList);
+
+    }
+
+    private void addOption2List(List<Option> optionList, StringTokenizer strTok) {
+        while (strTok.hasMoreTokens()){
+            strTok.nextToken();//skip this token
+            if (!strTok.hasMoreTokens())
+                break;
+            String title = strTok.nextToken();
+            strTok.nextToken();//skip this token
+            String longDesc = strTok.nextToken();
+            Option to = new TextOption(title, longDesc, DBBean.ID_NOT_SET);
+            optionList.add(to);
+        }
     }
 
     @Override
@@ -479,6 +526,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             case DELETE_DECISION:
             case NEW_DECISION:
             case REOPEN_DECISION:
+            case ADD_OPTION:
                 return message.indexOf(QUOTE_CHAR);
         }
         return  -1;

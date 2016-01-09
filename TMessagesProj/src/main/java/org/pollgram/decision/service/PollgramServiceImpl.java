@@ -131,9 +131,23 @@ public class PollgramServiceImpl implements PollgramService {
     }
     @Override
     public void notifyNewDecision(Decision decision, List<Option> options) {
-        Log.d(LOG_TAG, "notifyNewDecision decision[" + decision + "] decision[" + decision + "] options[" + options + "]");
+        Log.d(LOG_TAG, "notifyNewDecision decision[" + decision + "]  options[" + options + "]");
         decision = pollgramDAO.save(decision);
-        for(Option o : options) {
+        saveNewOptions(decision, options);
+        String message = messageManager.buildNotifyNewDecision(decision, options);
+        sendMessage(decision.getChatId(), message);
+    }
+
+    @Override
+    public void notifyNewOptions(Decision decision, List<Option> newOptions) {
+        Log.d(LOG_TAG, "notifyNewOptions decision[" + decision + "] newoptions[" + newOptions + "]");
+        saveNewOptions(decision, newOptions);
+        String message = messageManager.buildAddOptions(decision,newOptions);
+        sendMessage(decision.getChatId(), message);
+    }
+
+    private void saveNewOptions(Decision decision, List<Option> newOptions) {
+        for(Option o : newOptions) {
             if (o.getDecisionId() == DBBean.ID_NOT_SET) {
                 o.setDecisionId(decision.getId());
             } else if (o.getDecisionId() != decision.getId()) {
@@ -142,8 +156,6 @@ public class PollgramServiceImpl implements PollgramService {
             }
             pollgramDAO.save(o);
         }
-        String message = messageManager.buildNotifyNewDecision(decision, options);
-        sendMessage(decision.getChatId(), message);
     }
 
     @Override
@@ -204,7 +216,7 @@ public class PollgramServiceImpl implements PollgramService {
         try {
             switch (msgType) {
                 case NEW_DECISION: {
-                    PollgramMessagesManager.NewDecisionData resut = messageManager.getNewDecision(text,
+                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getNewDecision(text,
                             groupChatId, userId, messageDate);
                     if (resut == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
@@ -216,6 +228,18 @@ public class PollgramServiceImpl implements PollgramService {
                     Decision d = pollgramDAO.save(resut.decision);
                     for (Option o : resut.optionList) {
                         o.setDecisionId(d.getId());
+                        pollgramDAO.save(o);
+                    }
+                    break;
+                }
+                case ADD_OPTION:{
+                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getNewOptionAdded(text,
+                            groupChatId, userId);
+                    if (resut == null){
+                        throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
+                    }
+                    for (Option o : resut.optionList) {
+                        o.setDecisionId(resut.decision.getId());
                         pollgramDAO.save(o);
                     }
                     break;

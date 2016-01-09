@@ -1070,6 +1070,10 @@
     <!-- between Prefix and Suffix goes the decision title -->
     <string name="tmsg_DeleteDecisionSuffix">has been permanently removed.</string>
 
+    <string name="tmsg_AddOptionPrefix">I added to the decision</string>
+    <!-- between Prefix and Suffix goes the decision title -->
+    <string name="tmsg_AddOptionSuffix">the following options:</string>
+
     <!-- END of POLLGRAM transaction messages -->
 
     <!-- START MessageType descriptions -->
@@ -1079,6 +1083,7 @@
     <string name="MessageType_CLOSE_DECISION">Close decision</string>
     <string name="MessageType_REOPEN_DECISION">Reopen decision</string>
     <string name="MessageType_DELETE_DECISION">Delete decision</string>
+    <string name="MessageType_ADD_OPTION">Add options</string>
     <!-- END MessageType descriptions -->
 
 
@@ -1122,8 +1127,10 @@
     <string name="pleaseSelectATitleForOption">Pleace select a value for the title of the last option, before adding a new one</string>
     <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
     <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
-    <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?</string>
+    <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
     <string name="you">you</string>
+    <string name="saveDecisionQuestion">Save decision %1$s with options ?</string>
+    <string name="addOptionToDecisionQuestion">Add %1$d  options to decision %2$s ?</string>
     <string name="closeDecisionQuestionPrefixSingle">Only %1$d user out of %2$d voted yet.</string>
     <string name="closeDecisionQuestionPrefixMulti">Only %1$d users out of %2$d voted yet.</string>
     <string name="closeDecisionQuestionSuffix">\nAfter closing the decision it will be no longer possible for other users to vote, unless the decision will be reopened.\nAre you sure to close this decision ?</string>
@@ -1134,6 +1141,8 @@
     <string name="voteSummary">Votes Summary</string>
     <string name="decisionDetailTitle">Decision detail</string>
     <string name="showDecision">Show decisions</string>
+    <string name="editOptions">Manage options</string>
+    <string name="addNewtOptionsTitle">Add new options</string>
 
     <!-- END of Pollgram text -->
 

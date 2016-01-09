@@ -39,4 +39,20 @@ public abstract class DBBean {
     public int hashCode() {
         return (int) (getId() ^ (getId() >>> 32));
     }
+
+
+    /**
+     * compare two string considering null == "" == " "
+     * @param s1
+     * @param s2
+     * @return
+     */
+    protected static boolean equalString(String s1, String s2) {
+        boolean isS1Empty = s1 == null || s1.trim().isEmpty() || s1.equals(""+null);
+        boolean isS2Empty = s2 == null || s2.trim().isEmpty() || s2.equals(""+null);
+        if (isS1Empty && isS2Empty)
+            return true;
+        else
+            return s1.equals(s2);
+    }
 }

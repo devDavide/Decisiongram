@@ -1,5 +1,7 @@
 package org.pollgram.decision.data;
 
+import org.telegram.messenger.UserConfig;
+
 import java.util.Date;
 
 /**
@@ -49,6 +51,20 @@ public class Decision extends  DBBean {
         return userCreatorId;
     }
 
+    /**
+     * @return whether the decision is editable by the current user
+     */
+    public boolean isEditable(){
+        return isEditable(UserConfig.getClientUserId());
+    }
+
+    /**
+     * @param userId
+     * @return whether the decision is editable by userId
+     */
+    public boolean isEditable(int userId){
+        return getUserCreatorId() == userId;
+    }
     public String getTitle() {
         return title;
     }
@@ -87,15 +103,6 @@ public class Decision extends  DBBean {
             return false;
         return equalString(getLongDescription(), decision.getLongDescription());
 
-    }
-
-    private boolean equalString(String s1, String s2) {
-        boolean isS1Emtpy = s1 == null || s1.trim().isEmpty() || s1.equals(""+null);
-        boolean isS2Emtpy = s2 == null || s2.trim().isEmpty() || s2.equals(""+null);
-        if (isS1Emtpy && isS2Emtpy)
-            return true;
-        else
-            return s1.equals(s2);
     }
 
     @Override

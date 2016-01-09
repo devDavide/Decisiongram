@@ -30,7 +30,8 @@ public interface PollgramMessagesManager {
         VOTE(R.string.MessageType_VOTE, (byte) 0xF0, (byte) 0x9F, (byte) 0x93, (byte) 0x9D), // memo
         CLOSE_DECISION(R.string.MessageType_CLOSE_DECISION, (byte) 0xF0, (byte) 0x9F, (byte) 0x9A, (byte) 0xAB), // no entry sign
         REOPEN_DECISION(R.string.MessageType_REOPEN_DECISION, (byte) 0xF0, (byte) 0x9F, (byte) 0x94, (byte) 0x84),    //ANTICLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS
-        DELETE_DECISION(R.string.MessageType_DELETE_DECISION, (byte) 0xE2, (byte) 0x9D, (byte) 0x8C);    //CROSS MARK
+        DELETE_DECISION(R.string.MessageType_DELETE_DECISION, (byte) 0xE2, (byte) 0x9D, (byte) 0x8C),    //CROSS MARK
+        ADD_OPTION(R.string.MessageType_ADD_OPTION,(byte)0xE2, (byte)0x9E, (byte)0x95);// heavy plus sign
 
         private final String emoji;
         private final int descrStringRes;
@@ -113,6 +114,14 @@ public interface PollgramMessagesManager {
     String buildNotifyNewDecision(Decision decision, List<Option> options);
 
     /**
+     * build a message for notifying a that some option were added to a decision
+     * @param decision
+     * @param newOptions the new options added
+     * @return the message ready to be sent
+     */
+    String buildAddOptions(Decision decision, List<Option> newOptions);
+
+    /**
      * build a message in order to remind to userAsString, that he must vote for the decision
      * @param userAsString
      * @param decision
@@ -157,11 +166,11 @@ public interface PollgramMessagesManager {
     /**
      * Retrun vale for getNewDecision method
      */
-    class NewDecisionData{
+    class DecisionOptionData {
         final @NonNull Decision decision;
         final @NonNull List<Option> optionList;
 
-        public NewDecisionData(@NonNull Decision decision, @NonNull List<Option> optionList) {
+        public DecisionOptionData(@NonNull Decision decision, @NonNull List<Option> optionList) {
             this.decision = decision;
             this.optionList = optionList;
         }
@@ -176,7 +185,18 @@ public interface PollgramMessagesManager {
      * @param messageDate the message date
      * @return the decision and its options
      */
-    NewDecisionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException;
+    DecisionOptionData getNewDecision(String msg, long currentChat, int userId, Date messageDate) throws PollgramParseException;
+
+    /**
+     * Only if getMessageType(text) == MessageType_ADD_OPTION
+     * Return the new option added for a decision
+     * @param msg the text message to parse
+     * @param currentChat current group chat
+     * @param userId message owner
+     * @return the decision and its options
+     */
+    DecisionOptionData getNewOptionAdded(String msg, long currentChat, int userId) throws PollgramParseException;
+
 
     /**
      * Return value for getCloseDecision

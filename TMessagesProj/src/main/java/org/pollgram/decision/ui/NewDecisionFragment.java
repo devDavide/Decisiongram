@@ -17,6 +17,7 @@ import org.pollgram.R;
 import org.pollgram.decision.adapter.NewOptionsAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.PollgramException;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
@@ -120,9 +121,9 @@ public class NewDecisionFragment extends BaseFragment {
 
         View myView = layoutInflater.inflate(R.layout.new_decision_step1_layout, (ViewGroup) fragmentView);
 
-        edTitle = (EditText) myView.findViewById(R.id.new_decision_ed_title);
+        edTitle = (EditText) myView.findViewById(R.id.decision_detail_ed_title);
         edTitle.setText(decisionTitle);
-        edLongDescription = (EditText) myView.findViewById(R.id.new_decision_ed_long_description);
+        edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
         edLongDescription.setText(decisionLongDescription);
     }
 
@@ -141,14 +142,13 @@ public class NewDecisionFragment extends BaseFragment {
                         showPage1();
                         break;
                     case NEXT_MENU_ITEM_ID:
-                        final List<Option> options = newOptionAdapter.getOptions();
-                        // check if the last option is not empty !!!
-                        for (int i=0;i<options.size();i++){
-                            if (options.get(i).getTitle() == null) {
-                                Toast.makeText(getParentActivity(), getParentActivity().getString(R.string.emptyTitleOnOption, i+1),
-                                        Toast.LENGTH_LONG).show();
-                                return;
-                            }
+                        final List<Option> options;
+                        try {
+                            options = newOptionAdapter.getOptions();
+                        } catch (PollgramException e) {
+                            Log.w(LOG_TAG, "Error in getOption",e);
+                            Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+                            return;
                         }
 
                         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
@@ -176,7 +176,7 @@ public class NewDecisionFragment extends BaseFragment {
         });
 
         ViewGroup myView = (ViewGroup) layoutInflater.inflate(R.layout.new_decision_step2_layout, (ViewGroup) fragmentView);
-        ListView newOptionListView = (ListView) myView.findViewById(R.id.new_decisions_option_list_view);
+        ListView newOptionListView = (ListView) myView.findViewById(R.id.edit_option_list_view);
         newOptionListView.setAdapter(newOptionAdapter);
     }
 

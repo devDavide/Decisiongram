@@ -47,7 +47,7 @@ public class TextOption extends Option {
 
         if (getTitle() != null ? !getTitle().equals(that.getTitle()) : that.getTitle() != null)
             return false;
-        return !(getLongDescription() != null ? !getLongDescription().equals(that.getLongDescription()) : that.getLongDescription() != null);
+        return equalString(getLongDescription(), that.getLongDescription());
 
     }
 

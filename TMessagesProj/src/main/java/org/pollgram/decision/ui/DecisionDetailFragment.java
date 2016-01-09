@@ -6,15 +6,20 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.service.PollgramService;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
+
+import java.text.DateFormat;
 
 /**
  * Created by davide on 31/12/15.
@@ -25,6 +30,7 @@ public class DecisionDetailFragment extends BaseFragment {
     static final String PAR_DECISION_ID = "PAR_DECISION_ID";
     private PollgramDAO pollgramDAO;
     private Decision decision;
+    private PollgramService pollgramService;
 
     public DecisionDetailFragment(Bundle bundle) {
         super(bundle);
@@ -33,9 +39,11 @@ public class DecisionDetailFragment extends BaseFragment {
     @Override
     public boolean onFragmentCreate() {
         pollgramDAO = PollgramFactory.getPollgramDAO();
-
+        pollgramService = PollgramFactory.getPollgramService();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         decision = pollgramDAO.getDecision(decisionId);
+
+
         return true;
     }
 
@@ -63,10 +71,30 @@ public class DecisionDetailFragment extends BaseFragment {
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View myView = layoutInflater.inflate(R.layout.decision_detail_layout, (ViewGroup) fragmentView);
 
-        EditText edTitle = (EditText) myView.findViewById(R.id.new_decision_ed_title);
+        EditText edTitle = (EditText) myView.findViewById(R.id.decision_detail_ed_title);
         edTitle.setText(decision.getTitle());
-        EditText edLongDescription = (EditText) myView.findViewById(R.id.new_decision_ed_long_description);
+        {
+            TextView tvCreationInfo = (TextView) myView.findViewById(R.id.decision_detail_tv_creation_info);
+            String userAsString = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
+            String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
+                    format(decision.getCreationDate());
+            tvCreationInfo.setText(context.getString(R.string.createdByUserOnDay,userAsString,creationDateStr));
+        }
+        EditText edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
         edLongDescription.setText(decision.getLongDescription());
+
+        Button ediOptionButton = (Button)myView.findViewById(R.id.decision_detail_edit_option);
+        ediOptionButton.setEnabled(decision.isEditable());
+        ediOptionButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putLong(EditOptionsFragment.PAR_DECISION_ID,decision.getId());
+                presentFragment(new EditOptionsFragment(bundle));
+            }
+        });
+
+
         return fragmentView;
     }
 }

@@ -10,7 +10,7 @@
 
 
         <ImageView
-            android:id="@+id/option_detail_iv_option_image"
+            android:id="@+id/decision_detail_iv_option_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
@@ -24,8 +24,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentTop="true"
-            android:layout_toEndOf="@+id/option_detail_iv_option_image"
-            android:layout_toRightOf="@+id/option_detail_iv_option_image"
+            android:layout_toEndOf="@+id/decision_detail_iv_option_image"
+            android:layout_toRightOf="@+id/decision_detail_iv_option_image"
             android:text="@string/title"
             android:textAppearance="?android:attr/textAppearanceMedium" />
 
@@ -36,7 +36,7 @@
             android:layout_alignParentEnd="true"
             android:layout_alignParentRight="true"
             android:layout_below="@+id/option_detail_title"
-            android:layout_toRightOf="@+id/option_detail_iv_option_image"
+            android:layout_toRightOf="@+id/decision_detail_iv_option_image"
             android:editable="false"/>
 
         <TextView

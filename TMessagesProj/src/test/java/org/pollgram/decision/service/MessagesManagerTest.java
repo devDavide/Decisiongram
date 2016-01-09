@@ -11,6 +11,7 @@ import org.mockito.Mock;
 import org.mockito.runners.MockitoJUnitRunner;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.tgnet.TLRPC;
@@ -160,7 +161,7 @@ public class MessagesManagerTest {
     }
 
     private void assertNewDecision(Decision decision, List<Option> options, String message) throws PollgramParseException {
-        PollgramMessagesManager.NewDecisionData result = messageManager.getNewDecision(message, chat.id, user.id, new Date());
+        PollgramMessagesManager.DecisionOptionData result = messageManager.getNewDecision(message, chat.id, user.id, new Date());
         Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(options, result.optionList);
     }
@@ -219,6 +220,27 @@ public class MessagesManagerTest {
     private void assertDeleteDecision(Decision decision, String message) throws PollgramParseException {
         Decision foundDecision = messageManager.getDeleteDecision(message, chat.id);
         Assert.assertEquals(foundDecision, decision);
+    }
+
+    @Test
+    public void testAddOptions() throws  PollgramParseException {
+        List<Option> newOptions = new ArrayList<>();
+        newOptions.add(new TextOption("Option1 Title", "Option1 long desc", decision.getId()));
+        newOptions.add(new TextOption("Option2 Title", "", decision.getId()));
+        newOptions.add(new TextOption("Option3 Title", null, decision.getId()));
+        newOptions.add(new TextOption("It's options 4", "option 4 desc it's the best", decision.getId()));
+        newOptions.add(new TextOption("options 5", "option 5 desc it's even better", decision.getId()));
+        String message = messageManager.buildAddOptions(decision, newOptions);
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.ADD_OPTION, type);
+        assertAddOptions(message, decision, newOptions);
+        assertAddOptions(messageManager.reformatMessage(message), decision, newOptions);
+    }
+
+    private void assertAddOptions(String message, Decision decision, List<Option> newOptions) throws PollgramParseException {
+        PollgramMessagesManager.DecisionOptionData result = messageManager.getNewOptionAdded(message, chat.id, user.id);
+        Assert.assertEquals(decision,result.decision);
+        Assert.assertEquals(newOptions, result.optionList);
     }
 
 }

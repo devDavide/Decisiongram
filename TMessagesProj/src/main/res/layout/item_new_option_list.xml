@@ -9,7 +9,7 @@
         android:layout_height="wrap_content"
         android:background="@drawable/option"
         android:paddingRight="10dp"
-        android:id="@+id/option_detail_iv_option_image"
+        android:id="@+id/decision_detail_iv_option_image"
         android:layout_alignBottom="@+id/new_option_ed_long_description" />
 
     <EditText
@@ -19,7 +19,7 @@
         android:hint="@string/insertOptionTitleHint"
         android:singleLine = "true"
         android:layout_alignParentTop="true"
-        android:layout_toRightOf="@+id/option_detail_iv_option_image"
+        android:layout_toRightOf="@+id/decision_detail_iv_option_image"
         android:layout_toLeftOf="@+id/new_option_delete_button"
         android:layout_toStartOf="@+id/new_option_delete_button" />
 
@@ -29,7 +29,7 @@
         android:id="@+id/new_option_ed_long_description"
         android:hint="@string/insertLongDescriptionHint"
         android:layout_below="@+id/new_option_ed_title"
-        android:layout_toRightOf="@+id/option_detail_iv_option_image"
+        android:layout_toRightOf="@+id/decision_detail_iv_option_image"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true" />
 

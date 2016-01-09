@@ -37,6 +37,8 @@ public interface PollgramService {
 
     void notifyDelete(Decision decision);
 
+    void notifyNewOptions(Decision decision, List<Option> newOptions);
+
     /**
      * @param message
      * @return whether the messsage is a pollgram transaction message

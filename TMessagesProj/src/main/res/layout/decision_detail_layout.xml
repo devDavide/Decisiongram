@@ -1,64 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content">
 
-    <RelativeLayout
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:padding="10dp">
+
+    <ImageView
+        android:id="@+id/decision_detail_iv_option_image"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:background="@drawable/decision_icon"
+        android:paddingRight="10dp" />
+
+    <TextView
+        android:id="@+id/decision_detail_tv_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignLeft="@+id/decision_detail_ed_title"
+        android:layout_alignParentEnd="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentTop="true"
+        android:layout_alignStart="@+id/decision_detail_ed_title"
+        android:text="@string/title"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <EditText
+        android:id="@+id/decision_detail_ed_title"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignEnd="@+id/decision_detail_long_description_scroll_view"
+        android:layout_alignRight="@+id/decision_detail_long_description_scroll_view"
+        android:layout_below="@+id/decision_detail_tv_title"
+        android:layout_toEndOf="@+id/decision_detail_iv_option_image"
+        android:layout_toRightOf="@+id/decision_detail_iv_option_image"
+        android:editable="false" />
+
+
+    <TextView
+        android:id="@+id/decision_detail_tv_creation_info"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:padding="10dp">
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/decision_detail_ed_title"
+        android:paddingTop="10dp"
+        android:text="@string/createdByUserOnDay"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <ImageView
-            android:id="@+id/option_detail_iv_option_image"
+    <TextView
+        android:id="@+id/decision_detail_tv_notes"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_below="@+id/decision_detail_tv_creation_info"
+        android:paddingTop="5dp"
+        android:text="@string/notes"
+        android:textAppearance="?android:attr/textAppearanceMedium" />
+
+    <ScrollView
+        android:id="@+id/decision_detail_long_description_scroll_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/decision_detail_tv_notes"
+        android:layout_weight="1">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <EditText
+                android:id="@+id/decision_detail_ed_long_description"
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:editable="false" />
+
+        <Button
+            android:id="@+id/decision_detail_edit_option"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@drawable/decision_icon"
-            android:paddingRight="10dp" />
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:drawableLeft="@drawable/floating_pencil"
+            android:orientation="vertical"
+            android:text="@string/editOptions"
+            android:layout_gravity="center_horizontal" />
+        </LinearLayout>
+    </ScrollView>
 
-        <EditText
-            android:id="@+id/new_decision_ed_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/new_decision_ed_long_description"
-            android:layout_alignRight="@+id/new_decision_ed_long_description"
-            android:layout_below="@+id/new_decision_tv_title"
-            android:layout_toEndOf="@+id/option_detail_iv_option_image"
-            android:layout_toRightOf="@+id/option_detail_iv_option_image"
-            android:editable="false" />
 
-        <TextView
-            android:id="@+id/new_decision_tv_notes"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/new_decision_ed_title"
-            android:paddingTop="10dp"
-            android:text="@string/notes"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
 
-        <EditText
-            android:id="@+id/new_decision_ed_long_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/new_decision_tv_notes"
-            android:editable="false" />
 
-        <TextView
-            android:id="@+id/new_decision_tv_title"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/new_decision_ed_title"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_alignStart="@+id/new_decision_ed_title"
-            android:text="@string/title"
-            android:textAppearance="?android:attr/textAppearanceMedium" />
-
-    </RelativeLayout>
-</ScrollView>
+</RelativeLayout>

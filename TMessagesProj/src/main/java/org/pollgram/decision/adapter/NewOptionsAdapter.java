@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import org.pollgram.R;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.PollgramException;
 import org.pollgram.decision.data.TextOption;
 
 import java.util.ArrayList;
@@ -27,19 +28,61 @@ public class NewOptionsAdapter extends ArrayAdapter<Option> {
 
     private final List<TextOption> options;
     private final LayoutInflater inflater;
+    private final EditMode mode;
+    private final int lastIdx;
+
+    private enum EditMode{
+        /**
+         * It is possible to add  new option ad to delete as well
+         */
+        NEW_DECISION,
+
+        /**
+         * no edit action is allowed, no delete, no add
+         */
+        READ_ONLY,
+
+        /**
+         * it is only possible to add new option, it is not possible to modify or delete the existing
+         */
+        ALLOW_ADD_NEW_OPTION;
+    }
 
     public NewOptionsAdapter(Context context) {
-        super(context, LAYOUT_RES_ID);
-        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        options = new ArrayList<>();
+        this(context,new ArrayList<TextOption>(), EditMode.NEW_DECISION);
         // put one first empty option
         options.add(new TextOption());
     }
 
-    public List<Option> getOptions() {
+    public NewOptionsAdapter(Context context, List<TextOption> options, boolean editable){
+        this(context,options, editable ? EditMode.ALLOW_ADD_NEW_OPTION : EditMode.READ_ONLY);
+    }
+
+    private NewOptionsAdapter(Context context, List<TextOption> options, EditMode mode){
+        super(context, LAYOUT_RES_ID);
+        this.options = options;
+        this.lastIdx = options.size() -1;
+        this.mode =mode;
+        inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    /**
+     * @return the list of the selected options
+     * @throws PollgramException if some value is invalid
+     */
+    public List<Option> getOptions() throws PollgramException{
         List<Option> out = new ArrayList<Option>();
-        for (TextOption to : options)
-            out.add(to);
+        for (int i = lastIdx + 1 ; i<options.size() ; i++)
+            out.add(options.get(i));
+        for (int i = 0; i < out.size(); i++) {
+            String title = out.get(i).getTitle();
+            if (title == null || title.trim().isEmpty()) {
+                if (i == out.size() -1)
+                    throw new PollgramException(getContext().getString(R.string.emptyTitleOnLastOption));
+                else
+                    throw new PollgramException(getContext().getString(R.string.emptyTitleOnOption, i + 1));
+            }
+        }
         return out;
     }
 
@@ -65,6 +108,8 @@ public class NewOptionsAdapter extends ArrayAdapter<Option> {
                     }
                 }
             });
+            if (EditMode.READ_ONLY.equals(mode))
+                buttonAdd.setEnabled(false);
         } else {
             // Create view for item
             rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
@@ -113,6 +158,26 @@ public class NewOptionsAdapter extends ArrayAdapter<Option> {
                     o.setLongDescription(s.toString());
                 }
             });
+
+            boolean enable;
+            switch (mode){
+                case NEW_DECISION:
+                    enable = true;
+                    break;
+                case READ_ONLY:
+                     enable = false;
+                    break;
+                case ALLOW_ADD_NEW_OPTION:
+                    enable = position > lastIdx;
+                    break;
+                default:
+                    enable = false;
+
+            }
+            edTitle.setEnabled(enable);
+            edLongDescription.setEnabled(enable);
+            deleteItem.setVisibility(enable ? View.VISIBLE : View.INVISIBLE);
+
         }
 
         return rowView;

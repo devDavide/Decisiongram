@@ -17,7 +17,6 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
-import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -38,6 +37,7 @@ public class VotesManagerFragment extends BaseFragment {
     private static final int ID_CLOSE_DECISION = nextId++;
     private static final int ID_REOPEN_DECISION = nextId++;
     private static final int ID_DELETE_DECISION = nextId++;
+    private static final int ID_EDIT_OPTIONS = nextId++;
 
 
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
@@ -52,9 +52,12 @@ public class VotesManagerFragment extends BaseFragment {
     private TextView tvCreationInfo;
     private TextView tvUserVoteCount;
     private TextView tvDecisionStatus;
+
     private TextView menuDeleteDecisionItem;
     private TextView menuReopenDecisionItem;
     private TextView menuCloseDecisionItem;
+    private TextView menuEditOptions;
+
     private ActionBarMenu menu;
     private VotesManagerTabsFragment votesManagerTabsFragment;
 
@@ -93,6 +96,7 @@ public class VotesManagerFragment extends BaseFragment {
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION, context.getString(R.string.closeDecision), 0);
         menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISION, context.getString(R.string.reopenDecision), 0);
         menuDeleteDecisionItem =headerItem.addSubItem(ID_DELETE_DECISION, context.getString(R.string.deleteDecision), 0);
+        menuEditOptions = headerItem.addSubItem(ID_EDIT_OPTIONS,context.getString(R.string.editOptions),0);
         
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -101,8 +105,7 @@ public class VotesManagerFragment extends BaseFragment {
                 if (id == UIUtils.ACTION_BAR_BACK_ITEM_ID) {
                     finishFragment();
                     return;
-                }
-                if (id == ID_DELETE_DECISION) {
+                }else if (id == ID_DELETE_DECISION) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
                     builder.setMessage(R.string.deleteDecisionQuestion).setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
                         @Override
@@ -118,8 +121,7 @@ public class VotesManagerFragment extends BaseFragment {
                         }
                     }).show();
                     return;
-                }
-                if (id == ID_CLOSE_DECISION) {
+                } else if (id == ID_CLOSE_DECISION) {
                     int voteCount = pollgramDAO.getUserVoteCount(decision);
                     int membersCount = participantsUserIds.length;
                     if (voteCount == membersCount) {
@@ -152,6 +154,10 @@ public class VotesManagerFragment extends BaseFragment {
                     Toast.makeText(context, context.getString(R.string.decisionReopened), Toast.LENGTH_SHORT).show();
                     votesManagerTabsFragment.updateView();
                     updateView();
+                } else if (id == ID_EDIT_OPTIONS){
+                    Bundle bundle = new Bundle();
+                    bundle.putLong(EditOptionsFragment.PAR_DECISION_ID, decision.getId());
+                    presentFragment(new EditOptionsFragment(bundle));
                 } else {
 
                     Log.e(LOG_TAG, "Unknown action id[" + id + "]");
@@ -200,11 +206,13 @@ public class VotesManagerFragment extends BaseFragment {
         menuReopenDecisionItem.setVisibility(View.GONE);
         menuDeleteDecisionItem.setVisibility(View.GONE);
         menuCloseDecisionItem.setVisibility(View.GONE);
-        if (decision.getUserCreatorId() == UserConfig.getCurrentUser().id) {
+        menuEditOptions.setVisibility(View.GONE);
+        if (decision.isEditable()) {
             menu.setVisibility(View.VISIBLE);
-            if (decision.isOpen())
+            if (decision.isOpen()) {
                 menuCloseDecisionItem.setVisibility(View.VISIBLE);
-            else {
+                menuEditOptions.setVisibility(View.VISIBLE);
+            } else {
                 menuReopenDecisionItem.setVisibility(View.VISIBLE);
                 menuDeleteDecisionItem.setVisibility(View.VISIBLE);
             }
@@ -215,7 +223,7 @@ public class VotesManagerFragment extends BaseFragment {
         String userStr = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
         String creationDateStr = DateFormat.getDateInstance(DateFormat.LONG).
                 format(decision.getCreationDate());
-        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDayNewLine,userStr, creationDateStr));
+        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDayNewLine, userStr, creationDateStr));
 
         String statusDesc = ctx.getString(decision.isOpen() ? R.string.statusOpen : R.string.statusClose);
         tvDecisionStatus.setText(ctx.getString(R.string.decisionStatus, statusDesc));
@@ -223,6 +231,13 @@ public class VotesManagerFragment extends BaseFragment {
 
         tvUserVoteCount.setText(ctx.getString(R.string.howManyMemberVote,
                 userThatVoteSoFar, participantsUserIds.length));
+        if (votesManagerTabsFragment != null)
+            votesManagerTabsFragment.updateView();
+    }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        updateView();
     }
 }

@@ -57,6 +57,8 @@ class PollgramDAODBImpl implements PollgramDAO {
             Date creationDate = new Date();
             Decision decision1 = new Decision(chatId, creatorId, "Where do we'd like to go skiing ?",
                     "Lorem ipsum dolor sit amet, vix te deserunt ullamcorper. Ut probatus dignissim sea, vocent discere vivendum ad mea. Eam ut blandit scribentur, ius an salutatus reprimique. Ut eros rationibus nec, ex deserunt invenire quo.\n" +
+                            "Lorem ipsum dolor sit amet, vix te deserunt ullamcorper. Ut probatus dignissim sea, vocent discere vivendum ad mea. Eam ut blandit scribentur, ius an salutatus reprimique. Ut eros rationibus nec, ex deserunt invenire quo.\n" +
+                            "Lorem ipsum dolor sit amet, vix te deserunt ullamcorper. Ut probatus dignissim sea, vocent discere vivendum ad mea. Eam ut blandit scribentur, ius an salutatus reprimique. Ut eros rationibus nec, ex deserunt invenire quo.\n" +
                             "\n" +
                             "Id nulla tacimates mandamus est, duo agam luptatum philosophia ex, wisi vidit reprehendunt quo ea. Ei sed omnis nostrum probatus, quis liber expetendis id sea. Pro id nibh recusabo, has suas volutpat cu. Copiosae detraxit petentium has ne. ", creationDate, true);
 

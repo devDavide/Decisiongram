@@ -256,6 +256,8 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     }
 
     protected void updateView() {
+        if (usersDecisionVotes == null)
+            return;
         usersDecisionVotes = PollgramFactory.getPollgramService().
                 getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                         usersDecisionVotes.getUsers());
