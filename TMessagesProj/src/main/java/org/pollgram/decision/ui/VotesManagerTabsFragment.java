@@ -288,11 +288,25 @@ public abstract class VotesManagerTabsFragment extends Fragment {
             TableRow row = newRow();
             // first cell is empty
             TextView emptyCell = new TextView(getContext());
-            for (Option option : usersDecisionVotes.getOptions()) {
+            for (final Option option : usersDecisionVotes.getOptions()) {
                 TextView tvOption = new TextView(getContext());
                 tvOption.setText(option.getTitle());
                 tvOption.setTypeface(tvOption.getTypeface(), Typeface.BOLD);
                 UIUtils.setDynamicTextSize(tvOption);
+                tvOption.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Bundle bundle = new Bundle();
+                        bundle.putLong(OptionDetailFragment.PAR_OPTION_ID, option.getId());
+                        bundle.putLong(OptionDetailFragment.PAR_DECISION_ID, option.getDecisionId());
+                        bundle.putIntArray(OptionDetailFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
+                        bundle.putInt(OptionDetailFragment.PAR_POSITIVE_VOTE_COUNT,
+                                usersDecisionVotes.getPositiveVoteCount(option));
+                        bundle.putInt(OptionDetailFragment.PAR_NEGATIVE_VOTE_COUNT,
+                                usersDecisionVotes.getNegativeVoteCount(option));
+                        parentFragment.presentFragment(new OptionDetailFragment(bundle));
+                    }
+                });
 
                 LinearLayout rowLayout = new LinearLayout(getContext());
                 rowLayout.setLayoutParams(new LinearLayout.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, firstRowHeight));
