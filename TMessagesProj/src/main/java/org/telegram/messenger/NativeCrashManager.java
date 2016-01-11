@@ -6,6 +6,7 @@ import android.util.Log;
 import net.hockeyapp.android.Constants;
 import net.hockeyapp.android.utils.SimpleMultipartEntity;
 
+import java.io.BufferedOutputStream;
 import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
@@ -70,7 +71,7 @@ public class NativeCrashManager {
 
                     attachmentUri = Uri.fromFile(new File(Constants.FILES_PATH, logFilename));
                     input = activity.getContentResolver().openInputStream(attachmentUri);
-                    entity.addPart("log", attachmentUri.getLastPathSegment(), input, false);
+                    entity.addPart("log", attachmentUri.getLastPathSegment(), input, true);
 
                     entity.writeLastBoundaryIfNeeds();
 
@@ -79,9 +80,15 @@ public class NativeCrashManager {
                     urlConnection.setRequestMethod("POST");
                     urlConnection.setRequestProperty("Content-Type", entity.getContentType());
                     urlConnection.setRequestProperty("Content-Length", String.valueOf(entity.getContentLength()));
-                    urlConnection.getOutputStream().write(entity.getOutputStream().toByteArray());
+
+                    BufferedOutputStream outputStream = new BufferedOutputStream(urlConnection.getOutputStream());
+                    outputStream.write(entity.getOutputStream().toByteArray());
+                    outputStream.flush();
+                    outputStream.close();
 
                     urlConnection.connect();
+
+                    FileLog.e("tmessages", "response code = " + urlConnection.getResponseCode() + " message = " + urlConnection.getResponseMessage());
                 } catch (IOException e) {
                     e.printStackTrace();
                 } finally {

@@ -3,7 +3,7 @@
  * It is licensed under GNU GPL v. 2 or later.
  * You should have received a copy of the license in this archive (see LICENSE).
  *
- * Copyright Nikolai Kudashov, 2013-2015.
+ * Copyright Nikolai Kudashov, 2013-2016.
  */
 
 package org.telegram.ui;
@@ -759,7 +759,7 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
                                                     }
                                                     message += data.getQueryParameter("text");
                                                 }
-                                            } else if (path.length() >= 5) {
+                                            } else if (path.length() >= 3) {
                                                 username = data.getLastPathSegment();
                                                 botUser = data.getQueryParameter("start");
                                                 botChat = data.getQueryParameter("startgroup");
@@ -1493,7 +1493,7 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[] grantResults) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults);
         if (requestCode == 3 || requestCode == 4 || requestCode == 5) {
-            if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                 if (requestCode == 4) {
                     ImageLoader.getInstance().createMediaPaths();
                 } else if (requestCode == 5) {
@@ -1526,6 +1526,10 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
             builder.setPositiveButton(LocaleController.getString("OK", R.string.OK), null);
             builder.show();
             return;
+        } else if (requestCode == 2) {
+            if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                NotificationCenter.getInstance().postNotificationName(NotificationCenter.locationPermissionGranted);
+            }
         }
         if (actionBarLayout.fragmentsStack.size() != 0) {
             BaseFragment fragment = actionBarLayout.fragmentsStack.get(actionBarLayout.fragmentsStack.size() - 1);
