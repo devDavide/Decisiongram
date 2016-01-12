@@ -1015,13 +1015,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 }
             });
             actionBar.addView(decisionManagerButton, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.RIGHT | Gravity.TOP, 56, 30, 42, 0));
+                    Gravity.RIGHT | Gravity.TOP, 56, 30, 36, 0));
         }
 
         avatarContainer = new FrameLayoutFixed(context);
         avatarContainer.setBackgroundResource(R.drawable.bar_selector);
         avatarContainer.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
-        actionBar.addView(avatarContainer, 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 56, 0, 40, 0));
+        actionBar.addView(avatarContainer, 0, LayoutHelper.createFrame(LayoutHelper.WRAP_CONTENT, LayoutHelper.MATCH_PARENT, Gravity.TOP | Gravity.LEFT, 56, 0, 75, 0));
         avatarContainer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -2346,6 +2346,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private boolean isGroupChat() {
         return currentChat != null && !ChatObject.isChannel(currentChat);
     }
+
     private void showGifHint() {
         SharedPreferences preferences = ApplicationLoader.applicationContext.getSharedPreferences("mainconfig", Activity.MODE_PRIVATE);
         if (preferences.getBoolean("gifhint", false)) {
