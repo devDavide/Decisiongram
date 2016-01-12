@@ -48,6 +48,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private Map<Option,Vote> newVotes;
     private OnVoteChangeListener onVoteChangeListener;
     private UsersDecisionVotes usersDecisionVotes;
+    private int currentUserId;
 
     private boolean firstVotePerformed;
 
@@ -70,7 +71,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     }
 
     public void setData(UsersDecisionVotes usersDecisionVotes, int currentUserId) {
+        this.firstVotePerformed = false;
         this.usersDecisionVotes = usersDecisionVotes;
+        this.currentUserId = currentUserId;
         this.votes = usersDecisionVotes.getVotes(currentUserId);
         this.newVotes = new HashMap<>();
         this.originalVotes = new ArrayList<>();
@@ -133,17 +136,30 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
                 vote.setVoteTime(new Date());
                 if (vote.isVote() != null && vote.isVote().equals(originalVotes.get(position))) {
                     newVotes.remove(o);
-                    ;
                 } else {
+                    newVotes.remove(o);
                     newVotes.put(o, vote);
                 }
-                firstVotePerformed = true;
+                // update data structure
                 Log.d(LOG_TAG, "item [" + position + "] selected[" + optionCheckBox.isChecked() + "] ");
                 usersDecisionVotes.setVote(vote.getUserId(), o, vote);
+
+                firstVotePerformed = true;
+
+                // notify data set has changed
                 onVoteChangeListener.voteChanges(!newVotes.isEmpty());
                 notifyDataSetChanged();
             }
         });
+
+        if (firstVotePerformed && vote.isVote() == null){
+            // on first vote set to false all null votes
+            vote.setVote(false);
+            vote.setVoteTime(new Date());
+
+            usersDecisionVotes.setVote(vote.getUserId(), o, vote);
+            newVotes.put(o,vote);
+        }
 
 
         final int positiveVoteCount = usersDecisionVotes.getPositiveVoteCount(o);
@@ -155,11 +171,10 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
                 positiveVoteCount, negativeVoteCount);
         stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
-        if (vote.isVote() == null && !firstVotePerformed){
+        if (vote.isVote() == null){
             optionCheckBox.setBackgroundColor(VOTED_NOT_SET_COLOR);
         }
         optionCheckBox.setChecked(vote.isVote() != null && vote.isVote());
-
 
         View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
             @Override
@@ -187,7 +202,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private String formatVoteCount(int positiveVoteCount) {
         return "(" + positiveVoteCount + ")";
     }
-
 
     public Collection<Vote> getNewVotes() {
         return newVotes.values();
