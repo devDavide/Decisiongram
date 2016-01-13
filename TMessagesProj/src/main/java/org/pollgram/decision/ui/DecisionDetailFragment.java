@@ -83,7 +83,7 @@ public class DecisionDetailFragment extends BaseFragment {
         edLongDescription.setText(decision.getLongDescription());
 
         Button ediOptionButton = (Button)myView.findViewById(R.id.decision_detail_edit_option);
-        ediOptionButton.setEnabled(decision.isEditable());
+        ediOptionButton.setEnabled(decision.isEditable() && decision.isOpen());
         ediOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
