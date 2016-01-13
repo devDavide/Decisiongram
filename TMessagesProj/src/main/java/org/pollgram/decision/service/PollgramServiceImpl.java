@@ -259,13 +259,18 @@ public class PollgramServiceImpl implements PollgramService {
                     break;
                 }
                 case DELETE_OPTIONS:{
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getDeletedOption(text,
+                    PollgramMessagesManager.DecisionOptionData result = messageManager.getDeletedOption(text,
                             groupChatId, userId);
-                    if (resut == null){
+                    if (result == null){
                         throw new PollgramParseException("Decision not found for "+msgType+" messsage");
                     }
-                    for (Option o : resut.optionList) {
-                        pollgramDAO.delete(o);
+                    for (Option o : result.optionList) {
+                        Option found = pollgramDAO.getOption(o.getTitle(),result.decision);
+                        if (found == null){
+                            throw new PollgramParseException("Option ["+o+"] in decision " +
+                                    "["+result.decision+"] it could no be deleted");
+                        }
+                        pollgramDAO.delete(found);
                     }
                     break;
                 }
