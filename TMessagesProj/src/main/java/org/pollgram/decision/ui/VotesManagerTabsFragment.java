@@ -208,8 +208,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         View rootView;
         rootView = inflater.inflate(R.layout.votes_manager_list_tab, container, false);
         ListView listView = (ListView) rootView.findViewById(R.id.decision_option_lw_options);
-        voteListAdapter = new VoteListAdapter(parentFragment, participantsUserIds,
-                usersDecisionVotes.getDecision().isOpen());
+        voteListAdapter = new VoteListAdapter(parentFragment, usersDecisionVotes.getDecision().isOpen());
         voteListAdapter.setData(usersDecisionVotes, currentUserId);
         listView.setAdapter(voteListAdapter);
         final Button btnSaveOption = (Button) rootView.findViewById(R.id.decision_option_btn_save_votes);

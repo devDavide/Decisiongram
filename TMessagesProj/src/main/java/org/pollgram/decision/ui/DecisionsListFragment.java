@@ -22,6 +22,7 @@ import org.pollgram.decision.adapter.DecisionAdapter;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
+import org.pollgram.decision.service.PollgramService;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
@@ -48,16 +49,19 @@ public class DecisionsListFragment extends BaseFragment {
     private static final int ID_PURGE_ALL_DATA = nextId++;
     private static final int ID_PUT_STUB_DATA_DATA = nextId++;
 
+    private Context context;
     private TLRPC.ChatFull chatInfo;
     private TLRPC.Chat currentChat;
-    private ListView decisionsListView;
-    private Context context;
 
-    private boolean hideCloseDecision;
     private PollgramDAO pollgramDAO;
+    private PollgramService pollgramService;
+
+    private ListView decisionsListView;
+    private boolean hideCloseDecision;
     private int[] participantsUserIds;
     private TextView tvSubtitle;
     private TextView tvNodecisionPresent;
+
 
     public DecisionsListFragment(){
     }
@@ -191,7 +195,7 @@ public class DecisionsListFragment extends BaseFragment {
         }
 
         tvSubtitle.setText(context.getString(R.string.decisionsCount, openCount, allDecisions.size() - openCount));
-        decisionsListView.setAdapter(new DecisionAdapter(context, filterDecision, currentChat.participants_count));
+        decisionsListView.setAdapter(new DecisionAdapter(context, filterDecision, participantsUserIds.length));
         if (filterDecision.size() == 0){
             decisionsListView.setVisibility(View.GONE);
             tvNodecisionPresent.setVisibility(View.VISIBLE);
@@ -204,10 +208,16 @@ public class DecisionsListFragment extends BaseFragment {
 
     public void setChatInfo(TLRPC.ChatFull chatInfo) {
         this.chatInfo = chatInfo;
-        participantsUserIds = new int[chatInfo.participants.participants.size()];
+        List<Integer> ids = new ArrayList<>(chatInfo.participants.participants.size());
         for (int i = 0; i < chatInfo.participants.participants.size() ; i++){
-            participantsUserIds[i] = chatInfo.participants.participants.get(i).user_id;
+            TLRPC.User user = PollgramFactory.getPollgramService().getUser(chatInfo.participants.participants.get(i).user_id);
+            if (user != null)
+                ids.add(user.id);
         }
+        participantsUserIds = new int[ids.size()];
+        for (int i=0;i<ids.size();i++)
+            participantsUserIds[i] = ids.get(i);
+
         this.currentChat = MessagesController.getInstance().getChat(chatInfo.id);
     }
 

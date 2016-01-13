@@ -21,6 +21,7 @@ import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.OptionDetailFragment;
 import org.pollgram.decision.ui.StackedBar;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.BaseFragment;
 
 import java.util.ArrayList;
@@ -41,7 +42,6 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
     private static final int LAYOUT_RES_ID = R.layout.item_vote_list;
     private final LayoutInflater inflater;
     private final BaseFragment baseFragment;
-    private final int[] participantsUserIds;
     private boolean editable;
     private List<Vote> votes;
     private List<Boolean> originalVotes;
@@ -56,10 +56,9 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         void voteChanges(boolean areThereChangesToSave);
     }
 
-    public VoteListAdapter(BaseFragment baseFragment, int[] participantsUserIds,  boolean editable) {
+    public VoteListAdapter(BaseFragment baseFragment, boolean editable) {
         super(baseFragment.getParentActivity(), LAYOUT_RES_ID);
         this.baseFragment = baseFragment;
-        this.participantsUserIds = participantsUserIds;
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.editable = editable;
         this.firstVotePerformed = false;
@@ -179,6 +178,12 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         View.OnClickListener openOptionDetailOnClickLister = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                int[] participantsUserIds = new int[usersDecisionVotes.getUsers().size()];
+                int i =0;
+                for (TLRPC.User u : usersDecisionVotes.getUsers()){
+                    participantsUserIds[i] = u.id;
+                    i++;
+                }
                 Bundle bundle = new Bundle();
                 bundle.putLong(OptionDetailFragment.PAR_OPTION_ID, o.getId());
                 bundle.putLong(OptionDetailFragment.PAR_DECISION_ID, o.getDecisionId());

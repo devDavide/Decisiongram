@@ -17,6 +17,7 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
+import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
@@ -24,6 +25,7 @@ import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.SizeNotifierFrameLayout;
 
 import java.text.DateFormat;
+import java.util.List;
 
 /**
  * Created by davide on 04/10/15.
@@ -44,7 +46,7 @@ public class VotesManagerFragment extends BaseFragment {
     public static final String PAR_PARTICIPANT_IDS  = "PAR_PARTICIPANT_IDS" ;
     public static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID" ;
 
-    private int[] participantsUserIds;
+    private List<TLRPC.User> members;
     private PollgramDAO pollgramDAO;
     private PollgramService pollgramService;
     private Decision decision;
@@ -72,7 +74,7 @@ public class VotesManagerFragment extends BaseFragment {
         pollgramDAO = PollgramFactory.getPollgramDAO();
         pollgramService = PollgramFactory.getPollgramService();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
-        participantsUserIds = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
+        members = pollgramService.getUsers(getArguments().getIntArray(PAR_PARTICIPANT_IDS));
         decision = pollgramDAO.getDecision(decisionId);
         return super.onFragmentCreate();
     }
@@ -123,7 +125,7 @@ public class VotesManagerFragment extends BaseFragment {
                     return;
                 } else if (id == ID_CLOSE_DECISION) {
                     int voteCount = pollgramDAO.getUserVoteCount(decision);
-                    int membersCount = participantsUserIds.length;
+                    int membersCount = members.size();
                     if (voteCount == membersCount) {
                         // all users voted al least one option for the current decision
                         closeDecision();
@@ -230,7 +232,7 @@ public class VotesManagerFragment extends BaseFragment {
         tvDecisionStatus.setBackgroundColor(decision.isOpen() ? Color.GREEN : Color.RED);
 
         tvUserVoteCount.setText(ctx.getString(R.string.howManyMemberVote,
-                userThatVoteSoFar, participantsUserIds.length));
+                userThatVoteSoFar, members.size()));
         if (votesManagerTabsFragment != null)
             votesManagerTabsFragment.updateView();
     }

@@ -49,9 +49,9 @@ public class OptionDetailFragment extends BaseFragment {
         int[] members = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
 
         UsersDecisionVotes usersDecisionVotes = PollgramFactory.getPollgramService().getUsersDecisionVotes(decisionId, members);
-        option = (TextOption) usersDecisionVotes.getOption(optionId);
 
-        membersCount = members.length;
+        option = (TextOption) usersDecisionVotes.getOption(optionId);
+        membersCount = usersDecisionVotes.getUsers().size();
         negativeVoteCount = getArguments().getInt(PAR_NEGATIVE_VOTE_COUNT);
         positiveVoteCount = getArguments().getInt(PAR_POSITIVE_VOTE_COUNT);
         voteCount = negativeVoteCount + positiveVoteCount;

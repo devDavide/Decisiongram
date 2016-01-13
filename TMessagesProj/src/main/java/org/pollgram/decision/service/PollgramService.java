@@ -1,6 +1,7 @@
 package org.pollgram.decision.service;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
 
 import org.pollgram.decision.data.Decision;
@@ -84,7 +85,11 @@ public interface PollgramService {
 
     List<TLRPC.User> getUsers(int[] usersIds);
 
-    TLRPC.User getUser(int userid);
+    /**
+     * @param userid
+     * @return a user with the givne user id, or null if the user does not exist or is a bot
+     */
+    @Nullable TLRPC.User getUser(int userid);
 
     /**
      *

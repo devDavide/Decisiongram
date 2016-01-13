@@ -43,7 +43,6 @@ public class DecisionDetailFragment extends BaseFragment {
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         decision = pollgramDAO.getDecision(decisionId);
 
-
         return true;
     }
 

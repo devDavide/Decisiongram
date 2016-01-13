@@ -1,6 +1,7 @@
 package org.pollgram.decision.service;
 
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.widget.Toast;
@@ -324,8 +325,17 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     @Override
-    public TLRPC.User getUser(int userid) {
-        return MessagesController.getInstance().getUser(userid);
+    public @Nullable TLRPC.User getUser(int userId) {
+        TLRPC.User user = MessagesController.getInstance().getUser(userId);
+        if (user == null){
+            Log.i(LOG_TAG, "Userid [" + userId + "] not found");
+            return null;
+        }
+        if (user.status == null) {// suppose this is a bot
+            Log.i(LOG_TAG, "User [" + user + "] is a BOT, it will be skipped");
+            return null;
+        }
+        return user;
     }
 
     @Override
@@ -333,11 +343,8 @@ public class PollgramServiceImpl implements PollgramService {
         List<TLRPC.User> users = new ArrayList<>();
         for (int i = 0; i < usersIds.length; i++) {
             TLRPC.User user = getUser(usersIds[i]);
-            if (user.status == null) {// suppose this is a bot
-                Log.i(LOG_TAG, "User [" + user + "] is a BOT, it will be skipped");
-                continue;
-            }
-            users.add(user);
+            if (user != null)
+                users.add(user);
         }
         return users;
     }
