@@ -32,12 +32,12 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         static final String TITLE = "title";
         static final String LONG_DESCRIPTION = "long_description";
         static final String GROUP_ID = "group_id";
-        static final String USER_CREATOR_ID = "user_creator_id";
+        static final String DECISION_OWNER = "decision_owner";
         static final String CREATION_DATE = "creation_date";
         static final String OPEN = "open";
 
         public static String cloumns(String tableAlias) {
-            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, GROUP_ID,CREATION_DATE, USER_CREATOR_ID, OPEN);
+            return createColumns(tableAlias, ID, TITLE, LONG_DESCRIPTION, GROUP_ID,CREATION_DATE, DECISION_OWNER, OPEN);
         }
     }
 
@@ -149,7 +149,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             String title = getString(c, T_Decision.TITLE);
             String description = getString(c, T_Decision.LONG_DESCRIPTION);
             long groupChatId = getLong(c, T_Decision.GROUP_ID);
-            int userCreatorId = getInt(c, T_Decision.USER_CREATOR_ID);
+            int userCreatorId = getInt(c, T_Decision.DECISION_OWNER);
             Date creationDate = getDate(c, T_Decision.CREATION_DATE);
             boolean isOpen = getBoolean(c, T_Decision.OPEN);
             return new Decision(id, groupChatId, userCreatorId, title, description, creationDate, isOpen);
@@ -161,7 +161,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
             cv.put(T_Decision.TITLE, d.getTitle());
             cv.put(T_Decision.LONG_DESCRIPTION, d.getLongDescription());
             cv.put(T_Decision.GROUP_ID, d.getChatId());
-            cv.put(T_Decision.USER_CREATOR_ID, d.getUserCreatorId());
+            cv.put(T_Decision.DECISION_OWNER, d.getUserCreatorId());
             cv.put(T_Decision.CREATION_DATE, d.getCreationDate().getTime());
             cv.put(T_Decision.OPEN, d.isOpen());
             return cv;
@@ -377,7 +377,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
                 T_Decision.TITLE + " TEXT, " +
                 T_Decision.LONG_DESCRIPTION + " TEXT, " +
                 T_Decision.GROUP_ID + " INTEGER," +
-                T_Decision.USER_CREATOR_ID + " INTEGER," +
+                T_Decision.DECISION_OWNER + " INTEGER," +
                 T_Decision.CREATION_DATE + " TIMESTAMP DEFAULT CURRENT_TIMESTAMP, " +
                 T_Decision.OPEN + " INTEGER, " +
                 "UNIQUE (" + T_Decision.TITLE + "," + T_Decision.GROUP_ID + ")" +
