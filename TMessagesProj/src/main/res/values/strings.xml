@@ -1159,7 +1159,7 @@
     <string name="decisionDetailTitle">Decision detail</string>
     <string name="showDecision">Show decisions</string>
     <string name="editOptions">Manage options</string>
-    <string name="addNewtOptionsTitle">Add new options</string>
+    <string name="addNewtOptionsTitle">Manage options</string>
     <string name="nothingToSave">There are no changes to save.</string>
     <string name="thereAreNoDecisionInThisGroup">There are stil no decision in this group.
         \n\nPollgram\'s decisions are a powerful tool, for easily taking arrangement between the group\'s members,

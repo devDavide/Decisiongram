@@ -1159,7 +1159,7 @@
     <string name="decisionDetailTitle">Dettaglio decisione</string>
     <string name="showDecision">Mostra decisioni</string>
     <string name="editOptions">Gestione opzioni</string>
-    <string name="addNewtOptionsTitle">Aggiungi nuove opzioni</string>
+    <string name="addNewtOptionsTitle">Gestisci opzioni</string>
     <string name="nothingToSave">Non ci sono modifiche da salvare.</string>
     <string name="thereAreNoDecisionInThisGroup">Non ci sono ancora decisioni in questo gruppo.
         \n\nLe decisioni di Pollgram permettono in maniera semplice, di trovare un accordo su di una qualsivoglia questione

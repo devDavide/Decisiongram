@@ -17,6 +17,7 @@ import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.service.PollgramDAO;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.service.PollgramService;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenu;
@@ -76,14 +77,20 @@ public class VotesManagerFragment extends BaseFragment {
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         members = pollgramService.getUsers(getArguments().getIntArray(PAR_PARTICIPANT_IDS));
         decision = pollgramDAO.getDecision(decisionId);
+        if (decision == null){
+            Log.e(LOG_TAG,"Decision not found for id ["+decisionId+"]");
+            Toast.makeText(ApplicationLoader.applicationContext,
+                    ApplicationLoader.applicationContext.getString(R.string.decisionNotFound,"  "),
+                    Toast.LENGTH_SHORT).show();
+            finishFragment();
+            return false;
+        }
         return super.onFragmentCreate();
     }
 
 
     @Override
     public View createView(final Context context) {
-        // TODO add real icon
-        // set up action bar
         tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.decision_icon_small);
         actionBar.setOnClickListener(new View.OnClickListener() {
             @Override
