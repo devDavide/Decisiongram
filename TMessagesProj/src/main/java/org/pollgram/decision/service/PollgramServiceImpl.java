@@ -309,11 +309,12 @@ public class PollgramServiceImpl implements PollgramService {
 
         } catch (PollgramParseException e){
             parsedSuccessfully = false;
-            if (showToastOnError) {
+            boolean isCurrentUser = userId != UserConfig.getClientUserId();
+            if (showToastOnError && isCurrentUser) {
                 Toast.makeText(ApplicationLoader.applicationContext,
                         "Error process message: " + e.getMessage(), Toast.LENGTH_LONG).show();
             }
-            Log.e(LOG_TAG,"Error parsing message ["+text+"]",e);
+            Log.e(LOG_TAG,"Error parsing message ["+text+"] isCurrentUser["+isCurrentUser+"]",e);
         }
 
         pollgramDAO.setMessageAsParsed(groupChatId,messageId, parsedSuccessfully);
