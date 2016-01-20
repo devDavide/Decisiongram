@@ -128,6 +128,11 @@
             android:theme="@style/Theme.TMessages.PopupNotification"
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
+        <activity
+            android:name=".decision.ui.CrashManagerActivity"
+            android:label="@string/title_activity_crash_manager_activty"
+            android:theme="@style/Theme.Transparent">
+        </activity>
 
         <receiver android:name="org.telegram.messenger.AutoMessageHeardReceiver">
             <intent-filter>
