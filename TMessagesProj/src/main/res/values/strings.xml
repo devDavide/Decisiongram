@@ -1144,7 +1144,7 @@
     <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
     <string name="titleAlreadyPresent">There are more than one option, with title \'%1$s\' please remove one.</string>
     <string name="you">you</string>
-    <string name="saveDecisionQuestion">Save decision %1$s with options ?</string>
+    <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?\nTake care: it will be no more possible to change options titles, you only will be able to add or remove options.</string>
     <string name="addOptionToDecisionQuestion">Are you sure to add %1$d options to decision %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Are you sure to:\nAdd %1$d option\nand remove %2$d options\nfrom the decision %3$s ?</string>
     <string name="closeDecisionQuestionPrefixSingle">Only %1$d user out of %2$d voted yet.</string>

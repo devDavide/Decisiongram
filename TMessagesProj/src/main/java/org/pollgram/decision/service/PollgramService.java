@@ -21,9 +21,20 @@ import java.util.Map;
  */
 public interface PollgramService {
 
-    UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] participantIds);
+    /**
+     * @param decisionId
+     * @param members
+     * @return a data structure representing a decision and the vote of each member
+     */
+    UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] members);
 
-    UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> users);
+    /**
+     *
+     * @param decisionId
+     * @param members
+     * @return a data structure representing a decision and the vote of each member
+     */
+    UsersDecisionVotes getUsersDecisionVotes(long decisionId, List<TLRPC.User> members);
 
     /**
      * remind the user to vote for the passed decision
@@ -33,27 +44,49 @@ public interface PollgramService {
     void remindUserToVote(Decision decision, TLRPC.User user);
 
     /**
-     * notify the creation of a new decision
+     * notify to other groups members that a new decision has been cretaed
      * @param decision
      * @param options
      */
     void notifyNewDecision(Decision decision, List<Option> options);
 
     /**
-     * Notify a set of votes for the passed decision
+     * Notify to other groups members the votes performed by the current user for the decision
      * @param decision
      * @param votes2Save
      */
     void notifyVote(Decision decision, Collection<Vote> votes2Save);
 
+    /**
+     * Notify to other groups members that a decision has been closed
+     * @param decision
+     */
     void notifyClose(Decision decision);
 
+    /**
+     * Notify to other groups members that a decision has been reopened
+     * @param decision
+     */
     void notifyReopen(Decision decision);
 
+    /**
+     * Notify to other groups members that a decision, and all his data has been deleted.
+     * @param decision
+     */
     void notifyDelete(Decision decision);
 
+    /**
+     * Notify to other groups members the new options for the decision
+     * @param decision
+     * @param newOptions
+     */
     void notifyNewOptions(Decision decision, List<Option> newOptions);
 
+    /**
+     * Notify to other groups members that some options has been deleted from decision
+     * @param decision
+     * @param deleteOptions
+     */
     void notifyDeleteOptions(Decision decision, List<Option> deleteOptions);
 
     /**
