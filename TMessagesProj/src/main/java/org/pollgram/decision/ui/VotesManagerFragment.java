@@ -200,10 +200,20 @@ public class VotesManagerFragment extends BaseFragment {
     }
 
     private void closeDecision() {
-        pollgramService.notifyClose(decision);
-        Toast.makeText(getParentActivity(), getParentActivity().getString(R.string.decisionClosed), Toast.LENGTH_SHORT).show();
-        votesManagerTabsFragment.updateView();
-        updateView();
+        PollgramDAO.WinningOption winningOption = pollgramDAO.getWinningOption(decision);
+        if (winningOption.options.size() == 0){
+            // there are no option that wins...notify it and return
+            AlertDialog.Builder builder = new AlertDialog.Builder(ApplicationLoader.applicationContext);
+
+        } else if (winningOption.options.size() >1){
+            // deny the saving cause there are more that one winning option
+        } else {
+            // Just one option everything is okay
+            pollgramService.notifyClose(decision);
+            Toast.makeText(getParentActivity(), getParentActivity().getString(R.string.decisionClosed), Toast.LENGTH_SHORT).show();
+            votesManagerTabsFragment.updateView();
+            updateView();
+        }
     }
 
 
