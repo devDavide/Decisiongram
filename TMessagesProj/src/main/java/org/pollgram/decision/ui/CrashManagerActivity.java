@@ -55,7 +55,7 @@ public class CrashManagerActivity extends Activity {
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.emailBugDestAddress)});
                 i.putExtra(Intent.EXTRA_SUBJECT, "Pollgram crash report");
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-                i.putExtra(Intent.EXTRA_TEXT, "Error:" + msgBody.toString());
+                i.putExtra(Intent.EXTRA_TEXT, msgBody.toString());
                 if (logAttachmentFile != null)
                     i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(logAttachmentFile));
 
