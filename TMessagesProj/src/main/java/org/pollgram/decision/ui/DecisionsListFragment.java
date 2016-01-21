@@ -4,7 +4,6 @@ import android.animation.ObjectAnimator;
 import android.animation.StateListAnimator;
 import android.annotation.SuppressLint;
 import android.content.Context;
-import android.content.Intent;
 import android.graphics.Outline;
 import android.os.Build;
 import android.os.Bundle;
@@ -17,7 +16,6 @@ import android.widget.AdapterView;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.pollgram.R;
 import org.pollgram.decision.adapter.DecisionAdapter;
@@ -51,7 +49,6 @@ public class DecisionsListFragment extends BaseFragment {
     private static final int ID_PURGE_ALL_DATA = nextId++;
     private static final int ID_PUT_STUB_DATA_DATA = nextId++;
     private static final int ID_SUICIDE = nextId++;
-    private static final int ID_SEND_EMAIL = nextId++;
 
     private Context context;
     private TLRPC.ChatFull chatInfo;
@@ -94,10 +91,11 @@ public class DecisionsListFragment extends BaseFragment {
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
-        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
-        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
-        headerItem.addSubItem(ID_SUICIDE , "Do not press this button", 0);
-        headerItem.addSubItem(ID_SEND_EMAIL , "Contact me", 0);
+
+        // TODO remove those last items...just for test
+//        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
+//        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+        headerItem.addSubItem(ID_SUICIDE , getParentActivity().getString(R.string.doNotPressThisButton), 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -119,16 +117,6 @@ public class DecisionsListFragment extends BaseFragment {
                     pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
                 } else if (id == ID_SUICIDE){
                     throw new RuntimeException("Goodbye cruel world");
-                } else if (id == ID_SEND_EMAIL){
-                    Intent i = new Intent(Intent.ACTION_SEND);
-                    i.setType("message/rfc822");
-                    i.putExtra(Intent.EXTRA_EMAIL  , new String[]{"davide.pallaoro@gmail.com"});
-                    i.putExtra(Intent.EXTRA_SUBJECT, "Pollgram contact me");
-                    try {
-                        getParentActivity().startActivity(Intent.createChooser(i, "Send mail..."));
-                    } catch (android.content.ActivityNotFoundException e) {
-                        Toast.makeText(getParentActivity(), "There are no email clients installed.", Toast.LENGTH_SHORT).show();
-                    }
                 }
                 updateResult();
             }

@@ -28,6 +28,7 @@ import android.provider.Browser;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -126,6 +127,7 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, final Throwable ex) {
+                Log.e("AppCrash", "Application crash due to",ex);
                 Intent intent = new Intent(LaunchActivity.this, CrashManagerActivity.class);
                 intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application1
                 Bundle bundle = new Bundle();
@@ -135,7 +137,7 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
                 ex.printStackTrace(pw);
 
                 intent.putExtra(CrashManagerActivity.PAR_FULL_STACKTRACE, sw.toString());
-                intent.putExtra(CrashManagerActivity.PAR_ERROR_MESSAGE, ex.getMessage());
+                intent.putExtra(CrashManagerActivity.PAR_ERROR_MESSAGE, ex.toString());
                 startActivity(intent);
                 System.exit(1);
             }
@@ -359,6 +361,13 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
                         FileLog.e("tmessages", e);
                     }
                     drawerLayoutContainer.closeDrawer(false);
+
+                } else if (position == 10){ // contact me
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("message/rfc822");
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.emailBugDestAddress)});
+                    i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.sendInfoEmail));
+                    startActivity(Intent.createChooser(i, getString(R.string.sendInfoEmail)));
                 }
             }
         });

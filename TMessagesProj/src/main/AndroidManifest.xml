@@ -130,7 +130,7 @@
         </activity>
         <activity
             android:name=".decision.ui.CrashManagerActivity"
-            android:label="@string/title_activity_crash_manager_activty"
+            android:label="@string/title_activity_crash_manager_activity"
             android:theme="@style/Theme.Transparent">
         </activity>
 

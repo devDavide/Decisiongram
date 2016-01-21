@@ -2,6 +2,7 @@ package org.pollgram.decision.ui;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -9,7 +10,6 @@ import android.content.pm.PackageManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Environment;
 import android.util.Log;
 import android.widget.Toast;
 
@@ -30,9 +30,10 @@ public class CrashManagerActivity extends Activity {
         super.onCreate(savedInstanceState);
 
         final String errorMsg = getIntent().getExtras().getString(PAR_ERROR_MESSAGE);
-        final StringBuilder msgBody = new StringBuilder();
-        msgBody.append(getIntent().getExtras().getString(PAR_FULL_STACKTRACE));
+        final String stackTrace = getIntent().getExtras().getString(PAR_FULL_STACKTRACE);
 
+        final StringBuilder msgBody = new StringBuilder();
+        msgBody.append(getString(R.string.emailCrashMessageBody, errorMsg));
 
         AlertDialog.Builder builder = new AlertDialog.Builder(CrashManagerActivity.this);
         builder.setMessage(getString(R.string.appCrashedMessage));
@@ -40,22 +41,23 @@ public class CrashManagerActivity extends Activity {
             @Override
             public void onClick(DialogInterface dialog, int which) {
 
-                String logAttachmentFile;
+                File logAttachmentFile;
                 try {
-                    logAttachmentFile = extractLogToFile();
+                    logAttachmentFile = extractLogToFile(CrashManagerActivity.this,stackTrace);
                 } catch (Exception e) {
                     logAttachmentFile = null;
                     msgBody.append('\n');
-                    msgBody.append("Error in retreving log:"+ e.getMessage());
+                    msgBody.append("Error in retreving log:" + e.getMessage());
                 }
 
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
-                i.putExtra(Intent.EXTRA_EMAIL, new String[]{"davide.pallaoro@gmail.com"});
+                i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.emailBugDestAddress)});
                 i.putExtra(Intent.EXTRA_SUBJECT, "Pollgram crash report");
+                i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra(Intent.EXTRA_TEXT, "Error:" + msgBody.toString());
                 if (logAttachmentFile != null)
-                    i.putExtra (Intent.EXTRA_STREAM, Uri.parse("file://" + logAttachmentFile));
+                    i.putExtra(Intent.EXTRA_STREAM, Uri.fromFile(logAttachmentFile));
 
                 try {
                     startActivity(Intent.createChooser(i, "Send crash report email..."));
@@ -64,26 +66,22 @@ public class CrashManagerActivity extends Activity {
                     Toast.makeText(CrashManagerActivity.this, "There are no email clients installed.", Toast.LENGTH_SHORT).show();
                 }
                 Log.e("Crash", "Application will ends due to a crash");
-                ///System.exit(1); // ???
+                System.exit(1);
             }
         }).show();
 
     }
 
-    private String extractLogToFile() throws PackageManager.NameNotFoundException {
-        PackageManager manager = this.getPackageManager();
-        PackageInfo info = manager.getPackageInfo(this.getPackageName(), 0);
+    public static File extractLogToFile(Context context, String stackTrace) throws PackageManager.NameNotFoundException, IOException {
+        PackageManager manager = context.getPackageManager();
+        PackageInfo info = manager.getPackageInfo(context.getPackageName(), 0);
         String model = Build.MODEL;
         if (!model.startsWith(Build.MANUFACTURER))
             model = Build.MANUFACTURER + " " + model;
 
-        // Make file name - file must be saved to external storage or it wont be readable by
-        // the email app.
-        String path = Environment.getExternalStorageDirectory() + "/" + "MyApp/";
-        String fullName = path + "crash.log";
 
         // Extract to file.
-        File file = new File(fullName);
+        File file = File.createTempFile("crash",".log", context.getExternalFilesDir(null));
         InputStreamReader reader = null;
         FileWriter writer = null;
         try {
@@ -102,18 +100,16 @@ public class CrashManagerActivity extends Activity {
             writer.write("Android version: " + Build.VERSION.SDK_INT + "\n");
             writer.write("Device: " + model + "\n");
             writer.write("App version: " + (info == null ? "(null)" : info.versionCode) + "\n");
+            writer.write("Application crash because of: "+ stackTrace+"\n");
+            writer.write("-------------------------------------------");
 
-            char[] buffer = new char[10000];
-            do {
-                int n = reader.read(buffer, 0, buffer.length);
-                if (n == -1)
-                    break;
+
+            char[] buffer = new char[1024];
+            int n = -1;
+            while((n = reader.read(buffer, 0, buffer.length)) != -1){
                 writer.write(buffer, 0, n);
-            } while (true);
-
-            reader.close();
-            writer.close();
-        } catch (IOException e) {
+            }
+        } finally {
             if (writer != null)
                 try {
                     writer.close();
@@ -124,12 +120,8 @@ public class CrashManagerActivity extends Activity {
                     reader.close();
                 } catch (IOException e1) {
                 }
-
-            // You might want to write a failure message to the log here.
-            return null;
         }
-
-        return fullName;
+        return file;
     }
 
 }
