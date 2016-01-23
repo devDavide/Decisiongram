@@ -109,7 +109,7 @@ public class NewDecisionFragment extends BaseFragment {
             public void onItemClick(int id) {
                 switch (id) {
                     case UIUtils.ACTION_BAR_BACK_ITEM_ID:
-                        finishFragment();
+                        abortDecisionCreation();
                         break;
                     case NEXT_MENU_ITEM_ID:
                         nextStep();
@@ -127,6 +127,28 @@ public class NewDecisionFragment extends BaseFragment {
         edTitle.setText(decisionTitle);
         edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
         edLongDescription.setText(decisionLongDescription);
+    }
+
+    private void abortDecisionCreation() {
+        if (edTitle.getText().toString().isEmpty() && edLongDescription.getText().toString().isEmpty()){
+            finishFragment();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage(getParentActivity().getString(R.string.abortDecisionCreation));
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishFragment();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.show();
     }
 
 
@@ -225,11 +247,11 @@ public class NewDecisionFragment extends BaseFragment {
 
     @Override
     public boolean onBackPressed() {
-        if (currentPage == PAGE_1)
-            return true;
-        else {
+        if (currentPage == PAGE_1) {
+            abortDecisionCreation();
+        }else {
             showPage1();
-            return false;
         }
+        return false;
     }
 }

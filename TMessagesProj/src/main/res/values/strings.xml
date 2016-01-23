@@ -1136,7 +1136,7 @@
     <string name="newDecision">New decision</string>
     <string name="selectOptions">Select options</string>
     <string name="pleaseSelectATitle">Please select a title</string>
-    <string name="newOption">New Option</string>
+    <string name="newOption">Add new Option</string>
     <string name="decisionSaved">Decision has been saved</string>
     <string name="pleaseSelectATitleForOption">Pleace select a value for the title of the last option, before adding a new one</string>
     <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
@@ -1166,13 +1166,14 @@
         using a poll-based system.
         \n\nPres the \"plus\" button for creating a new decision.</string>
 
-    <string name="CreateDecision">Create Decision</string>
+    <string name="createDecision">Create Decision</string>
+    <string name="abortDecisionCreation">Abort decision creation ?</string>
     <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
 
     <!-- Pollgram crash messages START -->
     <string name="appCrashedMessage">Oh shit ! The app crashed :-( Please send me the crash info by email, so i can fix the problem as soon a spossible. Thanks you.</string>
     <string name="sendCrashEmail">Send Crash info by Email</string>
-    <string name="ContactMe">Contact me</string>
+    <string name="contactMe">Contact me</string>
     <string name="sendInfoEmail">Pollgram contact developer</string>
     <string name="doNotPressThisButton">Do not press here</string>
     <string name="emailCrashMessageBody">I am sorry but Pollgram just crashed because of: \n%1$s\nCrash report is attached to the email.\nThank you for the support.\n</string>
@@ -1189,4 +1190,5 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
+
 </resources>

@@ -6069,7 +6069,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     if (currentEncryptedChat == null) {
 
                         if (isGroupChat()) { // Pollgram custom items
-                            items.add(LocaleController.getString("CreateDecision", R.string.CreateDecision));
+                            items.add(LocaleController.getString("createDecision", R.string.createDecision));
                             options.add(MENU_ITEM_OPTION_CREATE_DECISION);
                         }
 
