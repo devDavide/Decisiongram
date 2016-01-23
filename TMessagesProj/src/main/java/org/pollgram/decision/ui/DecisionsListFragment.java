@@ -48,6 +48,7 @@ public class DecisionsListFragment extends BaseFragment {
     private static final int ID_TOGGLE_OPEN_CLOSE_DECISIONS = nextId++;
     private static final int ID_PURGE_ALL_DATA = nextId++;
     private static final int ID_PUT_STUB_DATA_DATA = nextId++;
+    private static final int ID_SUICIDE = nextId++;
 
     private Context context;
     private TLRPC.ChatFull chatInfo;
@@ -90,8 +91,11 @@ public class DecisionsListFragment extends BaseFragment {
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
-        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
-        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+
+        // TODO remove those last items...just for test
+//        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
+//        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+        headerItem.addSubItem(ID_SUICIDE , getParentActivity().getString(R.string.doNotPressThisButton), 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override
             public void onItemClick(int id) {
@@ -104,13 +108,15 @@ public class DecisionsListFragment extends BaseFragment {
                         viewOpenCloseTextView.setText(R.string.viewCloseDecision);
                     else
                         viewOpenCloseTextView.setText(R.string.hideCloseDecision);
-                } else if (id == ID_PURGE_ALL_DATA){
+                } else if (id == ID_PURGE_ALL_DATA) {
                     List<Decision> allDecisions = pollgramDAO.getDecisions(chatInfo.id, null);
-                    for (Decision d : allDecisions){
+                    for (Decision d : allDecisions) {
                         pollgramDAO.delete(d);
                     }
-                } else if (id == ID_PUT_STUB_DATA_DATA){
+                } else if (id == ID_PUT_STUB_DATA_DATA) {
                     pollgramDAO.putStubData(currentChat.id, UserConfig.getCurrentUser().id);
+                } else if (id == ID_SUICIDE){
+                    throw new RuntimeException("Goodbye cruel world");
                 }
                 updateResult();
             }

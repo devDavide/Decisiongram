@@ -1166,9 +1166,23 @@
         tra i membri del gruppo, utilizzando un sistema basato su sondaggi.
         \n\nPremi il pulsante \"più\" per creare una nuova decisione.</string>
 
+    <string name="CreateDecision">Crea nuova decisione</string>
+    <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
+
+    <!-- Pollgram crash messages START -->
+    <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
+    <string name="sendCrashEmail">Invia sengalazione via eMail</string>
+    <string name="ContactMe">Contact me</string>
+    <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
+    <string name="doNotPressThisButton">Non premere qui</string>
+    <string name="emailCrashMessageBody">Mi dispiace ma Pollgram si è interrotto a causa di:\n%1$s\nLe infromazione relative al errore sono allegate alla mail.\nGrazie per il supporto supporto.\n</string>
+    <!-- Pollgram crash messages END -->
+
     <!-- END of Pollgram text -->
 
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.4.0:\n\nRivoluzione GIF: Invio e download 20 volte più veloci, autoriproduci e salva le tue preferite nel pannello sticker.\n\nPiù info sulle GIF:\nhttps://telegram.org/blog/gif-revolution\n\nBot Inline: Un nuovo modo di aggiungere contenuti in ogni chat. Menziona un bot e la tua domanda nel campo di scrittura e ottieni risultati immediati. Prova a scrivere “@gif dog” nella tua prossima chat. Bot di esempio: @gif, @wiki, @bing, @vid, @bold\n\nPiù info sui Bot Inline:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
+
+
 </resources>

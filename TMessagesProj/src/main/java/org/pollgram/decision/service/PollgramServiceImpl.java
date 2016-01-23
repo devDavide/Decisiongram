@@ -1,5 +1,6 @@
 package org.pollgram.decision.service;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
@@ -13,6 +14,7 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
+import org.pollgram.decision.ui.NewDecisionFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ApplicationLoader;
@@ -25,6 +27,7 @@ import org.telegram.messenger.UserObject;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Components.URLSpanNoUnderline;
 
+import java.text.DateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -317,7 +320,7 @@ public class PollgramServiceImpl implements PollgramService {
             Log.e(LOG_TAG,"Error parsing message ["+text+"] isCurrentUser["+isCurrentUser+"]",e);
         }
 
-        pollgramDAO.setMessageAsParsed(groupChatId,messageId, parsedSuccessfully);
+        pollgramDAO.setMessageAsParsed(groupChatId, messageId, parsedSuccessfully);
     }
 
     protected void sendMessage(long groupChatId, String message) {
@@ -357,7 +360,11 @@ public class PollgramServiceImpl implements PollgramService {
 
     @Override
     public String asString(TLRPC.User user){
-        if (user.id == UserConfig.getCurrentUser().id)
+        return asString(user, true);
+    }
+
+    private String asString(TLRPC.User user, boolean overrideYou) {
+        if (overrideYou && user.id == UserConfig.getCurrentUser().id)
             return ApplicationLoader.applicationContext.getString(R.string.you);
 
         if (user.id / 1000 != 777 && user.id / 1000 != 333 &&
@@ -402,6 +409,26 @@ public class PollgramServiceImpl implements PollgramService {
         return  bundle;
     }
 
+
+    @Override
+    public Bundle getBundleForNewDecision(TLRPC.Chat currentChat, MessageObject selectedObject) {
+        Context context = ApplicationLoader.applicationContext;
+
+        TLRPC.User user =  getUser(selectedObject.messageOwner.from_id);
+        String userAsString = asString(user,false);
+        String dateAsString = DateFormat.getDateInstance(DateFormat.SHORT).
+                format(getMessageDate(selectedObject));
+
+        StringBuilder longDescription = new StringBuilder();
+        longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString ,userAsString));
+        longDescription.append('\n');
+        longDescription.append(selectedObject.messageText.toString());
+
+        Bundle args = new Bundle();
+        args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
+        args.putString(NewDecisionFragment.PAR_DECISION_LONG_DESCRIPTION, longDescription.toString());
+        return args;
+    }
 
     /**
      * Internal class used for sorting messages

@@ -28,6 +28,7 @@ import android.provider.Browser;
 import android.provider.ContactsContract;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentActivity;
+import android.util.Log;
 import android.view.ActionMode;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
@@ -44,37 +45,40 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.telegram.messenger.AndroidUtilities;
+import org.pollgram.R;
+import org.pollgram.decision.ui.CrashManagerActivity;
 import org.telegram.PhoneFormat.PhoneFormat;
+import org.telegram.messenger.AndroidUtilities;
+import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.ChatObject;
 import org.telegram.messenger.ContactsController;
+import org.telegram.messenger.FileLog;
 import org.telegram.messenger.ImageLoader;
+import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NativeCrashManager;
+import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.SendMessagesHelper;
+import org.telegram.messenger.UserConfig;
 import org.telegram.messenger.UserObject;
 import org.telegram.messenger.query.StickersQuery;
-import org.telegram.messenger.ApplicationLoader;
-import org.telegram.messenger.FileLog;
-import org.telegram.messenger.LocaleController;
-import org.telegram.messenger.NotificationCenter;
-import org.pollgram.R;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.RequestDelegate;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
-import org.telegram.messenger.UserConfig;
-import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.ActionBar.ActionBarLayout;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.ActionBar.DrawerLayoutContainer;
+import org.telegram.ui.Adapters.DrawerLayoutAdapter;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.PasscodeView;
 
 import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.util.ArrayList;
 import java.util.Map;
 
@@ -118,6 +122,28 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
     protected void onCreate(Bundle savedInstanceState) {
         ApplicationLoader.postInitApplication();
         NativeCrashManager.handleDumpFiles(this);
+
+        //TODO fix
+        Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+            @Override
+            public void uncaughtException(Thread thread, final Throwable ex) {
+                Log.e("AppCrash", "Application crash due to",ex);
+                Intent intent = new Intent(LaunchActivity.this, CrashManagerActivity.class);
+                intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK); // required when starting from Application1
+                Bundle bundle = new Bundle();
+
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                ex.printStackTrace(pw);
+
+                intent.putExtra(CrashManagerActivity.PAR_FULL_STACKTRACE, sw.toString());
+                intent.putExtra(CrashManagerActivity.PAR_ERROR_MESSAGE, ex.toString());
+                startActivity(intent);
+                System.exit(1);
+            }
+        });
+
+
 
         if (!UserConfig.isClientActivated()) {
             Intent intent = getIntent();
@@ -335,6 +361,13 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
                         FileLog.e("tmessages", e);
                     }
                     drawerLayoutContainer.closeDrawer(false);
+
+                } else if (position == 10){ // contact me
+                    Intent i = new Intent(Intent.ACTION_SEND);
+                    i.setType("message/rfc822");
+                    i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.emailBugDestAddress)});
+                    i.putExtra(Intent.EXTRA_SUBJECT, getString(R.string.sendInfoEmail));
+                    startActivity(Intent.createChooser(i, getString(R.string.sendInfoEmail)));
                 }
             }
         });

@@ -37,18 +37,20 @@ import java.util.List;
 public class NewDecisionFragment extends BaseFragment {
 
     public static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID";
+    public static final String PAR_DECISION_LONG_DESCRIPTION = "PAR_DECISION_LONG_DESCRIPTION";
+
     private static final short PAGE_1 = 1;
     private static final short PAGE_2 = 2;
 
     private static final int NEXT_MENU_ITEM_ID = 1;
 
     private static final String LOG_TAG = "NEW_DEC_FRAG";
+
     private EditText edTitle;
     private EditText edLongDescription;
 
     private short currentPage;
 
-    private Bundle wizardBundleArgs;
     private PollgramDAO pollgramDAO;
     private int groupChatId;
     private PollgramService pollgramService;
@@ -68,11 +70,11 @@ public class NewDecisionFragment extends BaseFragment {
     public boolean onFragmentCreate() {
         pollgramDAO = PollgramFactory.getPollgramDAO();
         pollgramService = PollgramFactory.getPollgramService();
-        wizardBundleArgs = new Bundle();
+
         groupChatId = getArguments().getInt(PAR_GROUP_CHAT_ID);
+        decisionLongDescription = getArguments().getString(PAR_DECISION_LONG_DESCRIPTION);
 
         decisionTitle = "";
-        decisionLongDescription = "";
         return true;
     }
 
