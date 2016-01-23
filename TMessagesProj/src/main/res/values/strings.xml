@@ -1132,7 +1132,7 @@
         This will remove this decision for ALL users involved, not just yourself.\nAre you sure ?</string>
     <string name="insertTitleHint">Insert title here</string>
     <string name="insertOptionTitleHint">Insert option\'s title here</string>
-    <string name="insertLongDescriptionHint">Insert additional notes here</string>
+    <string name="insertLongDescriptionHint">Insert notes here (optional)</string>
     <string name="newDecision">New decision</string>
     <string name="selectOptions">Select options</string>
     <string name="pleaseSelectATitle">Please select a title</string>

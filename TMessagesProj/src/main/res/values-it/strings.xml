@@ -1133,7 +1133,7 @@
     <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.\nContinuare ?</string>
     <string name="insertTitleHint">Inserire il titolo qui</string>
     <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
-    <string name="insertLongDescriptionHint">Inserire qui le note aggiuntive</string>
+    <string name="insertLongDescriptionHint">Inserire qui le note (opzionale)</string>
     <string name="newDecision">Nuova decisione</string>
     <string name="selectOptions">Selezionare le opzioni</string>
     <string name="pleaseSelectATitle">Scegliere un titolo</string>
