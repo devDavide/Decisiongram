@@ -1166,6 +1166,9 @@
         tra i membri del gruppo, utilizzando un sistema basato su sondaggi.
         \n\nPremi il pulsante \"più\" per creare una nuova decisione.</string>
 
+    <string name="CreateDecision">Crea nuova decisione</string>
+    <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
+
     <!-- Pollgram crash messages START -->
     <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
     <string name="sendCrashEmail">Invia sengalazione via eMail</string>

@@ -135,6 +135,15 @@ public interface PollgramService {
     Bundle getBundleForVotesManagerFragment(TLRPC.ChatFull info, MessageObject messageObject,
                                             final ClickableSpan url) throws PollgramDAOException;
 
+
+    /**
+     *
+     * @param currentChat
+     * @param selectedObject
+     * @return a Bundle for creating a new decision starting from a message
+     */
+    Bundle getBundleForNewDecision(TLRPC.Chat currentChat, MessageObject selectedObject);
+
     /**
      * @param user
      * @return a string representation of the passed user.
@@ -157,5 +166,6 @@ public interface PollgramService {
      */
     List<MessageObject> getUnParsedMessages(final long dialog_id, Map<Integer, MessageObject> dialogMessagesByIds,
                                             List<MessageObject> excludeMessages);
+
 
 }

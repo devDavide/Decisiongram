@@ -148,6 +148,7 @@ import java.util.regex.Matcher;
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.MessagesActivityDelegate,
         PhotoViewer.PhotoViewerProvider {
 
+    private static final int MENU_ITEM_OPTION_CREATE_DECISION = 1001;
     protected TLRPC.Chat currentChat;
     protected TLRPC.User currentUser;
     protected TLRPC.EncryptedChat currentEncryptedChat;
@@ -6066,6 +6067,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     options.add(1);
                 } else {
                     if (currentEncryptedChat == null) {
+
+                        if (isGroupChat()) { // Pollgram custom items
+                            items.add(LocaleController.getString("CreateDecision", R.string.CreateDecision));
+                            options.add(MENU_ITEM_OPTION_CREATE_DECISION);
+                        }
+
                         if (allowChatActions) {
                             items.add(LocaleController.getString("Reply", R.string.Reply));
                             options.add(8);
@@ -6331,6 +6338,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 path = FileLoader.getPathToMessage(selectedObject.messageOwner).toString();
             }
             MediaController.saveFile(path, getParentActivity(), selectedObject.isMusic() ? 3 : 2, fileName);
+
+        } else if (option == MENU_ITEM_OPTION_CREATE_DECISION){
+            // Pollgram create decision
+            Bundle args = PollgramFactory.getPollgramService().getBundleForNewDecision(currentChat, selectedObject);
+            presentFragment(new NewDecisionFragment(args));
+
         } else if (option == 11) {
             MediaController.SearchImage searchImage = new MediaController.SearchImage();
             searchImage.type = 2;

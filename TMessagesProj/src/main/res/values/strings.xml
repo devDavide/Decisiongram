@@ -1166,6 +1166,9 @@
         using a poll-based system.
         \n\nPres the \"plus\" button for creating a new decision.</string>
 
+    <string name="CreateDecision">Create Decision</string>
+    <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
+
     <!-- Pollgram crash messages START -->
     <string name="appCrashedMessage">Oh shit ! The app crashed :-( Please send me the crash info by email, so i can fix the problem as soon a spossible. Thanks you.</string>
     <string name="sendCrashEmail">Send Crash info by Email</string>
@@ -1173,7 +1176,9 @@
     <string name="sendInfoEmail">Pollgram contact developer</string>
     <string name="doNotPressThisButton">Do not press here</string>
     <string name="emailCrashMessageBody">I am sorry but Pollgram just crashed because of: \n%1$s\nCrash report is attached to the email.\nThank you for the support.\n</string>
+    <string name="title_activity_crash_manager_activity">Crash Manager</string>
     <!-- Pollgram crash messages END -->
+
     <string name="emailBugDestAddress">davide.pallaoro@gmail.com</string>
     <!-- END of Pollgram text -->
 
@@ -1184,6 +1189,4 @@
 
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
-    <string name="title_activity_crash_manager_activity">Crash Manager</string>
-
 </resources>
