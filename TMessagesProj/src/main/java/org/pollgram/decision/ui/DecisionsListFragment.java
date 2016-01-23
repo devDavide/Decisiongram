@@ -73,7 +73,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
+        pollgramDAO = PollgramFactory.getDAO();
         hideCloseDecision = false;
         return true;
     }
@@ -216,7 +216,7 @@ public class DecisionsListFragment extends BaseFragment {
         this.chatInfo = chatInfo;
         List<Integer> ids = new ArrayList<>(chatInfo.participants.participants.size());
         for (int i = 0; i < chatInfo.participants.participants.size() ; i++){
-            TLRPC.User user = PollgramFactory.getPollgramService().getUser(chatInfo.participants.participants.get(i).user_id);
+            TLRPC.User user = PollgramFactory.getService().getUser(chatInfo.participants.participants.get(i).user_id);
             if (user != null)
                 ids.add(user.id);
         }

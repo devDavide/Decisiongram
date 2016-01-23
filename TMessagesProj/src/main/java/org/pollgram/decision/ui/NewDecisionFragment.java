@@ -68,8 +68,8 @@ public class NewDecisionFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
 
         groupChatId = getArguments().getInt(PAR_GROUP_CHAT_ID);
         decisionLongDescription = getArguments().getString(PAR_DECISION_LONG_DESCRIPTION);

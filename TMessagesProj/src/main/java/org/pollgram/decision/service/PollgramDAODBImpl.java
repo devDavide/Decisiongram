@@ -50,7 +50,7 @@ class PollgramDAODBImpl implements PollgramDAO {
             options.add(new TextOption("Trip", "Yeah a trip trought Europe can be a nice idea", decision1.getId()));
             options.add(new TextOption("A stupid idea", "it is late and i have no more ideas ;-/", decision1.getId()));
 
-            PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
+            PollgramFactory.getService().notifyNewDecision(decision1, options);
         }
 
         {
@@ -70,7 +70,7 @@ class PollgramDAODBImpl implements PollgramDAO {
             options.add(new TextOption("Le funivie del'ghiacciaio della valle di stubai che si trova in austria vicino ad innsbruck", "è un po lungo il viaggio ma potrebbe essere assai fico", decision1.getId()));
             options.add(new TextOption("Sul piste del passo del Broccon", null, decision1.getId()));
 
-            PollgramFactory.getPollgramService().notifyNewDecision(decision1, options);
+            PollgramFactory.getService().notifyNewDecision(decision1, options);
         }
     }
 

@@ -51,7 +51,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     private final Context context;
 
     PollgramMessagesManagerImpl(){
-        this(PollgramFactory.getPollgramDAO());
+        this(PollgramFactory.getDAO());
     }
 
     String getTailingString(){
@@ -342,6 +342,13 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         }
         Log.d(LOG_TAG,"["+msg+"] is a normal message");
         return null;
+    }
+
+    @Override
+    public boolean isPollgram(MessageObject msg) {
+        if (msg == null || msg.messageText == null)
+            return false;
+        return getMessageType(msg.messageText.toString()) != null;
     }
 
     @Override

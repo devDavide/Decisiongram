@@ -6068,7 +6068,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     if (currentEncryptedChat == null) {
 
-                        if (isGroupChat()) { // Pollgram custom items
+                        if (isGroupChat() && !PollgramFactory.getMessagesManager().isPollgram(selectedObject)) { // Pollgram custom items
                             items.add(LocaleController.getString("createDecision", R.string.createDecision));
                             options.add(MENU_ITEM_OPTION_CREATE_DECISION);
                         }
@@ -6341,7 +6341,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         } else if (option == MENU_ITEM_OPTION_CREATE_DECISION){
             // Pollgram create decision
-            Bundle args = PollgramFactory.getPollgramService().getBundleForNewDecision(currentChat, selectedObject);
+            Bundle args = PollgramFactory.getService().getBundleForNewDecision(currentChat, selectedObject);
             presentFragment(new NewDecisionFragment(args));
 
         } else if (option == 11) {
@@ -6825,7 +6825,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             } else {
                                 // Pollgram decision tile link to vote manager
                                 try {
-                                    Bundle bundle = PollgramFactory.getPollgramService().
+                                    Bundle bundle = PollgramFactory.getService().
                                             getBundleForVotesManagerFragment(info, messageObject, url);
                                     if (bundle != null) {
                                         presentFragment(new VotesManagerFragment(bundle));

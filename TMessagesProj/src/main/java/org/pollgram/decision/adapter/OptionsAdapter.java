@@ -128,7 +128,7 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             if(o.getId() != DBBean.ID_NOT_SET) {
 //                rowView.setBackgroundColor(Color.LTGRAY);
                 // prevent EditText hint to be showed for existing decision with not long description
-                if (o.getLongDescription() != null || o.getLongDescription().isEmpty()) {
+                if (o.getLongDescription() == null || o.getLongDescription().isEmpty()) {
                     edLongDescription.setText(" ");
                 }
             }

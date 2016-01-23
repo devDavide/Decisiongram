@@ -72,8 +72,8 @@ public class VotesManagerFragment extends BaseFragment {
     public boolean onFragmentCreate() {
         // init field
         super.swipeBackEnabled = false;
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         members = pollgramService.getUsers(getArguments().getIntArray(PAR_PARTICIPANT_IDS));
         decision = pollgramDAO.getDecision(decisionId);

@@ -55,8 +55,8 @@ public class EditOptionsFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         long decisionId  = getArguments().getLong(PAR_DECISION_ID);
         decision = pollgramDAO.getDecision(decisionId);
         List<Option> resultOptions = pollgramDAO.getOptions(decision);

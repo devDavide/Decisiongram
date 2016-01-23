@@ -836,7 +836,7 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
 
         Drawable currentBackgroundDrawable;
         if (currentMessageObject.isOutOwner()) {
-            if (isPollgram(currentMessageObject)) {
+            if (PollgramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
                 currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageOut;
 
             } else if (isDrawSelectedBackground()) {
@@ -854,7 +854,7 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
             }
             setDrawableBounds(currentBackgroundDrawable, layoutWidth - backgroundWidth - (!media ? 0 : AndroidUtilities.dp(9)), AndroidUtilities.dp(1), backgroundWidth, layoutHeight - AndroidUtilities.dp(2));
         } else {
-            if (isPollgram(currentMessageObject)) {
+            if (PollgramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
                 currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageIn;
             } else  if (isDrawSelectedBackground()) {
                 if (!media) {
@@ -1164,12 +1164,6 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
                 }
             }
         }
-    }
-
-    private boolean isPollgram(MessageObject msg) {
-        if (msg == null || msg.messageText == null)
-            return false;
-        return PollgramFactory.getPollgramMessagesManager().getMessageType(msg.messageText.toString()) != null;
     }
 
     @Override

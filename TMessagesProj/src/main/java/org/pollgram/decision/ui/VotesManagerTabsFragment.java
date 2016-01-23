@@ -83,8 +83,8 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         groupChatId = getArguments().getLong(VotesManagerFragment.PAR_GROUP_CHAT_ID);
         long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
         participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
@@ -257,7 +257,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     protected void updateView() {
         if (usersDecisionVotes == null)
             return;
-        usersDecisionVotes = PollgramFactory.getPollgramService().
+        usersDecisionVotes = PollgramFactory.getService().
                 getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                         usersDecisionVotes.getUsers());
 

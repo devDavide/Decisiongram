@@ -50,8 +50,8 @@ public class PollgramServiceImpl implements PollgramService {
     private final PollgramMessagesManager messageManager;
 
     public PollgramServiceImpl() {
-        this.pollgramDAO = PollgramFactory.getPollgramDAO();
-        this.messageManager = PollgramFactory.getPollgramMessagesManager();
+        this.pollgramDAO = PollgramFactory.getDAO();
+        this.messageManager = PollgramFactory.getMessagesManager();
     }
 
     PollgramServiceImpl(PollgramDAO pollgramDAO, PollgramMessagesManager messageManager) {
@@ -415,7 +415,7 @@ public class PollgramServiceImpl implements PollgramService {
         Context context = ApplicationLoader.applicationContext;
 
         TLRPC.User user =  getUser(selectedObject.messageOwner.from_id);
-        String userAsString = asString(user,false);
+        String userAsString = asString(user, false);
         String dateAsString = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(getMessageDate(selectedObject));
 

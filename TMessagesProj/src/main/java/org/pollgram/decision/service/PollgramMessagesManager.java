@@ -97,6 +97,11 @@ public interface PollgramMessagesManager {
      */
     MessageType getMessageType(String msg);
 
+    /**
+     * @param msg
+     * @return whether this is a pollgram message
+     */
+    boolean isPollgram(MessageObject msg);
 
     /**
      * Build message for notify a vote transaction

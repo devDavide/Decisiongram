@@ -30,7 +30,7 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
     public DecisionAdapter(Context context,  List<Decision> items, int groupMemberCount) {
         super(context, LAYOUT_RES_ID, items);
         this.groupMemberCount = groupMemberCount;
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramService = PollgramFactory.getService();
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
     }
 
@@ -48,7 +48,7 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
         // put data
         Decision decision = getItem(position);
         decisionTitle.setText(decision.getTitle());
-        int userThatVoteSoFar = PollgramFactory.getPollgramDAO().getUserVoteCount(decision);
+        int userThatVoteSoFar = PollgramFactory.getDAO().getUserVoteCount(decision);
         String userAsString = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
         String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(decision.getCreationDate());
