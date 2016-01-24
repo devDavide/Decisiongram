@@ -27,11 +27,26 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
     private final PollgramService pollgramService;
     private final LayoutInflater inflater;
 
+    /**
+     *
+     * @param context
+     * @param items
+     * @param groupMemberCount or -1 for do not show this info
+     */
     public DecisionAdapter(Context context,  List<Decision> items, int groupMemberCount) {
         super(context, LAYOUT_RES_ID, items);
         this.groupMemberCount = groupMemberCount;
         pollgramService = PollgramFactory.getService();
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+    }
+
+    /**
+     * do not show how many users votes out of the total
+     * @param context
+     * @param items
+     */
+    public DecisionAdapter(Context context, List<Decision> items){
+        this(context, items, -1);
     }
 
     @Override
@@ -53,7 +68,11 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
         String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(decision.getCreationDate());
         decisionSubtitle1.setText(getContext().getString(R.string.createdByUserOnDay, userAsString, creationDateStr));
-        decisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
+        if (groupMemberCount == -1)
+            decisionSubtitle2.setVisibility(View.GONE);
+        else
+            decisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
+
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);
 

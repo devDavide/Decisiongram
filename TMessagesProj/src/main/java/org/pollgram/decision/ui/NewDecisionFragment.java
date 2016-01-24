@@ -129,29 +129,6 @@ public class NewDecisionFragment extends BaseFragment {
         edLongDescription.setText(decisionLongDescription);
     }
 
-    private void abortDecisionCreation() {
-        if (edTitle.getText().toString().isEmpty() && edLongDescription.getText().toString().isEmpty()){
-            finishFragment();
-            return;
-        }
-        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setMessage(getParentActivity().getString(R.string.abortDecisionCreation));
-        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                finishFragment();
-            }
-        });
-        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                // do nothing
-            }
-        });
-        builder.show();
-    }
-
-
     private void showPage2() {
         currentPage = PAGE_2;
         reset();
@@ -243,6 +220,28 @@ public class NewDecisionFragment extends BaseFragment {
     @Override
     public void onResume() {
 
+    }
+
+    private void abortDecisionCreation() {
+        if (edTitle.getText().toString().isEmpty() && edLongDescription.getText().toString().isEmpty()){
+            finishFragment();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage(getParentActivity().getString(R.string.abortDecisionCreation));
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishFragment();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.show();
     }
 
     @Override

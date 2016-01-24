@@ -29,7 +29,6 @@ public interface PollgramService {
     UsersDecisionVotes getUsersDecisionVotes(long decisionId, int[] members);
 
     /**
-     *
      * @param decisionId
      * @param members
      * @return a data structure representing a decision and the vote of each member
@@ -140,9 +139,22 @@ public interface PollgramService {
      *
      * @param currentChat
      * @param selectedObject
-     * @return a Bundle for creating a new decision starting from a message
+     * @return a Bundle for creating a new decision starting from a message, see NewDecisionFragment
      */
     Bundle getBundleForNewDecision(TLRPC.Chat currentChat, MessageObject selectedObject);
+
+    /**
+     * @param currentChat
+     * @param selectedObject
+     * @return a Bundle for adding a new option to a decision starting from a message, see SelectDecisionFragment
+     */
+    Bundle getBundleForNewOption(TLRPC.Chat currentChat, MessageObject selectedObject);
+
+    /**
+     * @param chatInfo
+     * @return a Bundle ready to pass to DecisionsListFragment
+     */
+    Bundle getBundleForDecisionList(TLRPC.ChatFull chatInfo);
 
     /**
      * @param user
@@ -157,7 +169,6 @@ public interface PollgramService {
     void processMessages(final long dialog_id, List<MessageObject> objects);
 
     /**
-     *
      * @param dialog_id
      * @param dialogMessagesByIds
      * @param excludeMessages

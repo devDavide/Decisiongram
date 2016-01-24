@@ -2,6 +2,7 @@ package org.pollgram.decision.service;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -14,7 +15,9 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
+import org.pollgram.decision.ui.DecisionsListFragment;
 import org.pollgram.decision.ui.NewDecisionFragment;
+import org.pollgram.decision.ui.SelectDecisionFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ApplicationLoader;
@@ -409,9 +412,44 @@ public class PollgramServiceImpl implements PollgramService {
         return  bundle;
     }
 
+    @Override
+    public Bundle getBundleForDecisionList(TLRPC.ChatFull chatInfo) {
+
+        List<Integer> ids = new ArrayList<>(chatInfo.participants.participants.size());
+        for (int i = 0; i < chatInfo.participants.participants.size() ; i++){
+            TLRPC.User user = PollgramFactory.getService().getUser(chatInfo.participants.participants.get(i).user_id);
+            if (user != null)
+                ids.add(user.id);
+        }
+        int[] participantsUserIds = new int[ids.size()];
+        for (int i=0;i<ids.size();i++)
+            participantsUserIds[i] = ids.get(i);
+        Bundle args = new Bundle();
+        args.putInt(DecisionsListFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+        args.putIntArray(DecisionsListFragment.PAR_PARTICIPANT_IDS,participantsUserIds);
+        return args;
+    }
 
     @Override
     public Bundle getBundleForNewDecision(TLRPC.Chat currentChat, MessageObject selectedObject) {
+        Bundle args = new Bundle();
+        args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
+        args.putString(NewDecisionFragment.PAR_DECISION_LONG_DESCRIPTION,
+                getLongDescription(selectedObject).toString());
+        return args;
+    }
+
+    @Override
+    public Bundle getBundleForNewOption(TLRPC.Chat currentChat, MessageObject selectedObject) {
+        Bundle args = new Bundle();
+        args.putInt(SelectDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
+        args.putString(SelectDecisionFragment.PAR_NEW_OPTION_LONG_DESCRIPTION,
+                getLongDescription(selectedObject).toString());
+        return args;
+    }
+
+    @NonNull
+    private StringBuilder getLongDescription(MessageObject selectedObject) {
         Context context = ApplicationLoader.applicationContext;
 
         TLRPC.User user =  getUser(selectedObject.messageOwner.from_id);
@@ -423,12 +461,9 @@ public class PollgramServiceImpl implements PollgramService {
         longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString ,userAsString));
         longDescription.append('\n');
         longDescription.append(selectedObject.messageText.toString());
-
-        Bundle args = new Bundle();
-        args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
-        args.putString(NewDecisionFragment.PAR_DECISION_LONG_DESCRIPTION, longDescription.toString());
-        return args;
+        return longDescription;
     }
+
 
     /**
      * Internal class used for sorting messages

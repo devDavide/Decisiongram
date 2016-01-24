@@ -206,6 +206,18 @@ class PollgramDAODBImpl implements PollgramDAO {
     }
 
     @Override
+    public List<Decision> getDecisions(long chatId, int decisionOwnerId) {
+        String selection = PGSqlLiteHelper.T_Decision.GROUP_ID + " = ? " +
+                " and " + PGSqlLiteHelper.T_Decision.DECISION_OWNER + " = ? " +
+                " and " + PGSqlLiteHelper.T_Decision.OPEN + "= ? ";
+        String[] selectionArgs = new String[]{Long.toString(chatId),
+                Integer.toString(decisionOwnerId),PGSqlLiteHelper.toString(true)};
+
+        return helper.query(helper.DECISION_MAPPER, selection, selectionArgs, null, null,
+                PGSqlLiteHelper.T_Decision.CREATION_DATE) ;
+    }
+
+    @Override
     public List<Decision> getDecisions(long chatId, @Nullable Boolean open) {
         String selection = PGSqlLiteHelper.T_Decision.GROUP_ID + " = ? ";
         String[] selectionArgs;

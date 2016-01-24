@@ -36,6 +36,13 @@ public interface PollgramDAO {
     List<Decision> getDecisions(long chatId, @Nullable Boolean open);
 
     /**
+     * @param chatId
+     * @param  decisionOwnerId decision owner
+     * @return decision for given chat id
+     */
+    List<Decision> getDecisions(long chatId, int decisionOwnerId);
+
+    /**
      * Insert or update the passed Option if not found
      * @param o
      * @return the inserted object

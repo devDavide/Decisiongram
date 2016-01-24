@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/decision_list_layout"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceLarge"
+        android:text="@string/decisionsCreatedByYou"
+        android:id="@+id/select_decision_tv_title"
+        android:paddingLeft="5dp"
+        android:paddingTop="5dp"
+        android:paddingBottom="10dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="visible"
+        android:textAppearance="?android:attr/textAppearanceMedium"
+        android:text="@string/thereAreNoDecisionCreatedByYouInThisGroup"
+        android:gravity="left|top"
+        android:paddingTop="10dp"
+        android:paddingLeft="10dp"
+        android:paddingRight="10dp"
+        android:id="@+id/select_decision_tv_no_decisions_present"
+        android:layout_alignRight="@+id/select_decision_tv_title"
+        android:layout_alignEnd="@+id/select_decision_tv_title"
+        android:layout_below="@+id/select_decision_tv_title"
+        />
+
+
+    <ListView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/select_decision_list_view"
+        android:layout_alignRight="@+id/select_decision_tv_title"
+        android:layout_alignEnd="@+id/select_decision_tv_title"
+        android:layout_below="@+id/select_decision_tv_no_decisions_present" />
+
+</RelativeLayout>
