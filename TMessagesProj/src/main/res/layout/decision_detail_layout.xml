@@ -57,7 +57,7 @@
         android:layout_below="@+id/decision_detail_tv_creation_info"
         android:paddingTop="5dp"
         android:text="@string/notes"
-        android:textAppearance="?android:attr/textAppearanceMedium" />
+        android:textAppearance="?android:attr/textAppearanceMedium"/>
 
     <ScrollView
         android:id="@+id/decision_detail_long_description_scroll_view"
@@ -73,6 +73,7 @@
 
             <EditText
                 android:id="@+id/decision_detail_ed_long_description"
+                android:textAppearance="?android:attr/textAppearanceSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"

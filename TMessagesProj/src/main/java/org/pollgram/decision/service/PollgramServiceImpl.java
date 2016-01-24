@@ -367,6 +367,8 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     private String asString(TLRPC.User user, boolean overrideYou) {
+        if (user == null)
+            return null;
         if (overrideYou && user.id == UserConfig.getCurrentUser().id)
             return ApplicationLoader.applicationContext.getString(R.string.you);
 
@@ -452,14 +454,16 @@ public class PollgramServiceImpl implements PollgramService {
     private StringBuilder getLongDescription(MessageObject selectedObject) {
         Context context = ApplicationLoader.applicationContext;
 
-        TLRPC.User user =  getUser(selectedObject.messageOwner.from_id);
-        String userAsString = asString(user, false);
+        TLRPC.User user = getUser(selectedObject.messageOwner.from_id);
         String dateAsString = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(getMessageDate(selectedObject));
 
         StringBuilder longDescription = new StringBuilder();
-        longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString ,userAsString));
-        longDescription.append('\n');
+        if (user != null) {
+            longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString,
+                    asString(user, false)));
+            longDescription.append('\n');
+        }
         longDescription.append(selectedObject.messageText.toString());
         return longDescription;
     }
