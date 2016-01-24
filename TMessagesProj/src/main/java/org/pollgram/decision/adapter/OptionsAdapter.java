@@ -165,6 +165,9 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             edTitle.setEnabled(enableFields);
             edLongDescription.setEnabled(enableFields);
             deleteItem.setVisibility(editable ? View.VISIBLE : View.INVISIBLE);
+
+            if (o.getTitle() == null || o.getTitle().isEmpty())
+                edTitle.requestFocus();
         }
 
         return rowView;
