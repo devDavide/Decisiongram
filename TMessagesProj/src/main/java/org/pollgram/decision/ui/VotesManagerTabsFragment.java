@@ -73,6 +73,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private long groupChatId;
     private VoteListAdapter voteListAdapter;
     private int[] participantsUserIds;
+    private LayoutInflater inflater;
 
 
     public VotesManagerTabsFragment(BaseFragment parentFragment) {
@@ -99,6 +100,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.inflater = inflater;
         return inflater.inflate(R.layout.tabbed_fragment, container, false);
     }
 
@@ -168,7 +170,6 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View rootView = null;
-            LayoutInflater inflater = getActivity().getLayoutInflater();
             if (areThereNoOptions()) {
                 rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
             } else {
@@ -270,7 +271,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
             // Update table user interface
             optionTableViewContainer.removeAllViews();
-            updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+            updateOptionsTableView(optionTableViewContainer, inflater);
         }
     }
 
