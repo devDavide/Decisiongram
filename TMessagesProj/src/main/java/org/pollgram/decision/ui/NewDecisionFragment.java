@@ -132,7 +132,7 @@ public class NewDecisionFragment extends BaseFragment {
     private void showPage2() {
         currentPage = PAGE_2;
         reset();
-        actionBar.setTitle(getParentActivity().getString(R.string.selectOptions));
+        actionBar.setTitle(getParentActivity().getString(R.string.addOptionsTitle));
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         nextItemMenu.setBackgroundResource(R.drawable.ic_done_white_36dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick(){
@@ -145,7 +145,7 @@ public class NewDecisionFragment extends BaseFragment {
                     case NEXT_MENU_ITEM_ID:
                         final List<Option> options;
                         try {
-                            options = newOptionAdapter.getOptions();
+                            options = newOptionAdapter.getNewOptions();
                         } catch (PollgramException e) {
                             Log.w(LOG_TAG, "Error in getOption",e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();

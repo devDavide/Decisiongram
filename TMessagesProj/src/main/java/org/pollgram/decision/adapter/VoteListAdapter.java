@@ -113,7 +113,11 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         final Vote vote = getItem(position);
         final Option c = PollgramFactory.getDAO().getOption(vote.getOptionId());
         if (c instanceof TimeRangeOption){
-            Log.e("ChoiceAdapter", "TimeRangeOption not supported yet");
+            Log.e(LOG_TAG, "TimeRangeOption not supported yet");
+            return null;
+        }
+        if (c == null) {
+            Log.e(LOG_TAG, "Decision not found for id ["+vote.getOptionId()+"]");
             return null;
         }
         final TextOption o = (TextOption)c;

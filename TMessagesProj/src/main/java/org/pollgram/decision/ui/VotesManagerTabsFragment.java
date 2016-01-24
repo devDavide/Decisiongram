@@ -74,6 +74,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private VoteListAdapter voteListAdapter;
     private int[] participantsUserIds;
     private LayoutInflater inflater;
+    private PagerAdapter pagerAdapter;
 
 
     public VotesManagerTabsFragment(BaseFragment parentFragment) {
@@ -107,7 +108,8 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new DecisionPagerAdapter());
+        pagerAdapter = new DecisionPagerAdapter();
+        viewPager.setAdapter(pagerAdapter);
 
         slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         slidingTabLayout.setViewPager(viewPager);
@@ -170,25 +172,26 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View rootView = null;
-            if (areThereNoOptions()) {
-                rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
-            } else {
-                switch (position) {
-                    case OPTION_ID: {
-                        rootView = getOptionsListView(container, inflater);
-                        break;
-                    }
-                    case TABLE_VIEW_ID: {
-                        optionTableViewContainer = new LinearLayout(getContext());
-                        updateOptionsTableView(optionTableViewContainer, inflater);
-                        rootView = optionTableViewContainer;
-                        break;
-                    }
-                    default:
-                        rootView = null;
-                        break;
+
+            switch (position) {
+                case OPTION_ID: {
+                    rootView = getOptionsListView(container, inflater);
+                    break;
                 }
+                case TABLE_VIEW_ID: {
+                    optionTableViewContainer = new LinearLayout(getContext());
+                    updateOptionsTableView(optionTableViewContainer, inflater);
+                    rootView = optionTableViewContainer;
+                    break;
+                }
+                default:
+                    rootView = null;
+                    break;
             }
+
+            if (areThereNoOptions())
+                rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
+
             container.addView(rootView);
             return rootView;
         }
@@ -258,12 +261,16 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     protected void updateView() {
         if (usersDecisionVotes == null)
             return;
+
+        boolean wereNoOptions = areThereNoOptions();
         usersDecisionVotes = PollgramFactory.getService().
                 getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                         usersDecisionVotes.getUsers());
 
-        if (!areThereNoOptions()) {
-
+        if (wereNoOptions != areThereNoOptions()){
+            // force tabbed pane to rebuild itself
+            viewPager.setAdapter(pagerAdapter);
+        } else {
             // set new sorted  votes in the voteListAdapter
             voteListAdapter.setData(usersDecisionVotes, currentUserId);
             voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());

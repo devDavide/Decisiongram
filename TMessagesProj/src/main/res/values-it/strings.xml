@@ -1144,11 +1144,11 @@
     <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
     <string name="insertLongDescriptionHint">Inserire qui le note (opzionale)</string>
     <string name="newDecision">Nuova decisione</string>
-    <string name="selectOptions">Selezionare le opzioni</string>
+    <string name="addOptionsTitle">Aggiungi opzioni</string>
     <string name="pleaseSelectATitle">Scegliere un titolo</string>
     <string name="newOption">Aggiungi nuova opzione</string>
     <string name="decisionSaved">La decisione è stata salvata</string>
-    <string name="pleaseSelectATitleForOption">È necessario selezionafdre un titolo per l\'ultima opzione, prima aggiungerne una nuova.</string>
+    <string name="pleaseSelectATitleForOption">Selezionare un titolo per l\'ultima opzione, prima aggiungerne una nuova.</string>
     <string name="decisionAlreadyExist">Attenzione! Esiste già una decisione con questo titolo per questo!</string>
     <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
     <string name="emptyTitleOnLastOption">Prego selezionare un titolo per l\'ultima opzione.</string>

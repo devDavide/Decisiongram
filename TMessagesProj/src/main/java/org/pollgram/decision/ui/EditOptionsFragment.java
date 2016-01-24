@@ -93,20 +93,20 @@ public class EditOptionsFragment extends BaseFragment {
                         final List<Option> newOptions;
                         final List<Option> deletedOptions;
                         try {
-                            newOptions = optionsAdapter.getOptions();
+                            newOptions = optionsAdapter.getNewOptions();
                         } catch (PollgramException e) {
                             Log.w(LOG_TAG, "Error in getOption", e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             return;
                         }
                         deletedOptions = optionsAdapter.getDeletedOptions();
-                        Log.i(LOG_TAG, "option added["+newOptions+"] option deleted["+deletedOptions+"]");
 
+                        Log.i(LOG_TAG, "option added["+newOptions+"] option deleted["+deletedOptions+"]");
                         String message;
 
                         if (deletedOptions.size() == 0) {
                             if (newOptions.size() == 0){
-                                Toast.makeText(context,R.string.nothingToSave,Toast.LENGTH_SHORT);
+                                Toast.makeText(context,R.string.nothingToSave,Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             message = context.getString(R.string.addOptionToDecisionQuestion,
