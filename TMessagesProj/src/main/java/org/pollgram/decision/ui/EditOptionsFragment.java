@@ -36,6 +36,7 @@ import java.util.List;
 public class EditOptionsFragment extends BaseFragment {
 
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
+    public static final String PAR_NEW_OPTION_LONG_DESC = "PAR_NEW_OPTION_LONG_DESC";
 
     private static final int SAVE_MENU_ITEM_ID = 1;
 
@@ -58,9 +59,14 @@ public class EditOptionsFragment extends BaseFragment {
         pollgramDAO = PollgramFactory.getDAO();
         pollgramService = PollgramFactory.getService();
         long decisionId  = getArguments().getLong(PAR_DECISION_ID);
+        String newOptionLongDesc = getArguments().getString(PAR_NEW_OPTION_LONG_DESC);
+
+        options = new ArrayList<TextOption>();
+        if (newOptionLongDesc != null)
+            options.add(new TextOption(null, newOptionLongDesc, decisionId));
+
         decision = pollgramDAO.getDecision(decisionId);
         List<Option> resultOptions = pollgramDAO.getOptions(decision);
-        options = new ArrayList<TextOption>();
         for (Option o : resultOptions)
             options.add((TextOption)o);
 
@@ -154,7 +160,7 @@ public class EditOptionsFragment extends BaseFragment {
             pollgramService.notifyDeleteOptions(decision, deleteOptions);
 
         Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
-        super.finishFragment();
+        EditOptionsFragment.this.finishFragment();
         return;
     }
 

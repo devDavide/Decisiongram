@@ -81,7 +81,10 @@ public class SelectDecisionFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Decision decision = (Decision) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
-                //TODO put this newOptionLongDescription
+                bundle.putLong(EditOptionsFragment.PAR_DECISION_ID, decision.getId());
+                bundle.putString(EditOptionsFragment.PAR_NEW_OPTION_LONG_DESC, newOptionLongDescription);
+                presentFragment(new EditOptionsFragment(bundle));
+                removeSelfFromStack();
             }
         });
 
