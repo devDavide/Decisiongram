@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -126,6 +128,12 @@ public class NewDecisionFragment extends BaseFragment {
         edTitle = (EditText) myView.findViewById(R.id.decision_detail_ed_title);
         edTitle.setText(decisionTitle);
         edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
+        edLongDescription.addTextChangedListener(new DefaultTextWatcher(){
+            @Override
+            public void afterTextChanged(Editable s) {
+                Linkify.addLinks(edLongDescription, Linkify.ALL);
+            }
+        });
         edLongDescription.setText(decisionLongDescription);
     }
 

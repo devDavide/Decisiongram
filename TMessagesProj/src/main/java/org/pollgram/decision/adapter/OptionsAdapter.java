@@ -1,8 +1,9 @@
 package org.pollgram.decision.adapter;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.text.Editable;
-import android.text.TextWatcher;
+import android.text.util.Linkify;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,6 +18,7 @@ import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.PollgramException;
 import org.pollgram.decision.data.TextOption;
+import org.pollgram.decision.ui.DefaultTextWatcher;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -114,24 +116,13 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             // Create view for item
             rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
             EditText edTitle = (EditText) rowView.findViewById(R.id.new_option_ed_title);
-            EditText edLongDescription = (EditText) rowView.findViewById(R.id.new_option_ed_long_description);
+            final EditText edLongDescription = (EditText) rowView.findViewById(R.id.new_option_ed_long_description);
             ImageButton deleteItem = (ImageButton) rowView.findViewById(R.id.new_option_delete_button);
 
             // Set data
             final int optionPos = position - 1;
             final TextOption o = options.get(optionPos);
             final boolean alreadyOnDB = o.getId() != DBBean.ID_NOT_SET;
-            edTitle.setText(o.getTitle());
-            edLongDescription.setText(o.getLongDescription());
-            // make grey the lines that are already present and therefore not editable
-            if(alreadyOnDB) {
-//                rowView.setBackgroundColor(Color.LTGRAY);
-                // prevent EditText hint to be showed for existing decision with not long description
-                if (o.getLongDescription() == null || o.getLongDescription().isEmpty()) {
-                    edLongDescription.setText(" ");
-                }
-            }
-
 
             // Register listener
             deleteItem.setOnClickListener(new View.OnClickListener() {
@@ -145,34 +136,30 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
                     notifyDataSetChanged();
                 }
             });
-            edTitle.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
+            edTitle.addTextChangedListener(new DefaultTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                     o.setTitle(s.toString());
                 }
             });
-            edLongDescription.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                }
-
+            edLongDescription.addTextChangedListener(new DefaultTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
                     o.setLongDescription(s.toString());
+                    Linkify.addLinks(edLongDescription, Linkify.ALL);
                 }
             });
+
+            edTitle.setText(o.getTitle());
+            edLongDescription.setText(o.getLongDescription());
+            // make grey the lines that are already present and therefore not editable
+            if(alreadyOnDB) {
+                edTitle.setTextColor(Color.GRAY);
+                edLongDescription.setTextColor(Color.GRAY);
+                if (o.getLongDescription() == null || o.getLongDescription().isEmpty()) {
+                    edLongDescription.setText(" ");
+                }
+            }
 
             boolean enableFields = !alreadyOnDB && editable;
             edTitle.setEnabled(enableFields);
