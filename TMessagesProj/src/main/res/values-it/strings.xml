@@ -1139,7 +1139,7 @@
     <string name="decisionNotFound">Decisione %1$s not trovata, potrebbe essere stata cancellata.</string>
     <string name="title">Titolo</string>
     <string name="notes">Note</string>
-    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.\nContinuare ?</string>
+    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa definitivamente per tutti gli utenti del gruppo non solo per te.\nContinuare ?</string>
     <string name="insertTitleHint">Inserire il titolo qui</string>
     <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
     <string name="insertLongDescriptionHint">Inserire qui le note (opzionale)</string>

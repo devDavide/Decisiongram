@@ -541,8 +541,10 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg);
             strTok.nextToken(); // skip this token
-            String decisionTitle = strTok.nextToken();
-            Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
+            String title = strTok.nextToken();
+            Decision d = pollgramDAO.getDecision(title, groupChatId);
+            if (d == null)
+                throw new PollgramParseException("Decision not found for title ["+title+"]");
             if (!d.isEditable(userId))
                 throw new PollgramParseException("Decision is not editable by userid ["+userId+"]");
             return d;
