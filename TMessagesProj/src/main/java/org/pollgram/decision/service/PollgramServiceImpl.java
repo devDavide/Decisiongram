@@ -236,30 +236,30 @@ public class PollgramServiceImpl implements PollgramService {
         try {
             switch (msgType) {
                 case NEW_DECISION: {
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getNewDecision(text,
+                    PollgramMessagesManager.DecisionOptionData result = messageManager.getNewDecision(text,
                             groupChatId, userId, messageDate);
-                    if (resut == null){
+                    if (result == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
                     }
-                    if (pollgramDAO.getDecision(resut.decision.getTitle(),resut.decision.getChatId()) != null){
+                    if (pollgramDAO.getDecision(result.decision.getTitle(),result.decision.getChatId()) != null){
                         Log.d(LOG_TAG,"New decision already found will not insert twice");
                         break;
                     }
-                    Decision d = pollgramDAO.save(resut.decision);
-                    for (Option o : resut.optionList) {
+                    Decision d = pollgramDAO.save(result.decision);
+                    for (Option o : result.optionList) {
                         o.setDecisionId(d.getId());
                         pollgramDAO.save(o);
                     }
                     break;
                 }
                 case ADD_OPTIONS:{
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getAddedOption(text,
+                    PollgramMessagesManager.DecisionOptionData result = messageManager.getAddedOption(text,
                             groupChatId, userId);
-                    if (resut == null){
+                    if (result == null){
                         throw new PollgramParseException("Decision not found for "+msgType+" messsage");
                     }
-                    for (Option o : resut.optionList) {
-                        o.setDecisionId(resut.decision.getId());
+                    for (Option o : result.optionList) {
+                        o.setDecisionId(result.decision.getId());
                         pollgramDAO.save(o);
                     }
                     break;
@@ -281,20 +281,23 @@ public class PollgramServiceImpl implements PollgramService {
                     break;
                 }
 
-                case REOPEN_DECISION: {
-                    Decision decision = messageManager.getReopenDecision(text, groupChatId);
-                    decision.setOpen(true);
-                    pollgramDAO.save(decision);
-                    break;
-                }
                 case CLOSE_DECISION: {
-                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text, groupChatId);
+                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text,
+                            groupChatId, userId);
                     result.decision.setOpen(false);
                     pollgramDAO.save(result.decision);
                     break;
                 }
+
+                case REOPEN_DECISION: {
+                    Decision decision = messageManager.getReopenDecision(text, groupChatId, userId);
+                    decision.setOpen(true);
+                    pollgramDAO.save(decision);
+                    break;
+                }
+
                 case DELETE_DECISION: {
-                    Decision decision = messageManager.getDeleteDecision(text, groupChatId);
+                    Decision decision = messageManager.getDeleteDecision(text, groupChatId, userId);
                     if (decision != null)
                         pollgramDAO.delete(decision);
                     break;

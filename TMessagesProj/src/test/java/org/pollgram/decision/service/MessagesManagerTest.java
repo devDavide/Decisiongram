@@ -189,7 +189,7 @@ public class MessagesManagerTest {
     }
 
     private void assertCloseDecision(Decision decision, List<Option> winningOption, String message) throws PollgramParseException {
-        PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(message, chat.id);
+        PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(message, chat.id, user.id);
         Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(winningOption, result.winningOptions);
     }
@@ -204,7 +204,7 @@ public class MessagesManagerTest {
     }
 
     private void assertReopenDecision(Decision decision, String message) throws PollgramParseException {
-        Decision foundDecision = messageManager.getReopenDecision(message, chat.id);
+        Decision foundDecision = messageManager.getReopenDecision(message, chat.id, user.id);
         Assert.assertEquals(foundDecision, decision);
     }
 
@@ -218,7 +218,7 @@ public class MessagesManagerTest {
     }
 
     private void assertDeleteDecision(Decision decision, String message) throws PollgramParseException {
-        Decision foundDecision = messageManager.getDeleteDecision(message, chat.id);
+        Decision foundDecision = messageManager.getDeleteDecision(message, chat.id, user.id);
         Assert.assertEquals(foundDecision, decision);
     }
 

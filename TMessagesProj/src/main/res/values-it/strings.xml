@@ -1103,7 +1103,7 @@
 
     <!-- Pollgram crash messages START -->
     <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
-    <string name="sendCrashEmail">Invia sengalazione via eMail</string>
+    <string name="sendCrashEmail">Invia sengalazione di errore</string>
     <string name="contactMe">Contact me</string>
     <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
     <string name="doNotPressThisButton">Non premere qui</string>

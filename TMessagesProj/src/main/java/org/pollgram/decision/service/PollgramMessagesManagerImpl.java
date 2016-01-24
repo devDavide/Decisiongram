@@ -482,7 +482,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public ClosedDecisionDate getCloseDecision(String msg, long currentChat) throws PollgramParseException {
+    public ClosedDecisionDate getCloseDecision(String msg, long currentChat, int userId) throws PollgramParseException {
         Decision decision;
         List<Option> optionList;
         try {
@@ -492,6 +492,8 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             decision = pollgramDAO.getDecision(title, currentChat);
             if (decision == null)
                 throw new PollgramParseException("Decision not found for title  [" + title + "]");
+            if (!decision.isEditable(userId))
+                throw new PollgramParseException("Decision is not editable by userId ["+userId+"]");
 
             optionList = new ArrayList<>();
             while (strTok.hasMoreTokens()){
@@ -513,15 +515,15 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
-    public Decision getDeleteDecision(String text, long groupChatId) throws PollgramParseException {
-        Decision d = getDecisionInDeleteOrReopenMessage(text, groupChatId);
+    public Decision getDeleteDecision(String text, long groupChatId, int userId) throws PollgramParseException {
+        Decision d = getDecisionInDeleteOrReopenMessage(text, groupChatId, userId);
         Log.d(LOG_TAG, "getDeleteDecision Decision[" + d + "]");
         return d;
     }
 
     @Override
-    public Decision getReopenDecision(String text, long groupChatId) throws PollgramParseException {
-        Decision d = getDecisionInDeleteOrReopenMessage(text,groupChatId);
+    public Decision getReopenDecision(String text, long groupChatId, int userId) throws PollgramParseException {
+        Decision d = getDecisionInDeleteOrReopenMessage(text,groupChatId, userId);
         if (d ==null)
             throw new PollgramParseException( "Decision not found for message[" + text + "]");
         Log.d(LOG_TAG, "getReopenDecision Decision["+d+"]");
@@ -532,15 +534,17 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
      * Actually Delete and Reopen messages have the same structure
      * @param msg
      * @param groupChatId
+     * @param userId
      * @return
      */
-    private @Nullable Decision getDecisionInDeleteOrReopenMessage(String msg, long groupChatId) throws PollgramParseException {
-        Decision decision;
+    private @Nullable Decision getDecisionInDeleteOrReopenMessage(String msg, long groupChatId, int userId) throws PollgramParseException {
         try {
             StringTokenizer strTok = new EscapeStringTokenizer(msg);
-            strTok.nextToken(); // skipt this token
+            strTok.nextToken(); // skip this token
             String decisionTitle = strTok.nextToken();
             Decision d = pollgramDAO.getDecision(decisionTitle, groupChatId);
+            if (!d.isEditable(userId))
+                throw new PollgramParseException("Decision is not editable by userid ["+userId+"]");
             return d;
         } catch (NoSuchElementException e){
             Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
