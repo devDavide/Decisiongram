@@ -69,6 +69,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private PollgramService pollgramService;
     private UsersDecisionVotes usersDecisionVotes;
 
+    private Context context;
     private int currentUserId;
     private ViewGroup optionTableViewContainer;
     private long groupChatId;
@@ -76,13 +77,17 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private int[] participantsUserIds;
     private LayoutInflater inflater;
     private PagerAdapter pagerAdapter;
-    private Context context;
+    protected boolean voteUnsaved;
 
     @Override
     public Context getContext() {
         if (context == null)
             context = super.getContext();
         return context;
+    }
+
+    public boolean isVoteUnsaved() {
+        return voteUnsaved;
     }
 
     public VotesManagerTabsFragment(BaseFragment parentFragment) {
@@ -243,6 +248,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
                 pollgramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
                 btnSaveOption.setVisibility(View.GONE);
+                voteUnsaved = false;
 
                 // update view
                 updateView();
@@ -255,12 +261,11 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         });
 
         voteListAdapter.setOnVoteChangeListener(new VoteListAdapter.OnVoteChangeListener() {
+
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
-                if (areThereChangesToSave)
-                    btnSaveOption.setVisibility(View.VISIBLE);
-                else
-                    btnSaveOption.setVisibility(View.GONE);
+                voteUnsaved = areThereChangesToSave;
+                btnSaveOption.setVisibility(voteUnsaved ? View.VISIBLE : View.GONE);
             }
         });
         return rootView;

@@ -1044,9 +1044,6 @@
 
     <!-- START of POLLGRAM transaction messages -->
     <string name="downloadPollgramFromMarket">Scarica Pollgram qui </string>
-    <string name="yes">si</string>
-    <string name="no">no</string>
-
     <string name="tmsg_RemindToVoteP1">Hey</string>
     <!-- between P1 and P2 goes the username -->
     <string name="tmsg_RemindToVoteP2">puoi votare per favore per la decisione</string>
@@ -1100,7 +1097,6 @@
     <string name="MessageType_DELTE_OPTIONS">Cancellazione opzioni</string>
     <!-- END MessageType descriptions -->
 
-
     <!-- Pollgram crash messages START -->
     <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
     <string name="sendCrashEmail">Invia sengalazione di errore</string>
@@ -1110,6 +1106,9 @@
     <string name="emailCrashMessageBody">Mi dispiace ma Pollgram si è interrotto a causa di:\n%1$s\nLe infromazione relative al errore sono allegate alla mail.\nGrazie per il supporto supporto.\n</string>
     <!-- Pollgram crash messages END -->
 
+    <string name="yes">si</string>
+    <string name="no">no</string>
+    <string name="okay">okay</string>
     <string name="howManyMemberVote">%1$d su %2$d hanno votato</string>
     <string name="createdByUserOnDayNewLine">Creata da %1$s \nil %2$s</string>
     <string name="createdByUserOnDay">Creata da %1$s il %2$s</string>
@@ -1129,6 +1128,7 @@
     <string name="noVoteDesc">\?</string>
     <string name="noOptionPresent">Non ci sono opzioni\n per questa decisione</string>
     <string name="remindToUserSent">Promeoria inviato a %1$s</string>
+    <string name="infoDecision">Info decisione</string>
     <string name="closeDecision">Chiudi decisione</string>
     <string name="reopenDecision">Riapri decisione</string>
     <string name="deleteDecision">Cancella decisione</string>
@@ -1157,9 +1157,18 @@
     <string name="addOptionToDecisionQuestion">Aggiungere %1$d opzioni alla decisione %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Sei sicuro di\naggiungere %1$d opzioni \ne rimuovere %2$d opzioni\n dalla decisione %3$s ?</string>
     <string name="you">te</string>
+
+    <!-- Closing decision messages START -->
+    <string name="voteNotSavedPleaseSave">Ci sono voti non salvati, prego salvare i voti prima di chiudere la decisione.</string>
+    <string name="noVotePresentForClosingDecision">Nessuna ha ancora votato per questa decisione.
+        \nSei sicuro di volerla chiduere ?</string>
+    <string name="moreThanOneWinningOptionForClosingDecision">Ci sono %1$d opzione che hanno ricevuto il massimo numero di voti positivi.
+        \nSei sicuro di voler chiudere questa decisione ?</string>
     <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d ha votato.</string>
     <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hanno votato.</string>
-    <string name="closeDecisionQuestionSuffix">\nDopo aver chiuso la decisione non sarà più possibile per gli altri utenti votare a meno che la decisione non venga riaperta.\nSei sicuro di chiudere questa decisione ?</string>
+    <string name="closeDecisionQuestionSuffix">\nSei sicuro di voler chiudere questa decisione ?</string>
+    <!-- Closing decision messages END -->
+
     <string name="optionDetailTitle">Dettaglio opzione</string>
     <string name="missingVoteDesc">Mancanti: %1$d\n (%2$.1f%%)</string>
     <string name="positiveVoteDesc">Positivi: %1$d\n (%2$.1f%%)</string>
@@ -1190,5 +1199,8 @@
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.4.0:\n\nRivoluzione GIF: Invio e download 20 volte più veloci, autoriproduci e salva le tue preferite nel pannello sticker.\n\nPiù info sulle GIF:\nhttps://telegram.org/blog/gif-revolution\n\nBot Inline: Un nuovo modo di aggiungere contenuti in ogni chat. Menziona un bot e la tua domanda nel campo di scrittura e ottieni risultati immediati. Prova a scrivere “@gif dog” nella tua prossima chat. Bot di esempio: @gif, @wiki, @bing, @vid, @bold\n\nPiù info sui Bot Inline:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
+    <string name="youAreDecisionAdmin">Admin</string>
+
+
 
 </resources>

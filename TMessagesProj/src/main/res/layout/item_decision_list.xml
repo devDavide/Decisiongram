@@ -37,9 +37,9 @@
         android:id="@+id/item_decision_tv_subtitle_1"
         android:layout_below="@+id/item_decision_tv_title"
         android:layout_toRightOf="@+id/item_decision_iv_image"
-        android:layout_alignRight="@+id/item_decision_tv_title"
-        android:layout_alignEnd="@+id/item_decision_tv_title"
-        android:paddingLeft="5dp"/>
+        android:paddingLeft="5dp"
+        android:layout_toLeftOf="@+id/item_decision_tv_admin"
+        android:layout_toStartOf="@+id/item_decision_tv_admin" />
 
     <TextView
         android:layout_width="wrap_content"
@@ -52,4 +52,16 @@
         android:layout_alignRight="@+id/item_decision_tv_subtitle_1"
         android:layout_alignEnd="@+id/item_decision_tv_subtitle_1"
         android:paddingLeft="5dp"/>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:id="@+id/item_decision_tv_admin"
+        android:text="@string/youAreDecisionAdmin"
+        android:background="@drawable/admin_border"
+        android:textColor="@color/admin_text_color"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true" />
 </RelativeLayout>

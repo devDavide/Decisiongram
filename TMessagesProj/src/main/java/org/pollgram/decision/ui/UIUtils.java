@@ -1,6 +1,7 @@
 package org.pollgram.decision.ui;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.text.TextUtils;
 import android.util.Log;
 import android.util.TypedValue;
@@ -25,6 +26,16 @@ class UIUtils {
 
     private static final float TITLE_FONT_SIZE = 19;
     private static final String LOG_TAG = "uiUtils";
+
+
+    public static DialogInterface.OnClickListener emptyOnClickListener(){
+        return new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // nothing to do
+            }
+        };
+    }
 
     public static TextView init(ActionBar actionBar, int title, int drawableIcon){
         return init(actionBar, ApplicationLoader.applicationContext.getString(title), drawableIcon);

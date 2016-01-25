@@ -6,7 +6,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.pollgram.R;
@@ -54,25 +53,26 @@ public class DecisionAdapter extends ArrayAdapter<Decision> {
 
         // init layout
         View rowView = inflater.inflate(LAYOUT_RES_ID, parent, false);
-        ImageView decisionImage = (ImageView)rowView.findViewById(R.id.item_decision_iv_image);
-        TextView decisionTitle = (TextView)rowView.findViewById(R.id.item_decision_tv_title);
-        TextView decisionSubtitle1 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_1);
-        TextView decisionSubtitle2 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_2);
+        TextView tvDecisionTitle = (TextView)rowView.findViewById(R.id.item_decision_tv_title);
+        TextView tvDecisionSubtitle1 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_1);
+        TextView tvDecisionSubtitle2 = (TextView)rowView.findViewById(R.id.item_decision_tv_subtitle_2);
+        TextView tvAdmin = (TextView)rowView.findViewById(R.id.item_decision_tv_admin);
 
 
         // put data
         Decision decision = getItem(position);
-        decisionTitle.setText(decision.getTitle());
+        tvDecisionTitle.setText(decision.getTitle());
         int userThatVoteSoFar = PollgramFactory.getDAO().getUserVoteCount(decision);
         String userAsString = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
         String creationDateStr = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(decision.getCreationDate());
-        decisionSubtitle1.setText(getContext().getString(R.string.createdByUserOnDay, userAsString, creationDateStr));
+        tvDecisionSubtitle1.setText(getContext().getString(R.string.createdByUserOnDay, userAsString, creationDateStr));
         if (groupMemberCount == -1)
-            decisionSubtitle2.setVisibility(View.GONE);
+            tvDecisionSubtitle2.setVisibility(View.GONE);
         else
-            decisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
+            tvDecisionSubtitle2.setText(getContext().getString(R.string.howManyMemberVote, userThatVoteSoFar, groupMemberCount));
 
+        tvAdmin.setVisibility(decision.isEditable() ? View.VISIBLE : View.GONE);
         if (!decision.isOpen())
             rowView.setBackgroundColor(Color.LTGRAY);
 

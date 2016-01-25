@@ -37,8 +37,10 @@ public class VotesManagerFragment extends BaseFragment {
 
     static final String LOG_TAG = "SlidingTabs";
 
+
     // menu ids
     private static int nextId = 1;
+    private static final int ID_INFO_DECISION = nextId++;
     private static final int ID_CLOSE_DECISION = nextId++;
     private static final int ID_REOPEN_DECISION = nextId++;
     private static final int ID_DELETE_DECISION = nextId++;
@@ -57,14 +59,16 @@ public class VotesManagerFragment extends BaseFragment {
     private TextView tvCreationInfo;
     private TextView tvUserVoteCount;
     private TextView tvDecisionStatus;
+    private TextView tvAdmin;
 
     private TextView menuDeleteDecisionItem;
     private TextView menuReopenDecisionItem;
     private TextView menuCloseDecisionItem;
-    private TextView menuEditOptions;
 
+    private TextView menuEditOptions;
     private ActionBarMenu menu;
     private VotesManagerTabsFragment votesManagerTabsFragment;
+    private Context context;
 
     public VotesManagerFragment(Bundle bundle) {
         super(bundle);
@@ -79,10 +83,11 @@ public class VotesManagerFragment extends BaseFragment {
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         members = pollgramService.getUsers(getArguments().getIntArray(PAR_PARTICIPANT_IDS));
         decision = pollgramDAO.getDecision(decisionId);
+        this.context = ApplicationLoader.applicationContext;
         if (decision == null){
             Log.e(LOG_TAG,"Decision not found for id ["+decisionId+"]");
-            Toast.makeText(ApplicationLoader.applicationContext,
-                    ApplicationLoader.applicationContext.getString(R.string.decisionNotFound,"  "),
+            Toast.makeText(context,
+                    context.getString(R.string.decisionNotFound,"  "),
                     Toast.LENGTH_SHORT).show();
             finishFragment();
             return false;
@@ -97,13 +102,13 @@ public class VotesManagerFragment extends BaseFragment {
         actionBar.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
-                bundle.putLong(DecisionDetailFragment.PAR_DECISION_ID, decision.getId());
-                presentFragment(new DecisionDetailFragment(bundle));
+                showDecisionInfo();
             }
         });
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
+        headerItem.addSubItem(ID_INFO_DECISION,
+                getTitle(MessageType.NEW_DECISION, R.string.infoDecision), 0);
         menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION,
                 getTitle(MessageType.CLOSE_DECISION, R.string.closeDecision), 0);
         menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISION,
@@ -118,6 +123,9 @@ public class VotesManagerFragment extends BaseFragment {
             public void onItemClick(int id) {
                 if (id == UIUtils.ACTION_BAR_BACK_ITEM_ID) {
                     finishFragment();
+                    return;
+                } else if (id == ID_INFO_DECISION){
+                    showDecisionInfo();
                     return;
                 }else if (id == ID_DELETE_DECISION) {
                     AlertDialog.Builder builder = new AlertDialog.Builder(context);
@@ -136,32 +144,7 @@ public class VotesManagerFragment extends BaseFragment {
                     }).show();
                     return;
                 } else if (id == ID_CLOSE_DECISION) {
-                    int voteCount = pollgramDAO.getUserVoteCount(decision);
-                    int membersCount = members.size();
-                    if (voteCount == membersCount) {
-                        // all users voted al least one option for the current decision
-                        closeDecision();
-                    } else {
-                        StringBuilder message =  new StringBuilder();
-                        if (voteCount == 1)
-                            message.append(context.getString(R.string.closeDecisionQuestionPrefixSingle, voteCount, membersCount));
-                        else
-                            message.append(context.getString(R.string.closeDecisionQuestionPrefixMulti, voteCount, membersCount));
-                        message.append(context.getString(R.string.closeDecisionQuestionSuffix));
-                        AlertDialog.Builder builder = new AlertDialog.Builder(context);
-                        builder.setMessage(message.toString());
-                        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                closeDecision();
-                            }
-                        }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // nothing to do11
-                            }
-                        }).show();
-                    }
+                    closeDecisionCheck1();
 
                 } else if (id == ID_REOPEN_DECISION) {
                     pollgramService.notifyReopen(decision);
@@ -173,7 +156,6 @@ public class VotesManagerFragment extends BaseFragment {
                     bundle.putLong(EditOptionsFragment.PAR_DECISION_ID, decision.getId());
                     presentFragment(new EditOptionsFragment(bundle));
                 } else {
-
                     Log.e(LOG_TAG, "Unknown action id[" + id + "]");
                     return;
                 }
@@ -188,6 +170,7 @@ public class VotesManagerFragment extends BaseFragment {
         // Create view
         tvCreationInfo = (TextView) rootView.findViewById(R.id.vote_manager_tv_creationInfo);
         tvDecisionStatus = (TextView) rootView.findViewById(R.id.vote_manager_tv_decision_status);
+        tvAdmin = (TextView)rootView.findViewById(R.id.vote_manager_tv_admin);
         updateView();
 
         android.support.v4.app.FragmentTransaction transaction = getParentActivity().getSupportFragmentManager().beginTransaction();
@@ -204,30 +187,88 @@ public class VotesManagerFragment extends BaseFragment {
         return rootView;
     }
 
-    private String getTitle(MessageType closeDecision, int stringRes) {
-        return closeDecision.getEmoji()+ "   "+ getParentActivity().getString(stringRes);
+    private void showDecisionInfo() {
+        Bundle bundle = new Bundle();
+        bundle.putLong(DecisionDetailFragment.PAR_DECISION_ID, decision.getId());
+        presentFragment(new DecisionDetailFragment(bundle));
     }
 
-    private void closeDecision() {
+    private String getTitle(MessageType closeDecision, int stringRes) {
+        return closeDecision.getEmoji()+ "   "+ context.getString(stringRes);
+    }
+
+    private void closeDecisionCheck1() {
+        if (votesManagerTabsFragment.isVoteUnsaved()){
+            Toast.makeText(context, R.string.voteNotSavedPleaseSave, Toast.LENGTH_LONG).show();
+            return;
+        }
+
         PollgramDAO.WinningOption winningOption = pollgramDAO.getWinningOption(decision);
+        String warningMessage;
         if (winningOption.options.size() == 0){
             // there are no option that wins...notify it and return
-            AlertDialog.Builder builder = new AlertDialog.Builder(ApplicationLoader.applicationContext);
+            warningMessage = context.getString(R.string.noVotePresentForClosingDecision);
 
         } else if (winningOption.options.size() >1){
-            // deny the saving cause there are more that one winning option
+            warningMessage = context.getString(R.string.moreThanOneWinningOptionForClosingDecision,
+                    winningOption.options.size());
+
         } else {
             // Just one option everything is okay
-            pollgramService.notifyClose(decision);
-            Toast.makeText(getParentActivity(), getParentActivity().getString(R.string.decisionClosed), Toast.LENGTH_SHORT).show();
-            votesManagerTabsFragment.updateView();
-            updateView();
+            warningMessage = null;
+        }
+
+        if (warningMessage == null) {
+            closeDecisionCheck2();
+        }else {
+            // deny the saving cause there are more that one winning option
+            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+            builder.setMessage(warningMessage);
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    closeDecisionCheck2();
+                }
+            });
+            builder.setNegativeButton(R.string.no, UIUtils.emptyOnClickListener());
+            builder.show();
         }
     }
 
+    private void closeDecisionCheck2() {
+        int membersCount = members.size();
+        int voteCount = pollgramDAO.getUserVoteCount(decision);
+        if (voteCount == membersCount) {
+            // all users voted al least one option for the current decision
+            closeDecisionReal();
+        } else {
+            StringBuilder message =  new StringBuilder();
+            if (voteCount == 1)
+                message.append(context.getString(R.string.closeDecisionQuestionPrefixSingle, voteCount, membersCount));
+            else
+                message.append(context.getString(R.string.closeDecisionQuestionPrefixMulti, voteCount, membersCount));
+            message.append(context.getString(R.string.closeDecisionQuestionSuffix));
+            AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+            builder.setMessage(message.toString());
+            builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+                @Override
+                public void onClick(DialogInterface dialog, int which) {
+                    closeDecisionReal();
+                }
+            });
+            builder.setNegativeButton(R.string.no, UIUtils.emptyOnClickListener());
+            builder.show();
+        }
+    }
+
+    private void closeDecisionReal(){
+        pollgramService.notifyClose(decision);
+        Toast.makeText(context, context.getString(R.string.decisionClosed), Toast.LENGTH_SHORT).show();
+        votesManagerTabsFragment.updateView();
+        updateView();
+    }
 
     private void updateView(){
-        Context ctx = getParentActivity();
         decision = pollgramDAO.getDecision(decision.getId());
         int userThatVoteSoFar = pollgramDAO.getUserVoteCount(decision);
 
@@ -242,22 +283,21 @@ public class VotesManagerFragment extends BaseFragment {
                 menuEditOptions.setVisibility(View.VISIBLE);
             } else {
                 menuReopenDecisionItem.setVisibility(View.VISIBLE);
-                menuDeleteDecisionItem.setVisibility(View.VISIBLE);
             }
-        } else {
-            menu.setVisibility(View.GONE);
+            menuDeleteDecisionItem.setVisibility(View.VISIBLE);
         }
 
         String userStr = pollgramService.asString(pollgramService.getUser(decision.getUserCreatorId()));
         String creationDateStr = DateFormat.getDateInstance(DateFormat.LONG).
                 format(decision.getCreationDate());
-        tvCreationInfo.setText(ctx.getString(R.string.createdByUserOnDayNewLine, userStr, creationDateStr));
+        tvCreationInfo.setText(context.getString(R.string.createdByUserOnDayNewLine, userStr, creationDateStr));
 
-        String statusDesc = ctx.getString(decision.isOpen() ? R.string.statusOpen : R.string.statusClose);
-        tvDecisionStatus.setText(ctx.getString(R.string.decisionStatus, statusDesc));
+        String statusDesc = context.getString(decision.isOpen() ? R.string.statusOpen : R.string.statusClose);
+        tvDecisionStatus.setText(context.getString(R.string.decisionStatus, statusDesc));
         tvDecisionStatus.setBackgroundColor(decision.isOpen() ? Color.GREEN : Color.RED);
+        tvAdmin.setVisibility(decision.isEditable() ? View.VISIBLE : View.GONE);
 
-        tvUserVoteCount.setText(ctx.getString(R.string.howManyMemberVote,
+        tvUserVoteCount.setText(context.getString(R.string.howManyMemberVote,
                 userThatVoteSoFar, members.size()));
         if (votesManagerTabsFragment != null)
             votesManagerTabsFragment.updateView();

@@ -63,11 +63,15 @@ public class UsersDecisionVotes {
         Collections.sort(options,optionsComparator);
 
         // calculate max votes
+        updateMaxVoteCount();
+
+    }
+
+    private void updateMaxVoteCount() {
         maxVote = 0;
         for (Option o : getOptions()){
             maxVote = Math.max(maxVote, getPositiveVoteCount(o));
         }
-
     }
 
     public Decision getDecision(){
@@ -126,12 +130,12 @@ public class UsersDecisionVotes {
     public void setVote(int userID, Option option, Vote vote){
         voteMap.put(new UserIdOptionKey(userID,option.getId()), vote);
         // update cache
-        Integer positiveVoteCout = calculateVoteCount(option, true);
-        cachedPositiveVoteCount.put(option, positiveVoteCout);
+        Integer positiveVoteCount = calculateVoteCount(option, true);
+        cachedPositiveVoteCount.put(option, positiveVoteCount);
         cachedNegativeVoteCount.put(option, calculateVoteCount(option,false));
 
         Collections.sort(options, optionsComparator);
-        maxVote = Math.max(maxVote, positiveVoteCout);
+        updateMaxVoteCount();
     }
 
     private final Map<Option, Integer> cachedPositiveVoteCount = new HashMap<>();

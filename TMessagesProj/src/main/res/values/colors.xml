@@ -2,4 +2,5 @@
 <resources>
     <color name="divider">#dcdcdc</color>
     <color name="backgroud_blue">#4d83b3</color>
+    <color name="admin_text_color">#26ae0b</color>
 </resources>
