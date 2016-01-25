@@ -12,42 +12,45 @@ public class PollgramFactory {
     // TODO factorize getter code
 
     public static PollgramMessagesManager getMessagesManager() {
-        PollgramMessagesManager localInstance = MESSAGEE_MANAGER_INSTANCE;
-        if (localInstance == null) {
-            synchronized (PollgramMessagesManager.class) {
-                localInstance = MESSAGEE_MANAGER_INSTANCE;
-                if (localInstance == null) {
-                    MESSAGEE_MANAGER_INSTANCE = localInstance = new PollgramMessagesManagerImpl();
-                }
-            }
-        }
-        return localInstance;
+        return new PollgramMessagesManagerImpl();
+//        PollgramMessagesManager localInstance = MESSAGEE_MANAGER_INSTANCE;
+//        if (localInstance == null) {
+//            synchronized (PollgramMessagesManager.class) {
+//                localInstance = MESSAGEE_MANAGER_INSTANCE;
+//                if (localInstance == null) {
+//                    MESSAGEE_MANAGER_INSTANCE = localInstance = new PollgramMessagesManagerImpl();
+//                }
+//            }
+//        }
+//        return localInstance;
     }
 
     public static PollgramDAO getDAO() {
-        PollgramDAO localInstance = INSTANCE;
-        if (localInstance == null) {
-            synchronized (PollgramDAO.class) {
-                localInstance = INSTANCE;
-                if (localInstance == null) {
-                    INSTANCE = localInstance = new PollgramDAODBImpl();
-                }
-            }
-        }
-        return localInstance;
+        return new PollgramDAODBImpl();
+//        PollgramDAO localInstance = INSTANCE;
+//        if (localInstance == null) {
+//            synchronized (PollgramDAO.class) {
+//                localInstance = INSTANCE;
+//                if (localInstance == null) {
+//                    INSTANCE = localInstance = new PollgramDAODBImpl();
+//                }
+//            }
+//        }
+//        return localInstance;
     }
 
     public static PollgramService getService() {
-        PollgramService localInstance = POLLGRAM_SERVICE_INSTANCE;
-        if (localInstance == null) {
-            synchronized (PollgramService.class) {
-                localInstance = POLLGRAM_SERVICE_INSTANCE;
-                if (localInstance == null) {
-                    POLLGRAM_SERVICE_INSTANCE = localInstance = new PollgramServiceImpl();
-                }
-            }
-        }
-        return localInstance;
+        return new PollgramServiceImpl();
+//        PollgramService localInstance = POLLGRAM_SERVICE_INSTANCE;
+//        if (localInstance == null) {
+//            synchronized (PollgramService.class) {
+//                localInstance = POLLGRAM_SERVICE_INSTANCE;
+//                if (localInstance == null) {
+//                    POLLGRAM_SERVICE_INSTANCE = localInstance = new PollgramServiceImpl();
+//                }
+//            }
+//        }
+//        return localInstance;
     }
 
 }
