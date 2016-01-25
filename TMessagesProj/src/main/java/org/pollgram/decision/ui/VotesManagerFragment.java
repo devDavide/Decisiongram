@@ -28,6 +28,8 @@ import org.telegram.ui.Components.SizeNotifierFrameLayout;
 import java.text.DateFormat;
 import java.util.List;
 
+import static org.pollgram.decision.service.PollgramMessagesManager.MessageType;
+
 /**
  * Created by davide on 04/10/15.
  */
@@ -102,10 +104,13 @@ public class VotesManagerFragment extends BaseFragment {
         });
         menu = actionBar.createMenu();
         ActionBarMenuItem headerItem = menu.addItem(0, R.drawable.ic_ab_other);
-        menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION, context.getString(R.string.closeDecision), 0);
-        menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISION, context.getString(R.string.reopenDecision), 0);
-        menuDeleteDecisionItem =headerItem.addSubItem(ID_DELETE_DECISION, context.getString(R.string.deleteDecision), 0);
-        menuEditOptions = headerItem.addSubItem(ID_EDIT_OPTIONS,context.getString(R.string.editOptions),0);
+        menuCloseDecisionItem = headerItem.addSubItem(ID_CLOSE_DECISION,
+                getTitle(MessageType.CLOSE_DECISION, R.string.closeDecision), 0);
+        menuReopenDecisionItem =  headerItem.addSubItem(ID_REOPEN_DECISION,
+                getTitle(MessageType.REOPEN_DECISION, R.string.reopenDecision), 0);
+        menuDeleteDecisionItem =headerItem.addSubItem(ID_DELETE_DECISION,
+                getTitle(MessageType.DELETE_DECISION, R.string.deleteDecision), 0);
+        menuEditOptions = headerItem.addSubItem(ID_EDIT_OPTIONS,context.getString(R.string.editOptions),R.drawable.ic_settings);
         
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
@@ -197,6 +202,10 @@ public class VotesManagerFragment extends BaseFragment {
         transaction.commit();
 
         return rootView;
+    }
+
+    private String getTitle(MessageType closeDecision, int stringRes) {
+        return closeDecision.getEmoji()+ "   "+ getParentActivity().getString(stringRes);
     }
 
     private void closeDecision() {

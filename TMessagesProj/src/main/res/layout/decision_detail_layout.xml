@@ -86,7 +86,7 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:drawableLeft="@drawable/floating_pencil"
+            android:drawableLeft="@drawable/ic_settings"
             android:orientation="vertical"
             android:text="@string/editOptions"
             android:layout_gravity="center_horizontal" />
