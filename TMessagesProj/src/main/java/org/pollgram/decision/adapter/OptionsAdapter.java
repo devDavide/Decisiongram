@@ -103,7 +103,7 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
                 @Override
                 public void onClick(View v) {
                     TextOption first = options.size() == 0 ? null : options.getFirst();
-                    if (first != null && first.getTitle() == null){
+                    if (first != null && (first.getTitle() == null || first.getTitle().isEmpty())){
                         Toast.makeText(getContext(), R.string.pleaseSelectATitleForOption, Toast.LENGTH_LONG).show();
                     } else {
                         options.addFirst(new TextOption());

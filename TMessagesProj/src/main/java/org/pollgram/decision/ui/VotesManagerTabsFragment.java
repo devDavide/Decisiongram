@@ -16,6 +16,7 @@
 
 package org.pollgram.decision.ui;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -75,7 +76,14 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private int[] participantsUserIds;
     private LayoutInflater inflater;
     private PagerAdapter pagerAdapter;
+    private Context context;
 
+    @Override
+    public Context getContext() {
+        if (context == null)
+            context = super.getContext();
+        return context;
+    }
 
     public VotesManagerTabsFragment(BaseFragment parentFragment) {
         this.parentFragment = parentFragment;
