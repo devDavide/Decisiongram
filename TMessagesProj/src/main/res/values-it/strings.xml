@@ -1112,7 +1112,7 @@
     <string name="howManyMemberVote">%1$d su %2$d hanno votato</string>
     <string name="createdByUserOnDayNewLine">Creata da %1$s \nil %2$s</string>
     <string name="createdByUserOnDay">Creata da %1$s il %2$s</string>
-    <string name="decisionStatus">La decisione è %1$s</string>
+    <string name="decisionStatus">La decisione è\n %1$s</string>
     <string name="statusOpen">aperta</string>
     <string name="statusClose">chiusa</string>
     <string name="groupDecision">Decisioni del gruppo</string>
@@ -1153,7 +1153,7 @@
     <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
     <string name="emptyTitleOnLastOption">Prego selezionare un titolo per l\'ultima opzione.</string>
     <string name="titleAlreadyPresent">Attenzione! Esiste già un opzione, con titolo \'%1$s\' prego rimuoverne una.</string>
-    <string name="saveDecisionQuestion">Salvare la decisione %1$s con %2$d opzioni ?\nAttenzione non sarà più possibile cambiare il titolo delle opzioni. Sarà permesso solo aggiungere o rimuovere opzioni.</string>
+    <string name="saveDecisionQuestion">Salvare la decisione: %1$s, con %2$d opzioni ?\nAttenzione non sarà più possibile cambiare il titolo delle opzioni. Sarà permesso solo aggiungere o rimuovere opzioni.</string>
     <string name="addOptionToDecisionQuestion">Aggiungere %1$d opzioni alla decisione %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Sei sicuro di\naggiungere %1$d opzioni \ne rimuovere %2$d opzioni\n dalla decisione %3$s ?</string>
     <string name="you">te</string>
@@ -1162,7 +1162,7 @@
     <string name="voteNotSavedPleaseSave">Ci sono voti non salvati, prego salvare i voti prima di chiudere la decisione.</string>
     <string name="noVotePresentForClosingDecision">Nessuna ha ancora votato per questa decisione.
         \nSei sicuro di volerla chiduere ?</string>
-    <string name="moreThanOneWinningOptionForClosingDecision">Ci sono %1$d opzione che hanno ricevuto il massimo numero di voti positivi.
+    <string name="moreThanOneWinningOptionForClosingDecision">Ci sono %1$d opzioni che hanno ricevuto il massimo numero di voti positivi.
         \nSei sicuro di voler chiudere questa decisione ?</string>
     <string name="closeDecisionQuestionPrefixSingle">Attenzione solo %1$d utente su %2$d ha votato.</string>
     <string name="closeDecisionQuestionPrefixMulti">Attenzione solo %1$d utenti su %2$d hanno votato.</string>

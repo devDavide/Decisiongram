@@ -1112,7 +1112,7 @@
     <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
     <string name="createdByUserOnDayNewLine">Created by %1$s \non %2$s</string>
     <string name="createdByUserOnDay">Created by %1$s on %2$s</string>
-    <string name="decisionStatus">Decision is %1$s</string>
+    <string name="decisionStatus">Decision is \n%1$s</string>
     <string name="statusOpen">open</string>
     <string name="statusClose">close</string>
     <string name="groupDecision">Group\'s decisions</string>
@@ -1148,13 +1148,13 @@
     <string name="pleaseSelectATitle">Please select a title</string>
     <string name="newOption">Add new Option</string>
     <string name="decisionSaved">Decision has been saved</string>
-    <string name="pleaseSelectATitleForOption">Pleace select a value for the title of the last option added, before adding a new one</string>
+    <string name="pleaseSelectATitleForOption">Please select a value for the title of the last option added, before adding a new one</string>
     <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
     <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
     <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
     <string name="titleAlreadyPresent">There are more than one option, with title \'%1$s\' please remove one.</string>
     <string name="you">you</string>
-    <string name="saveDecisionQuestion">Save decision %1$s with %2$d options ?\nTake care: it will be no more possible to change options titles, you only will be able to add or remove options.</string>
+    <string name="saveDecisionQuestion">Save decision: %1$s, with %2$d options ?\nTake care: it will be no more possible to change options titles, you only will be able to add or remove options.</string>
     <string name="addOptionToDecisionQuestion">Are you sure to add %1$d options to decision %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Are you sure to:\nAdd %1$d option\nand remove %2$d options\nfrom the decision %3$s ?</string>
 
