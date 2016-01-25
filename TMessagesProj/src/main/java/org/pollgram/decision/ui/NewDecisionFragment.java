@@ -4,6 +4,8 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -68,8 +70,8 @@ public class NewDecisionFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
 
         groupChatId = getArguments().getInt(PAR_GROUP_CHAT_ID);
         decisionLongDescription = getArguments().getString(PAR_DECISION_LONG_DESCRIPTION);
@@ -109,7 +111,7 @@ public class NewDecisionFragment extends BaseFragment {
             public void onItemClick(int id) {
                 switch (id) {
                     case UIUtils.ACTION_BAR_BACK_ITEM_ID:
-                        finishFragment();
+                        abortDecisionCreation();
                         break;
                     case NEXT_MENU_ITEM_ID:
                         nextStep();
@@ -126,14 +128,19 @@ public class NewDecisionFragment extends BaseFragment {
         edTitle = (EditText) myView.findViewById(R.id.decision_detail_ed_title);
         edTitle.setText(decisionTitle);
         edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
+        edLongDescription.addTextChangedListener(new DefaultTextWatcher(){
+            @Override
+            public void afterTextChanged(Editable s) {
+                Linkify.addLinks(edLongDescription, Linkify.ALL);
+            }
+        });
         edLongDescription.setText(decisionLongDescription);
     }
-
 
     private void showPage2() {
         currentPage = PAGE_2;
         reset();
-        actionBar.setTitle(getParentActivity().getString(R.string.selectOptions));
+        actionBar.setTitle(getParentActivity().getString(R.string.addOptionsTitle));
         actionBar.setBackButtonImage(R.drawable.ic_arrow_back_white_24dp);
         nextItemMenu.setBackgroundResource(R.drawable.ic_done_white_36dp);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick(){
@@ -146,7 +153,7 @@ public class NewDecisionFragment extends BaseFragment {
                     case NEXT_MENU_ITEM_ID:
                         final List<Option> options;
                         try {
-                            options = newOptionAdapter.getOptions();
+                            options = newOptionAdapter.getNewOptions();
                         } catch (PollgramException e) {
                             Log.w(LOG_TAG, "Error in getOption",e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
@@ -223,13 +230,35 @@ public class NewDecisionFragment extends BaseFragment {
 
     }
 
+    private void abortDecisionCreation() {
+        if (edTitle.getText().toString().isEmpty() && edLongDescription.getText().toString().isEmpty()){
+            finishFragment();
+            return;
+        }
+        AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
+        builder.setMessage(getParentActivity().getString(R.string.abortDecisionCreation));
+        builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                finishFragment();
+            }
+        });
+        builder.setNegativeButton(R.string.no, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                // do nothing
+            }
+        });
+        builder.show();
+    }
+
     @Override
     public boolean onBackPressed() {
-        if (currentPage == PAGE_1)
-            return true;
-        else {
+        if (currentPage == PAGE_1) {
+            abortDecisionCreation();
+        }else {
             showPage1();
-            return false;
         }
+        return false;
     }
 }

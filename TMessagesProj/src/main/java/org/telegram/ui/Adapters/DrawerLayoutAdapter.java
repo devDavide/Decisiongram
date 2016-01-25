@@ -97,7 +97,7 @@ public class DrawerLayoutAdapter extends BaseAdapter {
             } else if (i == 9) {
                 actionCell.setTextAndIcon(LocaleController.getString("TelegramFaq", R.string.TelegramFaq), R.drawable.menu_help);
             }else if (i == 10) {
-                actionCell.setTextAndIcon(LocaleController.getString("ContactMe", R.string.ContactMe), R.drawable.bot_info);
+                actionCell.setTextAndIcon(LocaleController.getString("contactMe", R.string.contactMe), R.drawable.bot_info);
             }
         }
 

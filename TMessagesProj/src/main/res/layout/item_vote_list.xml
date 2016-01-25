@@ -39,6 +39,7 @@
         android:layout_toRightOf="@+id/item_option_iv_image"
         android:maxLines="2"
         android:paddingLeft="8dp"
+        android:paddingTop="2dp"
         android:text="Lorem ipsum dolor sit amet, 1 2 3 4 5 . 6 7 consectetuer  adipiscing elit. Aenean commodo ligula eget dolor. Aenean massa. Cum sociis natoque penatibus et magnis dis parturient montes, nascetur ridiculus mus. Donec quam felis, ultricies nec, pellentesque eu, pretium quis, sem. Nulla consequat massa quis enim. Donec pede justo, fringilla vel, aliquet nec, vulputate eget, arcu. In enim justo, rhoncus ut, imperdiet a, venenatis vitae, justo. Nullam "
         android:textAppearance="?android:attr/textAppearanceSmall"
         android:layout_toLeftOf="@+id/item_option_stacked_bar"

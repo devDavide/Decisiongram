@@ -56,6 +56,7 @@ import org.pollgram.decision.service.PollgramDAOException;
 import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
 import org.pollgram.decision.ui.NewDecisionFragment;
+import org.pollgram.decision.ui.SelectDecisionFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -148,7 +149,7 @@ import java.util.regex.Matcher;
 public class ChatActivity extends BaseFragment implements NotificationCenter.NotificationCenterDelegate, DialogsActivity.MessagesActivityDelegate,
         PhotoViewer.PhotoViewerProvider {
 
-    private static final int MENU_ITEM_OPTION_CREATE_DECISION = 1001;
+
     protected TLRPC.Chat currentChat;
     protected TLRPC.User currentUser;
     protected TLRPC.EncryptedChat currentEncryptedChat;
@@ -325,7 +326,11 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int share_contact = 17;
     private final static int mute = 18;
     private final static int reply = 19;
+
     // Pollgram IDs start
+    private static final int MENU_ITEM_OPTION_CREATE_DECISION = 1001;
+    private static final int MENU_ITEM_OPTION_CREATE_OPTION = 1002;
+
     private final static int new_decision = 20;
     private final static int show_decision = 21;
     // Pollgram IDs end
@@ -2345,9 +2350,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void openDecisionListFragment() {
-        DecisionsListFragment fragment = new DecisionsListFragment();
-        fragment.setChatInfo(info);
-        presentFragment(fragment);
+        Bundle args = PollgramFactory.getService().getBundleForDecisionList(info);
+        presentFragment(new DecisionsListFragment(args));
     }
 
     private boolean isGroupChat() {
@@ -6068,9 +6072,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     if (currentEncryptedChat == null) {
 
-                        if (isGroupChat()) { // Pollgram custom items
-                            items.add(LocaleController.getString("CreateDecision", R.string.CreateDecision));
+                        if (isGroupChat() && !PollgramFactory.getMessagesManager().isPollgram(selectedObject)) { // Pollgram custom items
+                            items.add(LocaleController.getString("createDecision", R.string.createDecision));
                             options.add(MENU_ITEM_OPTION_CREATE_DECISION);
+
+                            items.add(LocaleController.getString("createOption", R.string.createOption));
+                            options.add(MENU_ITEM_OPTION_CREATE_OPTION);
                         }
 
                         if (allowChatActions) {
@@ -6339,10 +6346,15 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
             MediaController.saveFile(path, getParentActivity(), selectedObject.isMusic() ? 3 : 2, fileName);
 
-        } else if (option == MENU_ITEM_OPTION_CREATE_DECISION){
+        } else if (option == MENU_ITEM_OPTION_CREATE_DECISION) {
             // Pollgram create decision
-            Bundle args = PollgramFactory.getPollgramService().getBundleForNewDecision(currentChat, selectedObject);
+            Bundle args = PollgramFactory.getService().getBundleForNewDecision(currentChat, selectedObject);
             presentFragment(new NewDecisionFragment(args));
+
+        } else if (option == MENU_ITEM_OPTION_CREATE_OPTION){
+            // Pollgram use it as option
+            Bundle args = PollgramFactory.getService().getBundleForNewOption(currentChat,selectedObject);
+            presentFragment(new SelectDecisionFragment(args));
 
         } else if (option == 11) {
             MediaController.SearchImage searchImage = new MediaController.SearchImage();
@@ -6825,7 +6837,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             } else {
                                 // Pollgram decision tile link to vote manager
                                 try {
-                                    Bundle bundle = PollgramFactory.getPollgramService().
+                                    Bundle bundle = PollgramFactory.getService().
                                             getBundleForVotesManagerFragment(info, messageObject, url);
                                     if (bundle != null) {
                                         presentFragment(new VotesManagerFragment(bundle));

@@ -80,7 +80,7 @@ public class MessageObject {
 
     public ArrayList<TextLayoutBlock> textLayoutBlocks;
 
-    private PollgramMessagesManager msgManager = PollgramFactory.getPollgramMessagesManager();
+    private PollgramMessagesManager msgManager = PollgramFactory.getMessagesManager();
 
     public MessageObject(TLRPC.Message message, AbstractMap<Integer, TLRPC.User> users, boolean generateLayout) {
         this(message, users, null, generateLayout);

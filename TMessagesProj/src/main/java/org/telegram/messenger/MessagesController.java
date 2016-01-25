@@ -129,7 +129,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
     public int minGroupConvertSize = 200;
     public int groupBigSize;
     private ArrayList<TLRPC.TL_disabledFeature> disabledFeatures = new ArrayList<>();
-    private PollgramService pollgramService = PollgramFactory.getPollgramService();
+    private PollgramService pollgramService = PollgramFactory.getService();
 
     private class UserActionUpdatesSeq extends TLRPC.Updates {
 

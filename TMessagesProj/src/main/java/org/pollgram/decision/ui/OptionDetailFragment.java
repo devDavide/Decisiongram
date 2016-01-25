@@ -2,6 +2,7 @@ package org.pollgram.decision.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -48,7 +49,7 @@ public class OptionDetailFragment extends BaseFragment {
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         int[] members = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
 
-        UsersDecisionVotes usersDecisionVotes = PollgramFactory.getPollgramService().getUsersDecisionVotes(decisionId, members);
+        UsersDecisionVotes usersDecisionVotes = PollgramFactory.getService().getUsersDecisionVotes(decisionId, members);
 
         option = (TextOption) usersDecisionVotes.getOption(optionId);
         membersCount = usersDecisionVotes.getUsers().size();
@@ -91,6 +92,8 @@ public class OptionDetailFragment extends BaseFragment {
         StackedBar.Percentages percentages = stackedBar.getPercentages();
         edTitle.setText(option.getTitle());
         edLongDesc.setText(option.getLongDescription());
+        Linkify.addLinks(edLongDesc, Linkify.ALL);
+
         tvMissing.setText(context.getString(R.string.missingVoteDesc, missingVoteCount, percentages.emptyPerc * 100 ));
         tvPositive.setText(context.getString(R.string.positiveVoteDesc, positiveVoteCount, percentages.positivePerc * 100));
         tvNegative.setText(context.getString(R.string.negativeVoteDesc, negativeVoteCount, percentages.negativePerc * 100));

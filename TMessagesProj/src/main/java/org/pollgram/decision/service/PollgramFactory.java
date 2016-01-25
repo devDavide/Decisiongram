@@ -11,7 +11,7 @@ public class PollgramFactory {
 
     // TODO factorize getter code
 
-    public static PollgramMessagesManager getPollgramMessagesManager() {
+    public static PollgramMessagesManager getMessagesManager() {
         PollgramMessagesManager localInstance = MESSAGEE_MANAGER_INSTANCE;
         if (localInstance == null) {
             synchronized (PollgramMessagesManager.class) {
@@ -24,7 +24,7 @@ public class PollgramFactory {
         return localInstance;
     }
 
-    public static PollgramDAO getPollgramDAO() {
+    public static PollgramDAO getDAO() {
         PollgramDAO localInstance = INSTANCE;
         if (localInstance == null) {
             synchronized (PollgramDAO.class) {
@@ -37,7 +37,7 @@ public class PollgramFactory {
         return localInstance;
     }
 
-    public static PollgramService getPollgramService() {
+    public static PollgramService getService() {
         PollgramService localInstance = POLLGRAM_SERVICE_INSTANCE;
         if (localInstance == null) {
             synchronized (PollgramService.class) {

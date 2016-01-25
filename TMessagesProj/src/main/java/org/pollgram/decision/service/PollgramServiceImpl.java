@@ -2,6 +2,7 @@ package org.pollgram.decision.service;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
 import android.util.Log;
@@ -14,7 +15,9 @@ import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.ParsedMessage;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
+import org.pollgram.decision.ui.DecisionsListFragment;
 import org.pollgram.decision.ui.NewDecisionFragment;
+import org.pollgram.decision.ui.SelectDecisionFragment;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.ApplicationLoader;
@@ -50,8 +53,8 @@ public class PollgramServiceImpl implements PollgramService {
     private final PollgramMessagesManager messageManager;
 
     public PollgramServiceImpl() {
-        this.pollgramDAO = PollgramFactory.getPollgramDAO();
-        this.messageManager = PollgramFactory.getPollgramMessagesManager();
+        this.pollgramDAO = PollgramFactory.getDAO();
+        this.messageManager = PollgramFactory.getMessagesManager();
     }
 
     PollgramServiceImpl(PollgramDAO pollgramDAO, PollgramMessagesManager messageManager) {
@@ -233,30 +236,30 @@ public class PollgramServiceImpl implements PollgramService {
         try {
             switch (msgType) {
                 case NEW_DECISION: {
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getNewDecision(text,
+                    PollgramMessagesManager.DecisionOptionData result = messageManager.getNewDecision(text,
                             groupChatId, userId, messageDate);
-                    if (resut == null){
+                    if (result == null){
                         throw new PollgramParseException("Decision not found for NEW_DECISION messsage");
                     }
-                    if (pollgramDAO.getDecision(resut.decision.getTitle(),resut.decision.getChatId()) != null){
+                    if (pollgramDAO.getDecision(result.decision.getTitle(),result.decision.getChatId()) != null){
                         Log.d(LOG_TAG,"New decision already found will not insert twice");
                         break;
                     }
-                    Decision d = pollgramDAO.save(resut.decision);
-                    for (Option o : resut.optionList) {
+                    Decision d = pollgramDAO.save(result.decision);
+                    for (Option o : result.optionList) {
                         o.setDecisionId(d.getId());
                         pollgramDAO.save(o);
                     }
                     break;
                 }
                 case ADD_OPTIONS:{
-                    PollgramMessagesManager.DecisionOptionData resut = messageManager.getAddedOption(text,
+                    PollgramMessagesManager.DecisionOptionData result = messageManager.getAddedOption(text,
                             groupChatId, userId);
-                    if (resut == null){
+                    if (result == null){
                         throw new PollgramParseException("Decision not found for "+msgType+" messsage");
                     }
-                    for (Option o : resut.optionList) {
-                        o.setDecisionId(resut.decision.getId());
+                    for (Option o : result.optionList) {
+                        o.setDecisionId(result.decision.getId());
                         pollgramDAO.save(o);
                     }
                     break;
@@ -278,20 +281,23 @@ public class PollgramServiceImpl implements PollgramService {
                     break;
                 }
 
-                case REOPEN_DECISION: {
-                    Decision decision = messageManager.getReopenDecision(text, groupChatId);
-                    decision.setOpen(true);
-                    pollgramDAO.save(decision);
-                    break;
-                }
                 case CLOSE_DECISION: {
-                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text, groupChatId);
+                    PollgramMessagesManager.ClosedDecisionDate result = messageManager.getCloseDecision(text,
+                            groupChatId, userId);
                     result.decision.setOpen(false);
                     pollgramDAO.save(result.decision);
                     break;
                 }
+
+                case REOPEN_DECISION: {
+                    Decision decision = messageManager.getReopenDecision(text, groupChatId, userId);
+                    decision.setOpen(true);
+                    pollgramDAO.save(decision);
+                    break;
+                }
+
                 case DELETE_DECISION: {
-                    Decision decision = messageManager.getDeleteDecision(text, groupChatId);
+                    Decision decision = messageManager.getDeleteDecision(text, groupChatId, userId);
                     if (decision != null)
                         pollgramDAO.delete(decision);
                     break;
@@ -364,6 +370,8 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     private String asString(TLRPC.User user, boolean overrideYou) {
+        if (user == null)
+            return null;
         if (overrideYou && user.id == UserConfig.getCurrentUser().id)
             return ApplicationLoader.applicationContext.getString(R.string.you);
 
@@ -409,26 +417,60 @@ public class PollgramServiceImpl implements PollgramService {
         return  bundle;
     }
 
+    @Override
+    public Bundle getBundleForDecisionList(TLRPC.ChatFull chatInfo) {
+
+        List<Integer> ids = new ArrayList<>(chatInfo.participants.participants.size());
+        for (int i = 0; i < chatInfo.participants.participants.size() ; i++){
+            TLRPC.User user = PollgramFactory.getService().getUser(chatInfo.participants.participants.get(i).user_id);
+            if (user != null)
+                ids.add(user.id);
+        }
+        int[] participantsUserIds = new int[ids.size()];
+        for (int i=0;i<ids.size();i++)
+            participantsUserIds[i] = ids.get(i);
+        Bundle args = new Bundle();
+        args.putInt(DecisionsListFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+        args.putIntArray(DecisionsListFragment.PAR_PARTICIPANT_IDS,participantsUserIds);
+        return args;
+    }
 
     @Override
     public Bundle getBundleForNewDecision(TLRPC.Chat currentChat, MessageObject selectedObject) {
+        Bundle args = new Bundle();
+        args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
+        args.putString(NewDecisionFragment.PAR_DECISION_LONG_DESCRIPTION,
+                getLongDescription(selectedObject).toString());
+        return args;
+    }
+
+    @Override
+    public Bundle getBundleForNewOption(TLRPC.Chat currentChat, MessageObject selectedObject) {
+        Bundle args = new Bundle();
+        args.putInt(SelectDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
+        args.putString(SelectDecisionFragment.PAR_NEW_OPTION_LONG_DESCRIPTION,
+                getLongDescription(selectedObject).toString());
+        return args;
+    }
+
+    @NonNull
+    private StringBuilder getLongDescription(MessageObject selectedObject) {
         Context context = ApplicationLoader.applicationContext;
 
-        TLRPC.User user =  getUser(selectedObject.messageOwner.from_id);
-        String userAsString = asString(user,false);
+        TLRPC.User user = getUser(selectedObject.messageOwner.from_id);
         String dateAsString = DateFormat.getDateInstance(DateFormat.SHORT).
                 format(getMessageDate(selectedObject));
 
         StringBuilder longDescription = new StringBuilder();
-        longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString ,userAsString));
-        longDescription.append('\n');
+        if (user != null) {
+            longDescription.append(context.getString(R.string.newDecisionFromMessageHeader, dateAsString,
+                    asString(user, false)));
+            longDescription.append('\n');
+        }
         longDescription.append(selectedObject.messageText.toString());
-
-        Bundle args = new Bundle();
-        args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, currentChat.id);
-        args.putString(NewDecisionFragment.PAR_DECISION_LONG_DESCRIPTION, longDescription.toString());
-        return args;
+        return longDescription;
     }
+
 
     /**
      * Internal class used for sorting messages

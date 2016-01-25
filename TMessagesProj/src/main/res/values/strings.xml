@@ -1096,9 +1096,17 @@
     <string name="MessageType_DELETE_DECISION">Delete decision</string>
     <string name="MessageType_ADD_OPTIONS">Add options</string>
     <string name="MessageType_DELTE_OPTIONS">Delete options</string>
-
     <!-- END MessageType descriptions -->
 
+    <!-- Pollgram crash messages START -->
+    <string name="appCrashedMessage">Oh shit ! The app crashed :-( Please send me the crash info by email, so i can fix the problem as soon a spossible. Thanks you.</string>
+    <string name="sendCrashEmail">Send Crash info</string>
+    <string name="contactMe">Contact me</string>
+    <string name="sendInfoEmail">Pollgram contact developer</string>
+    <string name="doNotPressThisButton">Do not press here</string>
+    <string name="emailCrashMessageBody">I am sorry but Pollgram just crashed because of: \n%1$s\nCrash report is attached to the email.\nThank you for the support.\n</string>
+    <string name="title_activity_crash_manager_activity">Crash Manager</string>
+    <!-- Pollgram crash messages END -->
 
     <string name="howManyMemberVote">%1$d on %2$d have voted yet</string>
     <string name="createdByUserOnDayNewLine">Created by %1$s \non %2$s</string>
@@ -1131,14 +1139,14 @@
     <string name="deleteDecisionQuestion">Are you sure you want to delete this decision ?
         This will remove this decision for ALL users involved, not just yourself.\nAre you sure ?</string>
     <string name="insertTitleHint">Insert title here</string>
-    <string name="insertOptionTitleHint">Insert option\'s title here</string>
-    <string name="insertLongDescriptionHint">Insert additional notes here</string>
+    <string name="insertOptionTitleHint">Insert option title here</string>
+    <string name="insertLongDescriptionHint">Insert notes here (optional)</string>
     <string name="newDecision">New decision</string>
-    <string name="selectOptions">Select options</string>
+    <string name="addOptionsTitle">Add options</string>
     <string name="pleaseSelectATitle">Please select a title</string>
-    <string name="newOption">New Option</string>
+    <string name="newOption">Add new Option</string>
     <string name="decisionSaved">Decision has been saved</string>
-    <string name="pleaseSelectATitleForOption">Pleace select a value for the title of the last option, before adding a new one</string>
+    <string name="pleaseSelectATitleForOption">Pleace select a value for the title of the last option added, before adding a new one</string>
     <string name="decisionAlreadyExist">Already exist a decision with this title on the current group !</string>
     <string name="emptyTitleOnOption">Please select a title for the %1$d option.</string>
     <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
@@ -1166,18 +1174,16 @@
         using a poll-based system.
         \n\nPres the \"plus\" button for creating a new decision.</string>
 
-    <string name="CreateDecision">Create Decision</string>
+    <string name="createDecision">Create Decision</string>
+    <string name="abortDecisionCreation">Abort decision creation ?</string>
     <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
+    <string name="createOption">Use as Option</string>
+    <string name="selectDecision">Select a decision</string>
+    <string name="decisionsCreatedByYou">Select in which of the decisions created by you, add the new option</string>
+    <string name="thereAreNoDecisionCreatedByYouInThisGroup">There are no decisions created by you in this group.
+        You can add option only to the decisions that you have created.
+        \n\nIf you want to add an option to a decision created by someone else, just ask her/him to do so.</string>
 
-    <!-- Pollgram crash messages START -->
-    <string name="appCrashedMessage">Oh shit ! The app crashed :-( Please send me the crash info by email, so i can fix the problem as soon a spossible. Thanks you.</string>
-    <string name="sendCrashEmail">Send Crash info by Email</string>
-    <string name="ContactMe">Contact me</string>
-    <string name="sendInfoEmail">Pollgram contact developer</string>
-    <string name="doNotPressThisButton">Do not press here</string>
-    <string name="emailCrashMessageBody">I am sorry but Pollgram just crashed because of: \n%1$s\nCrash report is attached to the email.\nThank you for the support.\n</string>
-    <string name="title_activity_crash_manager_activity">Crash Manager</string>
-    <!-- Pollgram crash messages END -->
 
     <string name="emailBugDestAddress">davide.pallaoro@gmail.com</string>
     <!-- END of Pollgram text -->

@@ -36,6 +36,7 @@ import java.util.List;
 public class EditOptionsFragment extends BaseFragment {
 
     public static final String PAR_DECISION_ID = "PAR_DECISION_ID";
+    public static final String PAR_NEW_OPTION_LONG_DESC = "PAR_NEW_OPTION_LONG_DESC";
 
     private static final int SAVE_MENU_ITEM_ID = 1;
 
@@ -55,12 +56,17 @@ public class EditOptionsFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         long decisionId  = getArguments().getLong(PAR_DECISION_ID);
+        String newOptionLongDesc = getArguments().getString(PAR_NEW_OPTION_LONG_DESC);
+
+        options = new ArrayList<TextOption>();
+        if (newOptionLongDesc != null)
+            options.add(new TextOption(null, newOptionLongDesc, decisionId));
+
         decision = pollgramDAO.getDecision(decisionId);
         List<Option> resultOptions = pollgramDAO.getOptions(decision);
-        options = new ArrayList<TextOption>();
         for (Option o : resultOptions)
             options.add((TextOption)o);
 
@@ -93,20 +99,20 @@ public class EditOptionsFragment extends BaseFragment {
                         final List<Option> newOptions;
                         final List<Option> deletedOptions;
                         try {
-                            newOptions = optionsAdapter.getOptions();
+                            newOptions = optionsAdapter.getNewOptions();
                         } catch (PollgramException e) {
                             Log.w(LOG_TAG, "Error in getOption", e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             return;
                         }
                         deletedOptions = optionsAdapter.getDeletedOptions();
-                        Log.i(LOG_TAG, "option added["+newOptions+"] option deleted["+deletedOptions+"]");
 
+                        Log.i(LOG_TAG, "option added["+newOptions+"] option deleted["+deletedOptions+"]");
                         String message;
 
                         if (deletedOptions.size() == 0) {
                             if (newOptions.size() == 0){
-                                Toast.makeText(context,R.string.nothingToSave,Toast.LENGTH_SHORT);
+                                Toast.makeText(context,R.string.nothingToSave,Toast.LENGTH_SHORT).show();
                                 return;
                             }
                             message = context.getString(R.string.addOptionToDecisionQuestion,
@@ -154,7 +160,7 @@ public class EditOptionsFragment extends BaseFragment {
             pollgramService.notifyDeleteOptions(decision, deleteOptions);
 
         Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
-        super.finishFragment();
+        EditOptionsFragment.this.finishFragment();
         return;
     }
 

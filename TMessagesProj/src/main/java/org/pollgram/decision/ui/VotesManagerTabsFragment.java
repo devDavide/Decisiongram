@@ -16,6 +16,7 @@
 
 package org.pollgram.decision.ui;
 
+import android.content.Context;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -73,7 +74,16 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     private long groupChatId;
     private VoteListAdapter voteListAdapter;
     private int[] participantsUserIds;
+    private LayoutInflater inflater;
+    private PagerAdapter pagerAdapter;
+    private Context context;
 
+    @Override
+    public Context getContext() {
+        if (context == null)
+            context = super.getContext();
+        return context;
+    }
 
     public VotesManagerTabsFragment(BaseFragment parentFragment) {
         this.parentFragment = parentFragment;
@@ -83,8 +93,8 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         groupChatId = getArguments().getLong(VotesManagerFragment.PAR_GROUP_CHAT_ID);
         long decisionId = getArguments().getLong(VotesManagerFragment.PAR_DECISION_ID);
         participantsUserIds = getArguments().getIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS);
@@ -99,13 +109,15 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        this.inflater = inflater;
         return inflater.inflate(R.layout.tabbed_fragment, container, false);
     }
 
     @Override
     public void onViewCreated(View view, Bundle savedInstanceState) {
         viewPager = (ViewPager) view.findViewById(R.id.viewpager);
-        viewPager.setAdapter(new DecisionPagerAdapter());
+        pagerAdapter = new DecisionPagerAdapter();
+        viewPager.setAdapter(pagerAdapter);
 
         slidingTabLayout = (SlidingTabLayout) view.findViewById(R.id.sliding_tabs);
         slidingTabLayout.setViewPager(viewPager);
@@ -168,26 +180,26 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
             View rootView = null;
-            LayoutInflater inflater = getActivity().getLayoutInflater();
-            if (areThereNoOptions()) {
-                rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
-            } else {
-                switch (position) {
-                    case OPTION_ID: {
-                        rootView = getOptionsListView(container, inflater);
-                        break;
-                    }
-                    case TABLE_VIEW_ID: {
-                        optionTableViewContainer = new LinearLayout(getContext());
-                        updateOptionsTableView(optionTableViewContainer, inflater);
-                        rootView = optionTableViewContainer;
-                        break;
-                    }
-                    default:
-                        rootView = null;
-                        break;
+
+            switch (position) {
+                case OPTION_ID: {
+                    rootView = getOptionsListView(container, inflater);
+                    break;
                 }
+                case TABLE_VIEW_ID: {
+                    optionTableViewContainer = new LinearLayout(getContext());
+                    updateOptionsTableView(optionTableViewContainer, inflater);
+                    rootView = optionTableViewContainer;
+                    break;
+                }
+                default:
+                    rootView = null;
+                    break;
             }
+
+            if (areThereNoOptions())
+                rootView = inflater.inflate(R.layout.votes_manager_no_option_present, container, false);
+
             container.addView(rootView);
             return rootView;
         }
@@ -257,12 +269,16 @@ public abstract class VotesManagerTabsFragment extends Fragment {
     protected void updateView() {
         if (usersDecisionVotes == null)
             return;
-        usersDecisionVotes = PollgramFactory.getPollgramService().
+
+        boolean wereNoOptions = areThereNoOptions();
+        usersDecisionVotes = PollgramFactory.getService().
                 getUsersDecisionVotes(usersDecisionVotes.getDecision().getId(),
                         usersDecisionVotes.getUsers());
 
-        if (!areThereNoOptions()) {
-
+        if (wereNoOptions != areThereNoOptions()){
+            // force tabbed pane to rebuild itself
+            viewPager.setAdapter(pagerAdapter);
+        } else {
             // set new sorted  votes in the voteListAdapter
             voteListAdapter.setData(usersDecisionVotes, currentUserId);
             voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
@@ -270,7 +286,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
             // Update table user interface
             optionTableViewContainer.removeAllViews();
-            updateOptionsTableView(optionTableViewContainer, getActivity().getLayoutInflater());
+            updateOptionsTableView(optionTableViewContainer, inflater);
         }
     }
 

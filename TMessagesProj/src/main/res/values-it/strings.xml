@@ -3,8 +3,8 @@
 <!--https://www.transifex.com/projects/p/telegram/language/it/members/-->
 
 <resources>
-    <string name="AppName">Pollgram</string>
-    <string name="AppNameBeta">Pollgram Beta</string>
+    <string name="AppName">DecisionGram</string>
+    <string name="AppNameBeta">DecisionGram Beta</string>
     <string name="LanguageName">Italiano</string>
     <string name="LanguageNameInEnglish">Italian</string>
     <string name="LanguageCode">it</string>
@@ -1101,6 +1101,15 @@
     <!-- END MessageType descriptions -->
 
 
+    <!-- Pollgram crash messages START -->
+    <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
+    <string name="sendCrashEmail">Invia sengalazione di errore</string>
+    <string name="contactMe">Contact me</string>
+    <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
+    <string name="doNotPressThisButton">Non premere qui</string>
+    <string name="emailCrashMessageBody">Mi dispiace ma Pollgram si è interrotto a causa di:\n%1$s\nLe infromazione relative al errore sono allegate alla mail.\nGrazie per il supporto supporto.\n</string>
+    <!-- Pollgram crash messages END -->
+
     <string name="howManyMemberVote">%1$d su %2$d hanno votato</string>
     <string name="createdByUserOnDayNewLine">Creata da %1$s \nil %2$s</string>
     <string name="createdByUserOnDay">Creata da %1$s il %2$s</string>
@@ -1130,16 +1139,16 @@
     <string name="decisionNotFound">Decisione %1$s not trovata, potrebbe essere stata cancellata.</string>
     <string name="title">Titolo</string>
     <string name="notes">Note</string>
-    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa per TUTTI gli utenti del gruppo non solo per te.\nContinuare ?</string>
+    <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa definitivamente per tutti gli utenti del gruppo non solo per te.\nContinuare ?</string>
     <string name="insertTitleHint">Inserire il titolo qui</string>
     <string name="insertOptionTitleHint">Inserire il titolo del opzione qui</string>
-    <string name="insertLongDescriptionHint">Inserire qui le note aggiuntive</string>
+    <string name="insertLongDescriptionHint">Inserire qui le note (opzionale)</string>
     <string name="newDecision">Nuova decisione</string>
-    <string name="selectOptions">Selezionare le opzioni</string>
+    <string name="addOptionsTitle">Aggiungi opzioni</string>
     <string name="pleaseSelectATitle">Scegliere un titolo</string>
-    <string name="newOption">Nuova opzione</string>
+    <string name="newOption">Aggiungi nuova opzione</string>
     <string name="decisionSaved">La decisione è stata salvata</string>
-    <string name="pleaseSelectATitleForOption">È necessario selezionafdre un titolo per l\'ultima opzione, prima aggiungerne una nuova.</string>
+    <string name="pleaseSelectATitleForOption">Selezionare un titolo per l\'ultima opzione, prima aggiungerne una nuova.</string>
     <string name="decisionAlreadyExist">Attenzione! Esiste già una decisione con questo titolo per questo!</string>
     <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
     <string name="emptyTitleOnLastOption">Prego selezionare un titolo per l\'ultima opzione.</string>
@@ -1166,23 +1175,20 @@
         tra i membri del gruppo, utilizzando un sistema basato su sondaggi.
         \n\nPremi il pulsante \"più\" per creare una nuova decisione.</string>
 
-    <string name="CreateDecision">Crea nuova decisione</string>
-    <string name="newDecisionFromMessageHeader">Message from %2$s, %1$s:</string>
-
-    <!-- Pollgram crash messages START -->
-    <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
-    <string name="sendCrashEmail">Invia sengalazione via eMail</string>
-    <string name="ContactMe">Contact me</string>
-    <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
-    <string name="doNotPressThisButton">Non premere qui</string>
-    <string name="emailCrashMessageBody">Mi dispiace ma Pollgram si è interrotto a causa di:\n%1$s\nLe infromazione relative al errore sono allegate alla mail.\nGrazie per il supporto supporto.\n</string>
-    <!-- Pollgram crash messages END -->
+    <string name="createDecision">Crea nuova decisione</string>
+    <string name="newDecisionFromMessageHeader">Messaggio da %2$s, %1$s:</string>
+    <string name="abortDecisionCreation">Interrompere la creazione della nuova decisione \?</string>
+    <string name="createOption">Utilizza come opzione</string>
+    <string name="selectDecision">Seleziona una decisione</string>
+    <string name="decisionsCreatedByYou">Seleziona in quale delle decisioni create da te aggiungere la nuova opzione.</string>
+    <string name="thereAreNoDecisionCreatedByYouInThisGroup">Non sono presenti decisione create da te in questo gruppo.
+        È possibile aggiungere opzioni solo alle proprie decisioni.
+        \n\nSe vuoi aggiungere un opzione ad una decisione creata da qualcun altro, chiedoglielo semplicemente.</string>
 
     <!-- END of Pollgram text -->
 
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.4.0:\n\nRivoluzione GIF: Invio e download 20 volte più veloci, autoriproduci e salva le tue preferite nel pannello sticker.\n\nPiù info sulle GIF:\nhttps://telegram.org/blog/gif-revolution\n\nBot Inline: Un nuovo modo di aggiungere contenuti in ogni chat. Menziona un bot e la tua domanda nel campo di scrittura e ottieni risultati immediati. Prova a scrivere “@gif dog” nella tua prossima chat. Bot di esempio: @gif, @wiki, @bing, @vid, @bold\n\nPiù info sui Bot Inline:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
-
 
 </resources>

@@ -44,6 +44,10 @@ import java.util.List;
  * Created by davide on 30/09/15.
  */
 public class DecisionsListFragment extends BaseFragment {
+
+    public static final String PAR_PARTICIPANT_IDS  = "PAR_PARTICIPANT_IDS" ;
+    public static final String PAR_GROUP_CHAT_ID = "PAR_GROUP_CHAT_ID" ;
+
     private static int nextId = 1;
     private static final int ID_TOGGLE_OPEN_CLOSE_DECISIONS = nextId++;
     private static final int ID_PURGE_ALL_DATA = nextId++;
@@ -51,7 +55,7 @@ public class DecisionsListFragment extends BaseFragment {
     private static final int ID_SUICIDE = nextId++;
 
     private Context context;
-    private TLRPC.ChatFull chatInfo;
+    private int groupChatId;
     private TLRPC.Chat currentChat;
 
     private PollgramDAO pollgramDAO;
@@ -64,17 +68,19 @@ public class DecisionsListFragment extends BaseFragment {
     private TextView tvNodecisionPresent;
 
 
-    public DecisionsListFragment(){
-    }
-
     public DecisionsListFragment(Bundle bundle) {
         super(bundle);
     }
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
+        pollgramDAO = PollgramFactory.getDAO();
         hideCloseDecision = false;
+
+        this.participantsUserIds = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
+        this.groupChatId = getArguments().getInt(PAR_GROUP_CHAT_ID);
+        this.currentChat = MessagesController.getInstance().getChat(groupChatId);
+
         return true;
     }
 
@@ -92,7 +98,7 @@ public class DecisionsListFragment extends BaseFragment {
         final TextView viewOpenCloseTextView =  headerItem.addSubItem(ID_TOGGLE_OPEN_CLOSE_DECISIONS,
                 context.getString(hideCloseDecision ? R.string.viewCloseDecision : R.string.hideCloseDecision),0 );
 
-        // TODO remove those last items...just for test
+        // Items just for test
 //        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
 //        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         headerItem.addSubItem(ID_SUICIDE , getParentActivity().getString(R.string.doNotPressThisButton), 0);
@@ -109,7 +115,7 @@ public class DecisionsListFragment extends BaseFragment {
                     else
                         viewOpenCloseTextView.setText(R.string.hideCloseDecision);
                 } else if (id == ID_PURGE_ALL_DATA) {
-                    List<Decision> allDecisions = pollgramDAO.getDecisions(chatInfo.id, null);
+                    List<Decision> allDecisions = pollgramDAO.getDecisions(groupChatId, null);
                     for (Decision d : allDecisions) {
                         pollgramDAO.delete(d);
                     }
@@ -124,8 +130,8 @@ public class DecisionsListFragment extends BaseFragment {
 
         // inflate xml main layout
         fragmentView = new SizeNotifierFrameLayout(context);
-        LayoutInflater li = LayoutInflater.from(context);
-        View myView = li.inflate(R.layout.decision_list_layout, (ViewGroup) fragmentView);
+        LayoutInflater layoutInflater = LayoutInflater.from(context);
+        View myView = layoutInflater.inflate(R.layout.decision_list_layout, (ViewGroup) fragmentView);
         TextView tvTitle = (TextView) myView.findViewById(R.id.decision_list_tv_title);
         ViewGroup imageContainer = (ViewGroup)myView.findViewById(R.id.decision_icon_container);
         decisionsListView = (ListView) myView.findViewById(R.id.decision_list_list_view);
@@ -145,7 +151,7 @@ public class DecisionsListFragment extends BaseFragment {
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 Decision decision = (Decision) parent.getAdapter().getItem(position);
                 Bundle bundle = new Bundle();
-                bundle.putLong(VotesManagerFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+                bundle.putLong(VotesManagerFragment.PAR_GROUP_CHAT_ID, groupChatId);
                 bundle.putLong(VotesManagerFragment.PAR_DECISION_ID, decision.getId());
                 bundle.putIntArray(VotesManagerFragment.PAR_PARTICIPANT_IDS, participantsUserIds);
                 presentFragment(new VotesManagerFragment(bundle));
@@ -154,8 +160,7 @@ public class DecisionsListFragment extends BaseFragment {
         });
         updateResult();
 
-        // Addig "plus" floating button
-        /// TODO add to layout or createutil methosd ?
+        // Adding "plus" floating button
         ImageView floatingButton = new ImageView(context);
         floatingButton.setScaleType(ImageView.ScaleType.CENTER);
         floatingButton.setBackgroundResource(R.drawable.floating_states);
@@ -180,7 +185,7 @@ public class DecisionsListFragment extends BaseFragment {
             @Override
             public void onClick(View v) {
                 Bundle args = new Bundle();
-                args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, chatInfo.id);
+                args.putInt(NewDecisionFragment.PAR_GROUP_CHAT_ID, groupChatId);
                 presentFragment(new NewDecisionFragment(args));
             }
         });
@@ -189,7 +194,7 @@ public class DecisionsListFragment extends BaseFragment {
 
     private void updateResult() {
         Boolean queryPar = hideCloseDecision ? true : null;
-        List<Decision> allDecisions = pollgramDAO.getDecisions(chatInfo.id, null);
+        List<Decision> allDecisions = pollgramDAO.getDecisions(groupChatId, null);
         List<Decision> filterDecision = new ArrayList<>();
         int openCount = 0 ;
         for (Decision d : allDecisions){
@@ -209,22 +214,6 @@ public class DecisionsListFragment extends BaseFragment {
             decisionsListView.setVisibility(View.VISIBLE);
             tvNodecisionPresent.setVisibility(View.GONE);
         }
-    }
-
-
-    public void setChatInfo(TLRPC.ChatFull chatInfo) {
-        this.chatInfo = chatInfo;
-        List<Integer> ids = new ArrayList<>(chatInfo.participants.participants.size());
-        for (int i = 0; i < chatInfo.participants.participants.size() ; i++){
-            TLRPC.User user = PollgramFactory.getPollgramService().getUser(chatInfo.participants.participants.get(i).user_id);
-            if (user != null)
-                ids.add(user.id);
-        }
-        participantsUserIds = new int[ids.size()];
-        for (int i=0;i<ids.size();i++)
-            participantsUserIds[i] = ids.get(i);
-
-        this.currentChat = MessagesController.getInstance().getChat(chatInfo.id);
     }
 
     @Override

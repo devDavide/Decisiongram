@@ -97,6 +97,11 @@ public interface PollgramMessagesManager {
      */
     MessageType getMessageType(String msg);
 
+    /**
+     * @param msg
+     * @return whether this is a pollgram message
+     */
+    boolean isPollgram(MessageObject msg);
 
     /**
      * Build message for notify a vote transaction
@@ -233,24 +238,27 @@ public interface PollgramMessagesManager {
      * Only if getMessageType(text) == MessageType_CLOSE_DECISION
      * @param text
      * @param groupChatId
+     * @param userId
      * @return the data for close decision message
      */
-    ClosedDecisionDate getCloseDecision(String text, long groupChatId) throws PollgramParseException;
+    ClosedDecisionDate getCloseDecision(String text, long groupChatId, int userId) throws PollgramParseException;
 
     /**
      * * Only if getMessageType(text) == MessageType_DELETE_DECISION
      * @param text
      * @param groupChatId
+     * @param userId
      * @return the decision to delete
      */
-    Decision getDeleteDecision(String text, long groupChatId) throws PollgramParseException;
+    Decision getDeleteDecision(String text, long groupChatId, int userId) throws PollgramParseException;
 
     /**
      * Only if getMessageType(text) == MessageType_REOPEN_DECISION
      * @param text
      * @param groupChatId
+     * @param userId
      * @return the decision to reopen
      */
-    Decision getReopenDecision(String text, long groupChatId) throws PollgramParseException;
+    Decision getReopenDecision(String text, long groupChatId, int userId) throws PollgramParseException;
 
 }

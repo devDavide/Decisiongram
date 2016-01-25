@@ -2,6 +2,7 @@ package org.pollgram.decision.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -38,8 +39,8 @@ public class DecisionDetailFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
-        pollgramDAO = PollgramFactory.getPollgramDAO();
-        pollgramService = PollgramFactory.getPollgramService();
+        pollgramDAO = PollgramFactory.getDAO();
+        pollgramService = PollgramFactory.getService();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         decision = pollgramDAO.getDecision(decisionId);
 
@@ -81,6 +82,7 @@ public class DecisionDetailFragment extends BaseFragment {
         }
         EditText edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
         edLongDescription.setText(decision.getLongDescription());
+        Linkify.addLinks(edLongDescription, Linkify.ALL);
 
         Button ediOptionButton = (Button)myView.findViewById(R.id.decision_detail_edit_option);
         ediOptionButton.setEnabled(decision.isEditable() && decision.isOpen());

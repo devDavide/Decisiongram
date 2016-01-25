@@ -106,6 +106,11 @@ public class PollgramDAOTestImpl implements PollgramDAO {
     }
 
     @Override
+    public List<Decision> getDecisions(long chatId, int decisionOwnerId) {
+        return null;
+    }
+
+    @Override
     public Option getOption(long optionId) {
         for (Option o : textOptions)
             if (o.getId() == optionId)
