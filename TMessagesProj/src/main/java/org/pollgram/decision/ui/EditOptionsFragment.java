@@ -153,11 +153,12 @@ public class EditOptionsFragment extends BaseFragment {
 
 
     private void saveDecision(List<Option> newOptions, List<Option> deleteOptions) {
-        if (newOptions.size() > 0)
-            pollgramService.notifyNewOptions(decision, newOptions);
-
         if (deleteOptions.size() > 0)
             pollgramService.notifyDeleteOptions(decision, deleteOptions);
+
+
+        if (newOptions.size() > 0)
+            pollgramService.notifyNewOptions(decision, newOptions);
 
         Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
         EditOptionsFragment.this.finishFragment();
