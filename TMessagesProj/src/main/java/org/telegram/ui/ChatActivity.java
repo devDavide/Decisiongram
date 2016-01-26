@@ -1025,8 +1025,9 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                     openDecisionListFragment();
                 }
             });
-            actionBar.addView(decisionManagerButton, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
-                    Gravity.RIGHT | Gravity.TOP, 56, 30, 36, 0));
+            actionBar.addView(decisionManagerButton, LayoutHelper.createFrame(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+                    Gravity.BOTTOM |Gravity.RIGHT, 56, 0, 36, 8));
         }
 
         avatarContainer = new FrameLayoutFixed(context);

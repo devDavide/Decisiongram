@@ -88,7 +88,7 @@ public class OptionDetailFragment extends BaseFragment {
         TextView tvNegative = (TextView) myView.findViewById(R.id.option_detail_tv_negative_votes_count);
         LinearLayout stackedBarContainer = (LinearLayout)myView.findViewById(R.id.option_detail_stacked_bar_layout_container);
 
-        StackedBar stackedBar = new StackedBar(context, membersCount, positiveVoteCount ,negativeVoteCount);
+        StackedBar stackedBar = new StackedBar(context, membersCount, positiveVoteCount ,negativeVoteCount, true);
         StackedBar.Percentages percentages = stackedBar.getPercentages();
         edTitle.setText(option.getTitle());
         edLongDesc.setText(option.getLongDescription());
@@ -98,7 +98,6 @@ public class OptionDetailFragment extends BaseFragment {
         tvPositive.setText(context.getString(R.string.positiveVoteDesc, positiveVoteCount, percentages.positivePerc * 100));
         tvNegative.setText(context.getString(R.string.negativeVoteDesc, negativeVoteCount, percentages.negativePerc * 100));
 
-        stackedBar.setText("123456789");
         stackedBarContainer.addView(stackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
 
         return fragmentView;

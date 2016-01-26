@@ -57,7 +57,8 @@ class UIUtils {
             pollIconContainer.setPadding(AndroidUtilities.dp(8), 0, AndroidUtilities.dp(8), 0);
             TextView pollIcon = new TextView(context);
             pollIcon.setBackgroundResource(drawableIcon);
-            pollIconContainer.addView(pollIcon, LayoutHelper.createFrame(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
+            pollIconContainer.addView(pollIcon, LayoutHelper.createFrame(
+                    ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT,
                     Gravity.BOTTOM | Gravity.LEFT, 0, 0, 0, 8));
         }
 

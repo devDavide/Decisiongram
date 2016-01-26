@@ -301,10 +301,11 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
         TableLayout tableLayout = (TableLayout) rootView.findViewById(R.id.scrollable_part);
         TableLayout fixedColumn = (TableLayout) rootView.findViewById(R.id.fixed_column);
+        final float density = context.getResources().getDisplayMetrics().density;
 
         // build first row
         {
-            int firstRowHeight = AndroidUtilities.dp(50);
+            int firstRowHeight = AndroidUtilities.dp(density <= 1 ? 66 : 60);
             TableRow row = newRow();
             // first cell is empty
             TextView emptyCell = new TextView(getContext());
@@ -340,7 +341,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
         }
         // build second row
         {
-            int secondRowHeight = AndroidUtilities.dp(33);
+            int secondRowHeight = AndroidUtilities.dp(density <= 1 ? 46 : 34);
             TextView emptyCell = new TextView(getContext());
 
             TableRow row = newRow();
@@ -358,7 +359,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
 
 
                 TextView tvVoteCount = new TextView(getContext());
-                tvVoteCount.setTextSize(18);
+                tvVoteCount.setTextAppearance(getContext(), android.R.style.TextAppearance_Medium);
                 tvVoteCount.setGravity(Gravity.CENTER);
                 tvVoteCount.setText(Integer.toString(usersDecisionVotes.getPositiveVoteCount(option)));
                 tvVoteCount.setHeight(secondRowHeight);

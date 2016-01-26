@@ -13,7 +13,8 @@ public class StackedBar extends TextView {
 
     private static final String LOG_TAG ="DRAW_VIEW";
 
-    private static final String PROTOTYPE_TEXT_VALUE = "aaaa\naaaa\naaaa\naaaa" ;
+    private static final String PROTOTYPE_TEXT_VALUE_THIN = "aaaa\n\n\n" ;
+    private static final String PROTOTYPE_TEXT_VALUE_LARGE = "aaaaaaaaaaa\n\n\n\n\n\n\n\n\n\n\n" ;
     static final int MISSING_VOTE_COLOR = Color.WHITE;
     static final int POSITIVE_VOTE_COLOR = Color.GREEN;
     static final int NEGATIVE_VOTE_COLOR = Color.RED;
@@ -59,7 +60,15 @@ public class StackedBar extends TextView {
         return new Percentages(emptyPercentage, positivePercentage, negativePercentage);
     }
 
-    public StackedBar(Context context, int totalUserCount, int positiveVoteCount, int negativeVoteCount) {
+    /**
+     *
+     * @param context
+     * @param totalUserCount
+     * @param positiveVoteCount
+     * @param negativeVoteCount
+     * @param large true if large false if thin
+     */
+    public StackedBar(Context context, int totalUserCount, int positiveVoteCount, int negativeVoteCount, boolean large) {
         super(context);
 
         Log.d(LOG_TAG, "totalUserCount["+totalUserCount+"] positiveVoteCount["+ positiveVoteCount +"] " +
@@ -69,7 +78,7 @@ public class StackedBar extends TextView {
 
         padding = AndroidUtilities.dp(10);
         externalStroke = AndroidUtilities.dp(1);
-        setText(PROTOTYPE_TEXT_VALUE);
+        setText(large ? PROTOTYPE_TEXT_VALUE_LARGE : PROTOTYPE_TEXT_VALUE_THIN);
         paint = new Paint();
     }
 

@@ -124,7 +124,7 @@
             android:layout_below="@+id/option_detail_tv_votes_summary"
             android:layout_toEndOf="@+id/option_detail_tv_perc_layout"
             android:layout_toRightOf="@+id/option_detail_tv_perc_layout"
-            android:orientation="vertical"></LinearLayout>
+            android:orientation="vertical"/>
 
         <TextView
             android:id="@+id/option_detail_tv_votes_summary"

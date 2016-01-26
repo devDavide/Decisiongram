@@ -172,7 +172,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         starImageView.setVisibility(usersDecisionVotes.isWinningOption(o) ? View.VISIBLE : View.INVISIBLE);
 
         StackedBar stackedBarStackedBar = new StackedBar(getContext(), usersDecisionVotes.getUsers().size(),
-                positiveVoteCount, negativeVoteCount);
+                positiveVoteCount, negativeVoteCount, false);
         stackedBarContainer.addView(stackedBarStackedBar, ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.MATCH_PARENT);
         if (vote.isVote() == null){
             optionCheckBox.setBackgroundColor(VOTED_NOT_SET_COLOR);
