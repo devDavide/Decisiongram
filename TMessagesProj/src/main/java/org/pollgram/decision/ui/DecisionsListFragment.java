@@ -100,7 +100,7 @@ public class DecisionsListFragment extends BaseFragment {
 
         // Items just for test
 //        headerItem.addSubItem(ID_PURGE_ALL_DATA, "Remove current chat decisions", 0);
-//        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
+        headerItem.addSubItem(ID_PUT_STUB_DATA_DATA, "Put stub data for current chat", 0);
         headerItem.addSubItem(ID_SUICIDE , getParentActivity().getString(R.string.doNotPressThisButton), 0);
         actionBar.setActionBarMenuOnItemClick(new ActionBar.ActionBarMenuOnItemClick() {
             @Override

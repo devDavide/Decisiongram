@@ -11,7 +11,7 @@ import android.widget.TextView;
 import org.telegram.messenger.AndroidUtilities;
 public class StackedBar extends TextView {
 
-    private static final String LOG_TAG ="DRAW_VIEW";
+    private static final String LOG_TAG ="StackedBar";
 
     private static final String PROTOTYPE_TEXT_VALUE_THIN = "aaaa\n\n\n" ;
     private static final String PROTOTYPE_TEXT_VALUE_LARGE = "aaaaaaaaaaa\n\n\n\n\n\n\n\n\n\n\n" ;

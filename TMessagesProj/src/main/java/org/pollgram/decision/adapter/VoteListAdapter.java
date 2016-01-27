@@ -69,16 +69,32 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         };
     }
 
-    public void setData(UsersDecisionVotes usersDecisionVotes, int currentUserId) {
+    public void setData(UsersDecisionVotes usersDecisionVotes, int currentUserId, Map<Option,Vote> newVotesPar) {
         this.firstVotePerformed = false;
         this.usersDecisionVotes = usersDecisionVotes;
         this.currentUserId = currentUserId;
+
+        this.newVotes = newVotesPar;
+        Collection<Option> votedOptions = new ArrayList<>(newVotes.keySet());
+        for (Option o : votedOptions){
+            if (usersDecisionVotes.getOption(o.getId())==null)// option has been removed
+                newVotes.remove(o);
+            else {
+                Vote v = newVotes.get(o);
+                usersDecisionVotes.setVote(v.getUserId(),o,v);
+            }
+        }
+
         this.votes = usersDecisionVotes.getVotes(currentUserId);
-        this.newVotes = new HashMap<>();
+
         this.originalVotes = new ArrayList<>();
         for (Vote v : votes){
             originalVotes.add(v.isVote() == null ? null :new Boolean(v.isVote().booleanValue()));
         }
+    }
+
+    public void setData(UsersDecisionVotes usersDecisionVotes, int currentUserId) {
+        setData(usersDecisionVotes,currentUserId,new HashMap<Option,Vote>());
     }
 
     public void setEditable(boolean editable) {
@@ -212,8 +228,11 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         return "(" + positiveVoteCount + ")";
     }
 
-    public Collection<Vote> getNewVotes() {
+    public Collection<Vote> getNewVotesValues() {
         return newVotes.values();
     }
 
+    public Map<Option, Vote> getNewVotesMap() {
+        return newVotes;
+    }
 }

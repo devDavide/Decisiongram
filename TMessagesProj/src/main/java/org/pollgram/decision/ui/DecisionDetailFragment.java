@@ -85,7 +85,10 @@ public class DecisionDetailFragment extends BaseFragment {
         Linkify.addLinks(edLongDescription, Linkify.ALL);
 
         Button ediOptionButton = (Button)myView.findViewById(R.id.decision_detail_edit_option);
-        ediOptionButton.setEnabled(decision.isEditable() && decision.isOpen());
+        boolean buttonEnabled = decision.isEditable() && decision.isOpen();
+        ediOptionButton.setEnabled(buttonEnabled);
+        ediOptionButton.setVisibility(buttonEnabled ? View.VISIBLE : View.GONE);
+
         ediOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

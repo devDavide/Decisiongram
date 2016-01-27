@@ -86,8 +86,10 @@
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:drawableLeft="@drawable/ic_settings"
+            android:drawableLeft="@drawable/ic_settings_white"
             android:orientation="vertical"
+            android:background="@drawable/button_enabled"
+            android:textColor="@android:color/white"
             android:text="@string/editOptions"
             android:layout_gravity="center_horizontal" />
         </LinearLayout>

@@ -243,7 +243,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                         }
                     }
                 } else
-                    votes2Save = voteListAdapter.getNewVotes();
+                    votes2Save = voteListAdapter.getNewVotesValues();
 
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
                 pollgramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
@@ -285,7 +285,7 @@ public abstract class VotesManagerTabsFragment extends Fragment {
             viewPager.setAdapter(pagerAdapter);
         } else {
             // set new sorted  votes in the voteListAdapter
-            voteListAdapter.setData(usersDecisionVotes, currentUserId);
+            voteListAdapter.setData(usersDecisionVotes, currentUserId, voteListAdapter.getNewVotesMap());
             voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());
             voteListAdapter.notifyDataSetChanged();
 

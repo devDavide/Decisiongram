@@ -340,7 +340,6 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
                 return null;
             }
         }
-        Log.d(LOG_TAG,"["+msg+"] is a normal message");
         return null;
     }
 
