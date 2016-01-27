@@ -11,6 +11,8 @@
         android:text="@string/newOption"
         android:drawableLeft="@drawable/ic_add_white_24dp"
         android:id="@+id/new_option_add_button"
+        android:background="@drawable/button_enabled"
+        android:textColor="@android:color/white"
         android:layout_alignParentTop="true"
         android:layout_centerHorizontal="true" />
 </RelativeLayout>
