@@ -2,7 +2,7 @@
 <resources>
     <color name="divider">#dcdcdc</color>
     <color name="background_blue">#4d83b3</color>
-    <color name="background_buttons_blue">#3342d8</color>
+    <color name="background_buttons_blue">#5795cc</color>
     <color name="admin_text_color">#26ae0b</color>
     <color name="light_gray">#cccccc</color>
 </resources>
