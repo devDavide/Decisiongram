@@ -2,6 +2,7 @@ package org.pollgram.decision.ui;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.text.Editable;
 import android.text.util.Linkify;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,6 +11,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
@@ -43,13 +45,12 @@ public class DecisionDetailFragment extends BaseFragment {
         pollgramService = PollgramFactory.getService();
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         decision = pollgramDAO.getDecision(decisionId);
-
         return true;
     }
 
 
     @Override
-    public View createView(Context context) {
+    public View createView(final Context context) {
 
         actionBar.setTitle(getParentActivity().getString(R.string.decisionDetailTitle));
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
@@ -66,12 +67,20 @@ public class DecisionDetailFragment extends BaseFragment {
             }
 
         });
+        boolean editEnabled = decision.isEditable() && decision.isOpen();
+
 
         fragmentView = new SizeNotifierFrameLayout(context);
         LayoutInflater layoutInflater = LayoutInflater.from(context);
         View myView = layoutInflater.inflate(R.layout.decision_detail_layout, (ViewGroup) fragmentView);
 
         EditText edTitle = (EditText) myView.findViewById(R.id.decision_detail_ed_title);
+        edTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context,R.string.titleNotEditable,Toast.LENGTH_SHORT).show();
+            }
+        });
         edTitle.setText(decision.getTitle());
         {
             TextView tvCreationInfo = (TextView) myView.findViewById(R.id.decision_detail_tv_creation_info);
@@ -80,20 +89,31 @@ public class DecisionDetailFragment extends BaseFragment {
                     format(decision.getCreationDate());
             tvCreationInfo.setText(context.getString(R.string.createdByUserOnDay,userAsString,creationDateStr));
         }
-        EditText edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
+        final EditText edLongDescription = (EditText) myView.findViewById(R.id.decision_detail_ed_long_description);
+        edLongDescription.addTextChangedListener(new DefaultTextWatcher() {
+            @Override
+            public void afterTextChanged(Editable s) {
+                Linkify.addLinks(edLongDescription, Linkify.ALL);
+            }
+        });
+        edLongDescription.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(context, R.string.longDescNotEditable, Toast.LENGTH_SHORT).show();
+            }
+        });
         edLongDescription.setText(decision.getLongDescription());
-        Linkify.addLinks(edLongDescription, Linkify.ALL);
 
         Button ediOptionButton = (Button)myView.findViewById(R.id.decision_detail_edit_option);
-        boolean buttonEnabled = decision.isEditable() && decision.isOpen();
-        ediOptionButton.setEnabled(buttonEnabled);
-        ediOptionButton.setVisibility(buttonEnabled ? View.VISIBLE : View.GONE);
+
+        ediOptionButton.setEnabled(editEnabled);
+        ediOptionButton.setVisibility(editEnabled ? View.VISIBLE : View.GONE);
 
         ediOptionButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
-                bundle.putLong(EditOptionsFragment.PAR_DECISION_ID,decision.getId());
+                bundle.putLong(EditOptionsFragment.PAR_DECISION_ID, decision.getId());
                 presentFragment(new EditOptionsFragment(bundle));
             }
         });

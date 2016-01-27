@@ -1193,6 +1193,9 @@
     <string name="thereAreNoDecisionCreatedByYouInThisGroup">There are no decisions created by you in this group.
         You can add option only to the decisions that you have created.
         \n\nIf you want to add an option to a decision created by someone else, just ask her/him to do so.</string>
+    <string name="titleNotEditable">Title is not editable.</string>
+    <string name="longDescNotEditable">Notes are not editable.</string>
+    <string name="youAreDecisionAdmin">Admin</string>
 
 
     <string name="emailBugDestAddress">davide.pallaoro@gmail.com</string>
@@ -1204,9 +1207,5 @@
     <string name="updateBuild">704</string>
 
     <string name="hello_world">Hello world!</string>
-    <string name="action_settings">Settings</string>
-    <string name="youAreDecisionAdmin">Admin</string>
-
-
 
 </resources>

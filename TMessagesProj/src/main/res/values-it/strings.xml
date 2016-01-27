@@ -1193,7 +1193,8 @@
     <string name="thereAreNoDecisionCreatedByYouInThisGroup">Non sono presenti decisione create da te in questo gruppo.
         È possibile aggiungere opzioni solo alle proprie decisioni.
         \n\nSe vuoi aggiungere un opzione ad una decisione creata da qualcun altro, chiedoglielo semplicemente.</string>
-
+    <string name="titleNotEditable">Il titolo non è modificabile.</string>
+    <string name="longDescNotEditable">Le note non sono modificabili.</string>
     <!-- END of Pollgram text -->
 
     <!--update text-->

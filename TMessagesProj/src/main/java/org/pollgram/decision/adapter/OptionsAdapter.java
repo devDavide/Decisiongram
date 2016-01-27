@@ -165,6 +165,20 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             edTitle.setEnabled(enableFields);
             edLongDescription.setEnabled(enableFields);
             deleteItem.setVisibility(editable ? View.VISIBLE : View.INVISIBLE);
+            if (!enableFields){
+                edTitle.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), R.string.titleNotEditable,Toast.LENGTH_SHORT).show();
+                    }
+                });
+                edLongDescription.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(getContext(), R.string.longDescNotEditable,Toast.LENGTH_SHORT).show();
+                    }
+                });
+            }
 
             if (o.getTitle() == null || o.getTitle().isEmpty())
                 edTitle.requestFocus();
