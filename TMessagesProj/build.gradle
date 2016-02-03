@@ -28,7 +28,7 @@ android {
         exclude 'META-INF/LICENSE.txt'
     }
     useLibrary 'org.apache.http.legacy'
-    defaultConfig.applicationId = "org.telegram.messenger"
+    defaultConfig.applicationId = "org.pollgram"
 
     compileOptions {
         sourceCompatibility JavaVersion.VERSION_1_7
