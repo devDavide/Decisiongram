@@ -23,7 +23,7 @@
         android:icon="@drawable/ic_appicon"
         android:label="@string/AppName"
         android:theme="@style/Theme.TMessages.Start"
-        android:name="org.telegram.messenger.ApplicationLoader"
+        android:name="org.pollgram.decision.ApplicationLoader"
         android:hardwareAccelerated="@bool/useHardwareAcceleration"
         android:largeHeap="true">
 
