@@ -2,5 +2,5 @@
 <resources>
     <!-- Language independent strings -->
     <string name="emailBugDestAddress">davide.pallaoro@gmail.com</string>
-    <string name="appDownloadURL">https://www.dropbox.com/s/nsze0j0lvnsdngb/Pollgram.apk?dl=0</string>
+    <string name="appDownloadURL">https://play.google.com/apps/testing/org.pollgram</string>
 </resources>
