@@ -60,8 +60,7 @@
             android:layout_alignParentRight="true"
             android:layout_alignParentStart="true"
             android:layout_below="@+id/option_detail_tv_notes"
-            android:textAppearance="?android:attr/textAppearanceSmall"
-            android:editable="false"/>
+            android:textAppearance="?android:attr/textAppearanceSmall" />
 
         <LinearLayout
             android:id="@+id/option_detail_tv_perc_layout"

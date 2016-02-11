@@ -238,8 +238,8 @@ class PollgramDAODBImpl implements PollgramDAO {
             throw new RuntimeException("Not yet supported :-(");
 
         TextOption tOpt = (TextOption) o;
-        if (tOpt.getLongDescription() == null)// mask null values
-            tOpt.setLongDescription("");
+        if (tOpt.getNotes() == null)// mask null values
+            tOpt.setNotes("");
         Option foundOption = getOption(tOpt.getTitle(), o.getDecisionId());
         if (foundOption == null)
             return helper.insert(tOpt, helper.TEXT_OPTION_MAPPER);

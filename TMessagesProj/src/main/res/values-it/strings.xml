@@ -1084,6 +1084,13 @@
     <!-- between Prefix and Suffix goes the decision title -->
     <string name="tmsg_DeleteOptionSuffix">le seguenti opzioni:</string>
 
+    <string name="tmsg_UpdateOptionNotes_P1">Nella decisione</string>
+    <!-- between here goes the decision title -->
+    <string name="tmsg_UpdateOptionNotes_P2">le nuove note del opzione</string>
+    <!-- between here goes the option title -->
+    <string name="tmsg_UpdateOptionNotes_P3">sono ora:</string>
+    <!-- after this goes the new option long description -->
+
     <!-- END of POLLGRAM transaction messages -->
 
     <!-- START MessageType descriptions -->
@@ -1095,6 +1102,7 @@
     <string name="MessageType_DELETE_DECISION">Cancellazione decisione</string>
     <string name="MessageType_ADD_OPTIONS">Aggiunta opzioni</string>
     <string name="MessageType_DELTE_OPTIONS">Cancellazione opzioni</string>
+    <string name="MessageType_UPDATE_OPTION_NOTES">Aggiorna note opzione</string>
     <!-- END MessageType descriptions -->
 
     <!-- Pollgram crash messages START -->
@@ -1186,7 +1194,7 @@
 
     <string name="createDecision">Crea nuova decisione</string>
     <string name="newDecisionFromMessageHeader">Messaggio da %2$s, %1$s:</string>
-    <string name="abortDecisionCreation">Interrompere la creazione della nuova decisione \?</string>
+    <string name="exitWithoutSaving">Uscire senza salvare ?</string>
     <string name="createOption">Utilizza come opzione</string>
     <string name="selectDecision">Seleziona una decisione</string>
     <string name="decisionsCreatedByYou">Seleziona in quale delle decisioni create da te aggiungere la nuova opzione.</string>
@@ -1195,12 +1203,13 @@
         \n\nSe vuoi aggiungere un opzione ad una decisione creata da qualcun altro, chiedoglielo semplicemente.</string>
     <string name="titleNotEditable">Il titolo non è modificabile.</string>
     <string name="longDescNotEditable">Le note non sono modificabili.</string>
+    <string name="youAreDecisionAdmin">Admin</string>
+    <string name="optionHasBeenSaved">Le note dell\'opzione sono state salvate</string>
     <!-- END of Pollgram text -->
 
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.4.0:\n\nRivoluzione GIF: Invio e download 20 volte più veloci, autoriproduci e salva le tue preferite nel pannello sticker.\n\nPiù info sulle GIF:\nhttps://telegram.org/blog/gif-revolution\n\nBot Inline: Un nuovo modo di aggiungere contenuti in ogni chat. Menziona un bot e la tua domanda nel campo di scrittura e ottieni risultati immediati. Prova a scrivere “@gif dog” nella tua prossima chat. Bot di esempio: @gif, @wiki, @bing, @vid, @bold\n\nPiù info sui Bot Inline:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
-    <string name="youAreDecisionAdmin">Admin</string>
 
 
 

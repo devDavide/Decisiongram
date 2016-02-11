@@ -6,6 +6,7 @@ import android.text.style.ClickableSpan;
 
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.MessageObject;
@@ -80,6 +81,12 @@ public interface PollgramService {
      * @param newOptions
      */
     void notifyNewOptions(Decision decision, List<Option> newOptions);
+
+    /**
+     * Notify that the long description of an option has been changed
+     * @param option
+     */
+    void notifyOptionUpdateLongDescription(TextOption option);
 
     /**
      * Notify to other groups members that some options has been deleted from decision
@@ -177,6 +184,7 @@ public interface PollgramService {
      */
     List<MessageObject> getUnParsedMessages(final long dialog_id, Map<Integer, MessageObject> dialogMessagesByIds,
                                             List<MessageObject> excludeMessages);
+
 
 
 }

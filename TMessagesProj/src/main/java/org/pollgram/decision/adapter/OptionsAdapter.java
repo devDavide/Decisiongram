@@ -145,18 +145,18 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             edLongDescription.addTextChangedListener(new DefaultTextWatcher() {
                 @Override
                 public void afterTextChanged(Editable s) {
-                    o.setLongDescription(s.toString());
+                    o.setNotes(s.toString());
                     Linkify.addLinks(edLongDescription, Linkify.ALL);
                 }
             });
 
             edTitle.setText(o.getTitle());
-            edLongDescription.setText(o.getLongDescription());
+            edLongDescription.setText(o.getNotes());
             // make grey the lines that are already present and therefore not editable
             if(alreadyOnDB) {
                 edTitle.setTextColor(Color.GRAY);
                 edLongDescription.setTextColor(Color.GRAY);
-                if (o.getLongDescription() == null || o.getLongDescription().isEmpty()) {
+                if (o.getNotes() == null || o.getNotes().isEmpty()) {
                     edLongDescription.setText(" ");
                 }
             }

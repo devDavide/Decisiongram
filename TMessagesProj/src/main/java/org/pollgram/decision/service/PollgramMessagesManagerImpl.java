@@ -40,7 +40,6 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     private static final String WINKING_FACE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xF0, (byte) 0x9F, (byte) 0x98, (byte)0x89);// winking face
     private static final String TRUE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9C, (byte) 0x85);// WHITE HEAVY CHECK MARK
     private static final String FALSE_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x9D, (byte) 0x8C);// CROSS MARK
-    private static final String BULLET_LIST_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x96, (byte) 0xAB);// white small square
 
     private final PollgramDAO pollgramDAO;
     private final Context context;
@@ -237,6 +236,23 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
     }
 
     @Override
+    public String buildUpdateOptionNotes(Decision decision, TextOption option) {
+        StringBuilder body = new StringBuilder();
+        body.append(getResString(R.string.tmsg_UpdateOptionNotes_P1));
+        body.append(' ');
+        body.append(format(decision));
+        body.append(NEW_LINE);
+        body.append(getResString(R.string.tmsg_UpdateOptionNotes_P2));
+        body.append(' ');
+        body.append(format(option));
+        body.append(' ');
+        body.append(getResString(R.string.tmsg_UpdateOptionNotes_P3));
+        body.append(NEW_LINE);
+        body.append(format(option.getNotes()));
+        return  buildMessage(MessageType.UPDATE_OPTION_NOTES, body.toString());
+    }
+
+    @Override
     public String buildAddOptions(Decision decision, List<Option> options) {
         String body = buildAddDeleteOptionsMessage(decision,options,
                 R.string.tmsg_AddOptionPrefix, R.string.tmsg_AddOptionSuffix);
@@ -270,7 +286,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             if (o instanceof TextOption) {
                 body.append(',');
                 body.append(' ');
-                body.append(format(((TextOption)o).getLongDescription()));
+                body.append(format(((TextOption)o).getNotes()));
             }
             body.append(NEW_LINE);
         }
@@ -437,6 +453,35 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
         return getAddDeleteOptionFromDecision(text, groupChatId, userId);
     }
 
+    @Override
+    public TextOption getNewOptionData(String msg, long groupChatId, int userId) throws PollgramParseException {
+        try {
+            StringTokenizer strTok = new EscapeStringTokenizer(msg);
+            strTok.nextToken();//skip this token
+            String title = strTok.nextToken();
+            Decision decision = pollgramDAO.getDecision(title, groupChatId);
+            if (decision == null)
+                throw new PollgramParseException("Decision not found for title [" + title + "]");
+            if (!decision.isEditable(userId))
+                throw new PollgramParseException("Decision is not editable by userid [" + userId + "]");
+
+            strTok.nextToken(); // skip this token
+            String optionTitle = strTok.nextToken();
+            TextOption option = (TextOption) pollgramDAO.getOption(optionTitle, decision);
+            if (option == null){
+                throw new PollgramParseException("Option not found for title["+optionTitle+"] in decision ["+decision+"]");
+            }
+            strTok.nextToken(); // skip this token
+            String optionNotes = strTok.nextToken();
+            option.setNotes(optionNotes);
+            return option;
+
+        } catch (NoSuchElementException e) {
+            Log.e(LOG_TAG, "Error parsing message [" + msg + "]", e);
+            throw new PollgramParseException("Token not found", e);
+        }
+    }
+
     @NonNull
     private DecisionOptionData getAddDeleteOptionFromDecision(String msg, long currentChat, int userId) throws PollgramParseException {
         Decision decision;
@@ -559,6 +604,7 @@ class PollgramMessagesManagerImpl implements PollgramMessagesManager {
             case REOPEN_DECISION:
             case ADD_OPTIONS:
             case DELETE_OPTIONS:
+            case UPDATE_OPTION_NOTES:
                 return message.indexOf(QUOTE_CHAR);
         }
         return  -1;
