@@ -260,8 +260,25 @@ public class MessagesManagerTest {
 
     private void assertDeleteOptions(String message, Decision decision, List<Option> optionToDelte) throws PollgramParseException {
         PollgramMessagesManager.DecisionOptionData result = messageManager.getDeletedOption(message, chat.id, user.id);
-        Assert.assertEquals(decision,result.decision);
+        Assert.assertEquals(decision, result.decision);
         Assert.assertEquals(optionToDelte, result.optionList);
+    }
+
+    @Test
+    public void testUpdateOptionDescription() throws PollgramParseException {
+        TextOption textOption = (TextOption) dao.getOptions(decision).get(0);
+        textOption.setNotes("A new Note it's a great idea");
+        String message = messageManager.buildUpdateOptionNotes(decision,textOption);
+        PollgramMessagesManager.MessageType type = messageManager.getMessageType(message);
+        Assert.assertEquals(PollgramMessagesManager.MessageType.UPDATE_OPTION_NOTES, type);
+        assertUpdateOption(message, textOption);
+        assertUpdateOption(messageManager.reformatMessage(message), textOption);
+    }
+
+    private void assertUpdateOption(String message, TextOption textOption) throws PollgramParseException {
+        TextOption fromMsg = messageManager.getNewOptionData(message, chat.id, user.id);
+        Assert.assertEquals(textOption, fromMsg);
+
     }
 
 }

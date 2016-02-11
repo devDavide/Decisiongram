@@ -8,16 +8,16 @@ public class TextOption extends Option {
     // icon/image will be retrived externally by url or file
 
     private String title;
-    private String longDescription;
+    private String notes;
 
-    public TextOption(String title, String longDescription, long decisionId) {
+    public TextOption(String title, String notes, long decisionId) {
         super(decisionId);
         this.title = title;
-        this.longDescription =  longDescription;
+        this.notes = notes;
     }
 
-    public TextOption(long id, String title, String longDescription, long decisionId) {
-        this(title,longDescription,decisionId);
+    public TextOption(long id, String title, String notes, long decisionId) {
+        this(title, notes,decisionId);
         setId(id);
     }
 
@@ -34,8 +34,8 @@ public class TextOption extends Option {
         this.title = title;
     }
 
-    public String getLongDescription() {
-        return longDescription;
+    public String getNotes() {
+        return notes;
     }
 
     @Override
@@ -47,7 +47,7 @@ public class TextOption extends Option {
 
         if (getTitle() != null ? !getTitle().equals(that.getTitle()) : that.getTitle() != null)
             return false;
-        return equalString(getLongDescription(), that.getLongDescription());
+        return equalString(getNotes(), that.getNotes());
 
     }
 
@@ -55,12 +55,12 @@ public class TextOption extends Option {
     public int hashCode() {
         int result = super.hashCode();
         result = 31 * result + (getTitle() != null ? getTitle().hashCode() : 0);
-        result = 31 * result + (getLongDescription() != null ? getLongDescription().hashCode() : 0);
+        result = 31 * result + (getNotes() != null ? getNotes().hashCode() : 0);
         return result;
     }
 
-    public void setLongDescription(String longDescription) {
-        this.longDescription = longDescription;
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
 

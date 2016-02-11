@@ -218,7 +218,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         // Set values
         optionTitle.setText(o.getTitle());
         optionTitle.setOnClickListener(openOptionDetailOnClickLister);
-        optionSubtitle.setText(o.getLongDescription());
+        optionSubtitle.setText(o.getNotes());
         optionSubtitle.setOnClickListener(openOptionDetailOnClickLister);
 
         return rowView;

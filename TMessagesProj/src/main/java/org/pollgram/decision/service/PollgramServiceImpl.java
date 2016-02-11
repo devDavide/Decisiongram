@@ -13,6 +13,7 @@ import org.pollgram.decision.data.DBBean;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
 import org.pollgram.decision.data.ParsedMessage;
+import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.UsersDecisionVotes;
 import org.pollgram.decision.data.Vote;
 import org.pollgram.decision.ui.DecisionsListFragment;
@@ -154,6 +155,19 @@ public class PollgramServiceImpl implements PollgramService {
     }
 
     @Override
+    public void notifyOptionUpdateLongDescription(TextOption option) {
+        Log.d(LOG_TAG, "notifyOptionUpdateLongDescription option[" + option + "]");
+        Decision d = pollgramDAO.getDecision(option.getDecisionId());
+        if (d == null)
+            throw new PollgramDAOException("Decision not found for id ["+option.getDecisionId()+"]");
+
+        pollgramDAO.save(option);
+        String message = messageManager.buildUpdateOptionNotes(d, option);
+        sendMessage(d.getChatId(), message);
+
+    }
+
+    @Override
     public void notifyDeleteOptions(Decision decision, List<Option> deleteOptions) {
         Log.d(LOG_TAG, "notifyDeleteOptions decision[" + decision + "] deleteOptions[" + deleteOptions + "]");
         deleteOptions(deleteOptions);
@@ -278,6 +292,12 @@ public class PollgramServiceImpl implements PollgramService {
                         }
                         pollgramDAO.delete(found);
                     }
+                    break;
+                }
+
+                case UPDATE_OPTION_NOTES:{
+                    TextOption option = messageManager.getNewOptionData(text, groupChatId, userId);
+                    pollgramDAO.save(option);
                     break;
                 }
 

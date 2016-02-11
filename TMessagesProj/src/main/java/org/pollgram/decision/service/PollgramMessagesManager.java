@@ -6,6 +6,7 @@ import android.text.Spannable;
 import org.pollgram.R;
 import org.pollgram.decision.data.Decision;
 import org.pollgram.decision.data.Option;
+import org.pollgram.decision.data.TextOption;
 import org.pollgram.decision.data.Vote;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.MessageObject;
@@ -20,6 +21,7 @@ import java.util.List;
  */
 public interface PollgramMessagesManager {
 
+
     /**
      * The different messages type managed by Pollgram
      * Emoji codes are taken from http://apps.timwhitlock.info/emoji/tables/unicode#block-6a-additional-emoticons
@@ -32,7 +34,8 @@ public interface PollgramMessagesManager {
         REOPEN_DECISION(R.string.MessageType_REOPEN_DECISION, (byte) 0xF0, (byte) 0x9F, (byte) 0x94, (byte) 0x84),    //ANTICLOCKWISE DOWNWARDS AND UPWARDS OPEN CIRCLE ARROWS
         DELETE_DECISION(R.string.MessageType_DELETE_DECISION, (byte) 0xE2, (byte) 0x9D, (byte) 0x8C),    //CROSS MARK
         ADD_OPTIONS(R.string.MessageType_ADD_OPTIONS,(byte)0xE2, (byte)0x9E, (byte)0x95),// heavy plus sign
-        DELETE_OPTIONS(R.string.MessageType_DELTE_OPTIONS, (byte)0xE2, (byte)0x9E, (byte)0x96); //	heavy minus sign
+        DELETE_OPTIONS(R.string.MessageType_DELTE_OPTIONS, (byte)0xE2, (byte)0x9E, (byte)0x96),
+        UPDATE_OPTION_NOTES(R.string.MessageType_UPDATE_OPTION_NOTES , BULLET_LIST_EMOJI.getBytes() ); //	heavy minus sign
 
         private final String emoji;
         private final int descrStringRes;
@@ -63,6 +66,8 @@ public interface PollgramMessagesManager {
         }
 
     }
+
+    String BULLET_LIST_EMOJI = EmojiUtils.getEmojiAsString((byte) 0xE2, (byte) 0x96, (byte) 0xAB);// white small square
 
     /**
      * Add URL link for decision title on charSequence message
@@ -126,6 +131,12 @@ public interface PollgramMessagesManager {
      * @return the message ready to be sent
      */
     String buildAddOptions(Decision decision, List<Option> newOptions);
+
+    /**
+     * build a message for notifying that the long description of an option has been updated
+     * @return
+     */
+    String buildUpdateOptionNotes(Decision decision, TextOption option);
 
     /**
      * build a message for notifying a that some option has been deleted from a decision
@@ -220,6 +231,16 @@ public interface PollgramMessagesManager {
      * @return
      */
     DecisionOptionData getDeletedOption(String text, long groupChatId, int userId) throws PollgramParseException;
+
+    /**
+     * Only if getMessageType(text) == MessageType_UPDATE_OPTION_NOTES
+     * return the new option data
+     * @param text
+     * @param groupChatId
+     * @param userId
+     * @return
+     */
+    TextOption getNewOptionData(String text, long groupChatId, int userId) throws PollgramParseException;
 
     /**
      * Return value for getCloseDecision

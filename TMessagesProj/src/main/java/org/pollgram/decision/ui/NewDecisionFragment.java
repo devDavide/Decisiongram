@@ -236,7 +236,7 @@ public class NewDecisionFragment extends BaseFragment {
             return;
         }
         AlertDialog.Builder builder = new AlertDialog.Builder(getParentActivity());
-        builder.setMessage(getParentActivity().getString(R.string.abortDecisionCreation));
+        builder.setMessage(getParentActivity().getString(R.string.exitWithoutSaving));
         builder.setPositiveButton(R.string.yes, new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {

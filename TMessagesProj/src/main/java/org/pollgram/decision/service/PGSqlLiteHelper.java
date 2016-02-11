@@ -195,7 +195,7 @@ class PGSqlLiteHelper extends SQLiteOpenHelper {
         public ContentValues toCV(TextOption to) {
             ContentValues cv = new ContentValues();
             cv.put(T_TextOption.TITLE, to.getTitle());
-            cv.put(T_TextOption.LONG_DESCRIPTION, to.getLongDescription());
+            cv.put(T_TextOption.LONG_DESCRIPTION, to.getNotes());
             cv.put(T_TextOption.FK_DECISION, to.getDecisionId());
             return cv;
         }
