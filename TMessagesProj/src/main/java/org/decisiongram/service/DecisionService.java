@@ -5,6 +5,7 @@ import android.support.annotation.Nullable;
 import android.text.style.ClickableSpan;
 
 import org.decisiongram.data.Decision;
+import org.decisiongram.data.DecisiongramException;
 import org.decisiongram.data.Option;
 import org.decisiongram.data.TextOption;
 import org.decisiongram.data.UsersDecisionVotes;
@@ -55,7 +56,7 @@ public interface DecisionService {
      * @param decision
      * @param votes2Save
      */
-    void notifyVote(Decision decision, Collection<Vote> votes2Save);
+    void notifyVote(Decision decision, Collection<Vote> votes2Save) throws DecisiongramException;
 
     /**
      * Notify to other groups members that a decision has been closed
@@ -80,7 +81,7 @@ public interface DecisionService {
      * @param decision
      * @param newOptions
      */
-    void notifyNewOptions(Decision decision, List<Option> newOptions);
+    void notifyNewOptions(Decision decision, List<Option> newOptions) throws DecisiongramException;
 
     /**
      * Notify that the long description of an option has been changed
@@ -93,7 +94,7 @@ public interface DecisionService {
      * @param decision
      * @param deleteOptions
      */
-    void notifyDeleteOptions(Decision decision, List<Option> deleteOptions);
+    void notifyDeleteOptions(Decision decision, List<Option> deleteOptions) throws DecisiongramException;
 
     /**
      * @param message

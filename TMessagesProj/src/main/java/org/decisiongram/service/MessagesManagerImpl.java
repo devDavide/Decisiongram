@@ -394,6 +394,8 @@ class MessagesManagerImpl implements MessagesManager {
             Decision decision = decisiongramDAO.getDecision(decisionTitle, currentChat);
             if (decision == null)
                 throw new MessageParseException("Decision not found for title["+decisionTitle+"]  currentChat["+currentChat+"]");
+            if (!decision.isOpen())
+                throw new MessageParseException("Vote not allowed for closed decision["+decision+"]");
             List<Vote> voteList = new ArrayList<>();
             while (strTok.hasMoreTokens()) {
                 String voteValue = strTok.nextToken();

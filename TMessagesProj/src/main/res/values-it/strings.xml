@@ -1145,6 +1145,7 @@
     <string name="decisionReopened">Decisione riaperta</string>
     <string name="decisionDeleted">Decisione cancellata</string>
     <string name="decisionNotFound">Decisione %1$s not trovata, potrebbe essere stata cancellata.</string>
+    <string name="decisionIsClosed">La decisione %1$s è chiusa, operazione non permessa.</string>
     <string name="title">Titolo</string>
     <string name="notes">Note</string>
     <string name="deleteDecisionQuestion">Sei sicuro di cancellare questa decisione ? Verrà rimossa definitivamente per tutti gli utenti del gruppo non solo per te.\nContinuare ?</string>

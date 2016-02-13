@@ -40,6 +40,7 @@ import android.widget.Toast;
 
 import org.decisiongram.R;
 import org.decisiongram.adapter.VoteListAdapter;
+import org.decisiongram.data.DecisiongramException;
 import org.decisiongram.data.Option;
 import org.decisiongram.data.UsersDecisionVotes;
 import org.decisiongram.data.Vote;
@@ -246,7 +247,13 @@ public abstract class VotesManagerTabsFragment extends Fragment {
                     votes2Save = voteListAdapter.getNewVotesValues();
 
                 Log.i(LOG_TAG, "saving votes[" + votes2Save + "]");
-                decisiongramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
+                try {
+                    decisiongramService.notifyVote(usersDecisionVotes.getDecision(), votes2Save);
+                } catch (DecisiongramException e) {
+                    Log.e(LOG_TAG,e.getMessage(),e);
+                    Toast.makeText(context,e.getMessage(),Toast.LENGTH_LONG).show();
+                    return;
+                }
                 btnSaveOption.setVisibility(View.GONE);
                 voteUnsaved = false;
 
@@ -284,6 +291,9 @@ public abstract class VotesManagerTabsFragment extends Fragment {
             // force tabbed pane to rebuild itself
             viewPager.setAdapter(pagerAdapter);
         } else {
+            if (voteListAdapter == null){
+                voteListAdapter = new VoteListAdapter(parentFragment, usersDecisionVotes.getDecision().isOpen());
+            }
             // set new sorted  votes in the voteListAdapter
             voteListAdapter.setData(usersDecisionVotes, currentUserId, voteListAdapter.getNewVotesMap());
             voteListAdapter.setEditable(usersDecisionVotes.getDecision().isOpen());

@@ -153,16 +153,19 @@ public class EditOptionsFragment extends BaseFragment {
 
 
     private void saveDecision(List<Option> newOptions, List<Option> deleteOptions) {
-        if (deleteOptions.size() > 0)
-            decisiongramService.notifyDeleteOptions(decision, deleteOptions);
+        try {
+            if (deleteOptions.size() > 0)
+                decisiongramService.notifyDeleteOptions(decision, deleteOptions);
 
+            if (newOptions.size() > 0)
+                decisiongramService.notifyNewOptions(decision, newOptions);
 
-        if (newOptions.size() > 0)
-            decisiongramService.notifyNewOptions(decision, newOptions);
-
-        Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
+            Toast.makeText(getParentActivity(), R.string.decisionSaved, Toast.LENGTH_LONG).show();
+        } catch (DecisiongramException e) {
+            Log.e(LOG_TAG, e.getMessage(), e);
+            Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
+        }
         EditOptionsFragment.this.finishFragment();
-        return;
     }
 
 }

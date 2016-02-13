@@ -11,6 +11,7 @@ import android.widget.Toast;
 import org.decisiongram.R;
 import org.decisiongram.data.DBBean;
 import org.decisiongram.data.Decision;
+import org.decisiongram.data.DecisiongramException;
 import org.decisiongram.data.Option;
 import org.decisiongram.data.ParsedMessage;
 import org.decisiongram.data.TextOption;
@@ -102,8 +103,10 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     @Override
-    public void notifyVote(Decision decision, Collection<Vote> votes2Save) {
+    public void notifyVote(Decision decision, Collection<Vote> votes2Save) throws DecisiongramException {
         Log.d(LOG_TAG, "notifyVote groupChatId[" + decision.getChatId() + "] decision[" + decision + "] votes2Save[" + votes2Save + "]");
+
+        decision = checkAndUpdateDecision(decision);
 
         // Save vote on the db first
         for(Vote v : votes2Save){
@@ -111,6 +114,22 @@ public class DecisionServiceImpl implements DecisionService {
         }
         String message = messageManager.buildNotifyVoteMessage(decision, votes2Save);
         sendMessage(decision.getChatId(), message);
+    }
+
+    @NonNull
+    private Decision checkAndUpdateDecision(Decision decision) throws DecisiongramException {
+        {
+            String oldTitle = decision.getTitle();
+            decision = decisiongramDAO.getDecision(decision.getId());
+            if (decision == null)
+                throw new DecisiongramException(
+                        ApplicationLoader.applicationContext.getString(R.string.decisionNotFound,oldTitle));
+        }
+        if (!decision.isOpen()){
+            throw new DecisiongramException(
+                    ApplicationLoader.applicationContext.getString(R.string.decisionIsClosed,decision.getTitle()));
+        }
+        return decision;
     }
 
 
@@ -147,8 +166,9 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     @Override
-    public void notifyNewOptions(Decision decision, List<Option> newOptions) {
+    public void notifyNewOptions(Decision decision, List<Option> newOptions) throws DecisiongramException {
         Log.d(LOG_TAG, "notifyNewOptions decision[" + decision + "] newoptions[" + newOptions + "]");
+        decision = checkAndUpdateDecision(decision);
         saveNewOptions(decision, newOptions);
         String message = messageManager.buildAddOptions(decision, newOptions);
         sendMessage(decision.getChatId(), message);
@@ -168,8 +188,9 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     @Override
-    public void notifyDeleteOptions(Decision decision, List<Option> deleteOptions) {
+    public void notifyDeleteOptions(Decision decision, List<Option> deleteOptions) throws DecisiongramException {
         Log.d(LOG_TAG, "notifyDeleteOptions decision[" + decision + "] deleteOptions[" + deleteOptions + "]");
+        decision = checkAndUpdateDecision(decision);
         deleteOptions(deleteOptions);
         String message = messageManager.buildDeleteOptions(decision, deleteOptions);
         sendMessage(decision.getChatId(), message);
@@ -272,6 +293,8 @@ public class DecisionServiceImpl implements DecisionService {
                     if (result == null){
                         throw new MessageParseException("Decision not found for "+msgType+" messsage");
                     }
+                    if (!result.decision.isOpen())
+                        throw new MessageParseException("Add Option not allowed for closed decision ["+result.decision+"]");
                     for (Option o : result.optionList) {
                         o.setDecisionId(result.decision.getId());
                         decisiongramDAO.save(o);
@@ -284,6 +307,8 @@ public class DecisionServiceImpl implements DecisionService {
                     if (result == null){
                         throw new MessageParseException("Decision not found for "+msgType+" messsage");
                     }
+                    if (!result.decision.isOpen())
+                        throw new MessageParseException("Delete Option not allowed for closed decision ["+result.decision+"]");
                     for (Option o : result.optionList) {
                         Option found = decisiongramDAO.getOption(o.getTitle(),result.decision);
                         if (found == null){

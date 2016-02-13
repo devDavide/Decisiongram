@@ -62,6 +62,7 @@ public class VoteListAdapter extends ArrayAdapter<Vote> {
         inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         this.editable = editable;
         this.firstVotePerformed = false;
+        this.newVotes = new HashMap<>();
         this.onVoteChangeListener = new OnVoteChangeListener() {
             @Override
             public void voteChanges(boolean areThereChangesToSave) {
