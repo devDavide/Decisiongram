@@ -1106,7 +1106,7 @@
     <!-- END MessageType descriptions -->
 
     <!-- Pollgram crash messages START -->
-    <string name="appCrashedMessage">Oh no...l\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
+    <string name="appCrashedMessage">Oh no...l\'applicazione è andata in crash :-( Inviami una segnalazione del crash in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
     <string name="sendCrashEmail">Invia sengalazione di errore</string>
     <string name="contactMe">Contact me</string>
     <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
