@@ -57,6 +57,7 @@ import org.pollgram.decision.service.PollgramFactory;
 import org.pollgram.decision.ui.DecisionsListFragment;
 import org.pollgram.decision.ui.NewDecisionFragment;
 import org.pollgram.decision.ui.SelectDecisionFragment;
+import org.pollgram.decision.ui.TutorialActivity;
 import org.pollgram.decision.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
@@ -2346,6 +2347,19 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         updateBottomOverlay();
         updateSecretStatus();
         updateSpamView();
+
+        if (isGroupChat()) { // show tutorial in first run
+            SharedPreferences sp = getParentActivity().getSharedPreferences("pollgramPref", Activity.MODE_PRIVATE);
+            boolean firstRun = sp.getBoolean("firstRun", true);
+            Log.i("TEST", "firstRun[" + firstRun + "]");
+            if (firstRun) {
+                Intent i = new Intent(getParentActivity(), TutorialActivity.class);
+                i.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+                getParentActivity().startActivity(i);
+            }
+            sp.edit().putBoolean("firstRun", false).commit();
+        }
+
 
         return fragmentView;
     }

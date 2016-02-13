@@ -123,7 +123,6 @@ public class LaunchActivity extends FragmentActivity implements ActionBarLayout.
         ApplicationLoader.postInitApplication();
         NativeCrashManager.handleDumpFiles(this);
 
-        //TODO fix
         Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
             @Override
             public void uncaughtException(Thread thread, final Throwable ex) {

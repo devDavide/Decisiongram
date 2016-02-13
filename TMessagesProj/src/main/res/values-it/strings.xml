@@ -1106,7 +1106,7 @@
     <!-- END MessageType descriptions -->
 
     <!-- Pollgram crash messages START -->
-    <string name="appCrashedMessage">Oh cazzo! L\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
+    <string name="appCrashedMessage">Oh no...l\'applicazione è andata in crash :-( Inviami una segnalazione del crash via email in modo che possa sistemare il tutto in men che non si dica. Grazie </string>
     <string name="sendCrashEmail">Invia sengalazione di errore</string>
     <string name="contactMe">Contact me</string>
     <string name="sendInfoEmail">Pollgram contactta lo sviluppatore</string>
@@ -1190,7 +1190,7 @@
     <string name="thereAreNoDecisionInThisGroup">Non ci sono ancora decisioni in questo gruppo.
         \n\nLe decisioni di Pollgram permettono in maniera semplice, di trovare un accordo su di una qualsivoglia questione
         tra i membri del gruppo, utilizzando un sistema basato su sondaggi.
-        \n\nPremi il pulsante \"più\" per creare una nuova decisione.</string>
+        \n\nPremi il pulsante \" + \" per creare una nuova decisione.</string>
 
     <string name="createDecision">Crea nuova decisione</string>
     <string name="newDecisionFromMessageHeader">Messaggio da %2$s, %1$s:</string>
@@ -1205,6 +1205,8 @@
     <string name="longDescNotEditable">Le note non sono modificabili.</string>
     <string name="youAreDecisionAdmin">Admin</string>
     <string name="optionHasBeenSaved">Le note dell\'opzione sono state salvate</string>
+    <string name="tutorialString">Premi qui per gestire le decisioni del gruppo\n___________________\n\nOppure crea nuove decisioni o opzioni semplicmente premendo su di un messaggio</string>
+    <string name="gotIt">Ho capito</string>
     <!-- END of Pollgram text -->
 
     <!--update text-->
