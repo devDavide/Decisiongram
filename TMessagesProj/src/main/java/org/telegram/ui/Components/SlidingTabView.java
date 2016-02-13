@@ -20,7 +20,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.pollgram.R;
+import org.decisiongram.R;
 
 public class SlidingTabView extends LinearLayout {
 

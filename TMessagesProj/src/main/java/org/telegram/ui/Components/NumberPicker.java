@@ -38,7 +38,7 @@ import android.view.animation.DecelerateInterpolator;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.pollgram.R;
+import org.decisiongram.R;
 
 import java.util.Locale;
 

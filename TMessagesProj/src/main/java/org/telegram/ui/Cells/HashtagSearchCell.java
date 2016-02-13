@@ -18,7 +18,7 @@ import android.view.MotionEvent;
 import android.widget.TextView;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.pollgram.R;
+import org.decisiongram.R;
 
 public class HashtagSearchCell extends TextView {
 

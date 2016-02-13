@@ -36,7 +36,7 @@ import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.support.widget.LinearLayoutManager;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.Adapters.PhotoAttachAdapter;
 import org.telegram.ui.Cells.PhotoAttachPhotoCell;

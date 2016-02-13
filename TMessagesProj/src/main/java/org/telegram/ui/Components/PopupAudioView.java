@@ -22,7 +22,7 @@ import org.telegram.messenger.ImageLoader;
 import org.telegram.messenger.MediaController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.FileLoader;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.MessageObject;
 import org.telegram.ui.Cells.BaseCell;
 

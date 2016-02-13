@@ -21,7 +21,7 @@ import android.text.TextPaint;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.FileLog;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.ApplicationLoader;
 

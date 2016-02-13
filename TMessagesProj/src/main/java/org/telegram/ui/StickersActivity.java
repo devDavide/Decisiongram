@@ -28,7 +28,7 @@ import org.telegram.messenger.NotificationCenter;
 import org.telegram.messenger.query.StickersQuery;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.messenger.FileLog;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.support.widget.LinearLayoutManager;
 import org.telegram.messenger.support.widget.RecyclerView;
 import org.telegram.messenger.support.widget.helper.ItemTouchHelper;

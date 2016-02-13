@@ -18,7 +18,7 @@ import android.provider.MediaStore;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.audioinfo.AudioInfo;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.QuickAckDelegate;

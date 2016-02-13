@@ -20,9 +20,9 @@ import android.text.TextUtils;
 import android.text.style.URLSpan;
 import android.text.util.Linkify;
 
-import org.pollgram.R;
-import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.service.PollgramMessagesManager;
+import org.decisiongram.R;
+import org.decisiongram.service.DecisiongramFactory;
+import org.decisiongram.service.MessagesManager;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
@@ -80,7 +80,7 @@ public class MessageObject {
 
     public ArrayList<TextLayoutBlock> textLayoutBlocks;
 
-    private PollgramMessagesManager msgManager = PollgramFactory.getMessagesManager();
+    private MessagesManager msgManager = DecisiongramFactory.getMessagesManager();
 
     public MessageObject(TLRPC.Message message, AbstractMap<Integer, TLRPC.User> users, boolean generateLayout) {
         this(message, users, null, generateLayout);
@@ -810,12 +810,12 @@ public class MessageObject {
 
     private void addPollgramLinks(CharSequence charSequence) {
         try {
-            PollgramMessagesManager.MessageType type = msgManager.getMessageType(charSequence.toString());
+            MessagesManager.MessageType type = msgManager.getMessageType(charSequence.toString());
             if (type == null)
                 return;
             msgManager.addDecisionURLSpan(type, (Spannable)charSequence);
         } catch (Exception e) {
-            FileLog.e("pollgramLink", e);
+            FileLog.e("decisiongramLink", e);
         }
     }
 

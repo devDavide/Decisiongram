@@ -15,7 +15,7 @@ import android.widget.ImageView;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.ui.Components.LayoutHelper;
 import org.telegram.ui.Components.SimpleTextView;
 

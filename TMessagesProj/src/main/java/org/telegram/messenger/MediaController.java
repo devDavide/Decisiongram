@@ -47,7 +47,7 @@ import android.os.PowerManager;
 import android.os.Vibrator;
 import android.provider.MediaStore;
 
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.audioinfo.AudioInfo;
 import org.telegram.messenger.query.SharedMediaQuery;
 import org.telegram.messenger.video.InputSurface;

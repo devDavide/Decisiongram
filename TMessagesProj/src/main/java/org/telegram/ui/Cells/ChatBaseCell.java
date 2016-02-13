@@ -24,7 +24,7 @@ import android.text.style.ClickableSpan;
 import android.view.MotionEvent;
 import android.view.SoundEffectConstants;
 
-import org.pollgram.decision.service.PollgramFactory;
+import org.decisiongram.service.DecisiongramFactory;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.Emoji;
 import org.telegram.messenger.LocaleController;
@@ -35,7 +35,7 @@ import org.telegram.messenger.FileLoader;
 import org.telegram.messenger.FileLog;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessagesController;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.ImageReceiver;
 import org.telegram.ui.Components.AvatarDrawable;
@@ -836,7 +836,7 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
 
         Drawable currentBackgroundDrawable;
         if (currentMessageObject.isOutOwner()) {
-            if (PollgramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
+            if (DecisiongramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
                 currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageOut;
 
             } else if (isDrawSelectedBackground()) {
@@ -854,7 +854,7 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
             }
             setDrawableBounds(currentBackgroundDrawable, layoutWidth - backgroundWidth - (!media ? 0 : AndroidUtilities.dp(9)), AndroidUtilities.dp(1), backgroundWidth, layoutHeight - AndroidUtilities.dp(2));
         } else {
-            if (PollgramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
+            if (DecisiongramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
                 currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageIn;
             } else  if (isDrawSelectedBackground()) {
                 if (!media) {

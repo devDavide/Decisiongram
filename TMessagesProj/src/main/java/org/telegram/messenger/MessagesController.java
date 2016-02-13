@@ -22,9 +22,9 @@ import android.util.SparseArray;
 import android.util.SparseIntArray;
 import android.widget.Toast;
 
-import org.pollgram.R;
-import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.service.PollgramService;
+import org.decisiongram.R;
+import org.decisiongram.service.DecisiongramFactory;
+import org.decisiongram.service.DecisionService;
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.messenger.query.BotQuery;
 import org.telegram.messenger.query.StickersQuery;
@@ -129,7 +129,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
     public int minGroupConvertSize = 200;
     public int groupBigSize;
     private ArrayList<TLRPC.TL_disabledFeature> disabledFeatures = new ArrayList<>();
-    private PollgramService pollgramService = PollgramFactory.getService();
+    private DecisionService decisiongramService = DecisiongramFactory.getService();
 
     private class UserActionUpdatesSeq extends TLRPC.Updates {
 
@@ -430,7 +430,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
             Integer newMsgId = (Integer) args[1];
             Long did = (Long) args[3];
             MessageObject obj = dialogMessage.get(did);
-            pollgramService.processMessage(obj);
+            decisiongramService.processMessage(obj);
             if (obj != null && obj.getId() == msgId) {
                 obj.messageOwner.id = newMsgId;
                 obj.messageOwner.send_state = MessageObject.MESSAGE_SEND_STATE_SENT;
@@ -867,7 +867,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                         }
                         message.dialog_id = dialog_id;
                         MessageObject msg = new MessageObject(message, usersLocal, chatsLocal, true);
-                        pollgramService.processMessage(msg);
+                        decisiongramService.processMessage(msg);
                         objects.add(msg);
                     }
 
@@ -2038,8 +2038,8 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                         }
                     }
                 }
-                pollgramService.processMessages(dialog_id, objects);
-                pollgramService.processMessages(dialog_id, pollgramService.getUnParsedMessages(dialog_id, dialogMessagesByIds, objects));
+                decisiongramService.processMessages(dialog_id, objects);
+                decisiongramService.processMessages(dialog_id, decisiongramService.getUnParsedMessages(dialog_id, dialogMessagesByIds, objects));
 
                 AndroidUtilities.runOnUIThread(new Runnable() {
                     @Override
@@ -2676,7 +2676,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                         }
                     }
                     MessageObject messageObject = new MessageObject(message, usersDict, chatsDict, false);
-                    pollgramService.processMessage(messageObject);
+                    decisiongramService.processMessage(messageObject);
                     new_dialogMessage.put(messageObject.getDialogId(), messageObject);
                 }
                 for (int a = 0; a < dialogsRes.dialogs.size(); a++) {
@@ -4401,7 +4401,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                                                 arr = new ArrayList<>();
                                                 messages.put(uid, arr);
                                             }
-                                            pollgramService.processMessage(obj);
+                                            decisiongramService.processMessage(obj);
                                             arr.add(obj);
                                         }
 
@@ -4733,7 +4733,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                     MessagesStorage.lastPtsValue = updates.pts;
                     final MessageObject obj = new MessageObject(message, null, true);
                     // callend when a new message is received
-                    pollgramService.processMessage(obj);
+                    decisiongramService.processMessage(obj);
 
 
                     final ArrayList<MessageObject> objArr = new ArrayList<>();
@@ -5183,7 +5183,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
                 messagesArr.add(message);
                 ImageLoader.saveMessageThumbs(message);
                 MessageObject obj = new MessageObject(message, usersDict, chatsDict, true);
-                pollgramService.processMessage(obj);
+                decisiongramService.processMessage(obj);
                 if (obj.type == 11) {
                     interfaceUpdateMask |= UPDATE_MASK_CHAT_AVATAR;
                 } else if (obj.type == 10) {
@@ -5315,7 +5315,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
 
                     messagesArr.add(newMessage);
                     MessageObject obj = new MessageObject(newMessage, usersDict, chatsDict, true);
-                    pollgramService.processMessage(obj);
+                    decisiongramService.processMessage(obj);
                     ArrayList<MessageObject> arr = messages.get(newMessage.dialog_id);
                     if (arr == null) {
                         arr = new ArrayList<>();
@@ -5364,7 +5364,7 @@ public class MessagesController implements NotificationCenter.NotificationCenter
 
                 messagesArr.add(newMessage);
                 MessageObject obj = new MessageObject(newMessage, usersDict, chatsDict, true);
-                pollgramService.processMessage(obj);
+                decisiongramService.processMessage(obj);
                 ArrayList<MessageObject> arr = messages.get(newMessage.dialog_id);
                 if (arr == null) {
                     arr = new ArrayList<>();

@@ -51,14 +51,14 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.pollgram.R;
-import org.pollgram.decision.service.PollgramDAOException;
-import org.pollgram.decision.service.PollgramFactory;
-import org.pollgram.decision.ui.DecisionsListFragment;
-import org.pollgram.decision.ui.NewDecisionFragment;
-import org.pollgram.decision.ui.SelectDecisionFragment;
-import org.pollgram.decision.ui.TutorialActivity;
-import org.pollgram.decision.ui.VotesManagerFragment;
+import org.decisiongram.R;
+import org.decisiongram.service.DecisionDAOException;
+import org.decisiongram.service.DecisiongramFactory;
+import org.decisiongram.ui.DecisionsListFragment;
+import org.decisiongram.ui.NewDecisionFragment;
+import org.decisiongram.ui.SelectDecisionFragment;
+import org.decisiongram.ui.TutorialActivity;
+import org.decisiongram.ui.VotesManagerFragment;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.AnimationCompat.AnimatorListenerAdapterProxy;
@@ -2349,7 +2349,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
         updateSpamView();
 
         if (isGroupChat()) { // show tutorial in first run
-            SharedPreferences sp = getParentActivity().getSharedPreferences("pollgramPref", Activity.MODE_PRIVATE);
+            SharedPreferences sp = getParentActivity().getSharedPreferences("decisiongramPref", Activity.MODE_PRIVATE);
             boolean firstRun = sp.getBoolean("firstRun", true);
             Log.i("TEST", "firstRun[" + firstRun + "]");
             if (firstRun) {
@@ -2365,7 +2365,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     }
 
     private void openDecisionListFragment() {
-        Bundle args = PollgramFactory.getService().getBundleForDecisionList(info);
+        Bundle args = DecisiongramFactory.getService().getBundleForDecisionList(info);
         presentFragment(new DecisionsListFragment(args));
     }
 
@@ -6087,7 +6087,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     if (currentEncryptedChat == null) {
 
-                        if (isGroupChat() && !PollgramFactory.getMessagesManager().isPollgram(selectedObject)) { // Pollgram custom items
+                        if (isGroupChat() && !DecisiongramFactory.getMessagesManager().isPollgram(selectedObject)) { // Pollgram custom items
                             items.add(LocaleController.getString("createDecision", R.string.createDecision));
                             options.add(MENU_ITEM_OPTION_CREATE_DECISION);
 
@@ -6363,12 +6363,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
 
         } else if (option == MENU_ITEM_OPTION_CREATE_DECISION) {
             // Pollgram create decision
-            Bundle args = PollgramFactory.getService().getBundleForNewDecision(currentChat, selectedObject);
+            Bundle args = DecisiongramFactory.getService().getBundleForNewDecision(currentChat, selectedObject);
             presentFragment(new NewDecisionFragment(args));
 
         } else if (option == MENU_ITEM_OPTION_CREATE_OPTION){
             // Pollgram use it as option
-            Bundle args = PollgramFactory.getService().getBundleForNewOption(currentChat,selectedObject);
+            Bundle args = DecisiongramFactory.getService().getBundleForNewOption(currentChat,selectedObject);
             presentFragment(new SelectDecisionFragment(args));
 
         } else if (option == 11) {
@@ -6852,12 +6852,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                             } else {
                                 // Pollgram decision tile link to vote manager
                                 try {
-                                    Bundle bundle = PollgramFactory.getService().
+                                    Bundle bundle = DecisiongramFactory.getService().
                                             getBundleForVotesManagerFragment(info, messageObject, url);
                                     if (bundle != null) {
                                         presentFragment(new VotesManagerFragment(bundle));
                                     }
-                                } catch (PollgramDAOException e){
+                                } catch (DecisionDAOException e){
                                     Log.w("OpenLink", e.getMessage());
                                     Toast.makeText(mContext, e.getMessage(), Toast.LENGTH_LONG).show();
                                 }

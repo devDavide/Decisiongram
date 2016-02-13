@@ -45,8 +45,8 @@ import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.Toast;
 
-import org.pollgram.R;
-import org.pollgram.decision.ui.CrashManagerActivity;
+import org.decisiongram.R;
+import org.decisiongram.ui.CrashManagerActivity;
 import org.telegram.PhoneFormat.PhoneFormat;
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.ApplicationLoader;

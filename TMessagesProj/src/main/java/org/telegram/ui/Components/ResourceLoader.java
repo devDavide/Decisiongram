@@ -11,7 +11,7 @@ package org.telegram.ui.Components;
 import android.content.Context;
 import android.graphics.drawable.Drawable;
 
-import org.pollgram.R;
+import org.decisiongram.R;
 
 public class ResourceLoader {
 
@@ -59,7 +59,7 @@ public class ResourceLoader {
     public static void loadRecources(Context context) {
         if (backgroundDrawableIn == null) {
             backgroundDrawablePollgramMessageIn = context.getResources().getDrawable(R.drawable.msg_in_pollgram_message);
-            //backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_pollgram_message);
+            //backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_decisiongram_message);
             backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out);
 
 

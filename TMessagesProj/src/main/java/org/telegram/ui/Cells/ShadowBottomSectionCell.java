@@ -12,7 +12,7 @@ import android.content.Context;
 import android.view.View;
 
 import org.telegram.messenger.AndroidUtilities;
-import org.pollgram.R;
+import org.decisiongram.R;
 
 public class ShadowBottomSectionCell extends View {
 

@@ -24,7 +24,7 @@ import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.ApplicationLoader;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.messenger.MessagesController;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.BaseFragment;
 import org.telegram.ui.Components.IdenticonDrawable;

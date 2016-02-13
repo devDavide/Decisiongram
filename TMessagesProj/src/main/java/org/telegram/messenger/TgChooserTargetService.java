@@ -26,7 +26,7 @@ import android.service.chooser.ChooserTarget;
 import android.service.chooser.ChooserTargetService;
 import android.text.TextUtils;
 
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.SQLite.SQLiteCursor;
 import org.telegram.tgnet.TLRPC;
 import org.telegram.ui.LaunchActivity;

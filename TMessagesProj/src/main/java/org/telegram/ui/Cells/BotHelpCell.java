@@ -26,7 +26,7 @@ import org.telegram.messenger.Emoji;
 import org.telegram.messenger.LocaleController;
 import org.telegram.messenger.MessageObject;
 import org.telegram.messenger.FileLog;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.ui.Components.LinkPath;
 import org.telegram.ui.Components.ResourceLoader;
 import org.telegram.ui.Components.TypefaceSpan;

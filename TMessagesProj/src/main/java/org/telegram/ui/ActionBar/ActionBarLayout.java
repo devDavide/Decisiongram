@@ -33,7 +33,7 @@ import org.telegram.messenger.AnimationCompat.AnimatorListenerAdapterProxy;
 import org.telegram.messenger.AnimationCompat.AnimatorSetProxy;
 import org.telegram.messenger.AnimationCompat.ObjectAnimatorProxy;
 import org.telegram.messenger.AnimationCompat.ViewProxy;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.ui.Components.LayoutHelper;
 
 import java.util.ArrayList;

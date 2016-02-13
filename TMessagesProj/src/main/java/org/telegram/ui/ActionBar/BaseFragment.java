@@ -19,7 +19,7 @@ import android.view.ViewGroup;
 
 import org.telegram.messenger.AnimationCompat.AnimatorSetProxy;
 import org.telegram.messenger.FileLog;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.tgnet.ConnectionsManager;
 
 public class BaseFragment {

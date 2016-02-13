@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.pollgram"
+    package="org.decisiongram"
     android:installLocation="auto">
 
     <supports-screens android:anyDensity="true"
@@ -129,12 +129,12 @@
             android:windowSoftInputMode="adjustResize|stateHidden">
         </activity>
         <activity
-            android:name=".decision.ui.CrashManagerActivity"
+            android:name="org.decisiongram.ui.CrashManagerActivity"
             android:label="@string/title_activity_crash_manager_activity"
             android:theme="@style/Theme.Transparent">
         </activity>
         <activity
-            android:name=".decision.ui.TutorialActivity"
+            android:name="org.decisiongram.ui.TutorialActivity"
             android:theme="@style/Theme.Transparent">
         </activity>
 

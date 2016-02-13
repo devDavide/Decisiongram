@@ -32,7 +32,7 @@ import android.widget.CompoundButton;
 
 import org.telegram.messenger.AndroidUtilities;
 import org.telegram.messenger.LocaleController;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.AnimationCompat.ObjectAnimatorProxy;
 
 public class Switch extends CompoundButton {

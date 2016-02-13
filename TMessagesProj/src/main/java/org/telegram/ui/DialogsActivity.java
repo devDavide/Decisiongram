@@ -52,7 +52,7 @@ import org.telegram.messenger.ContactsController;
 import org.telegram.messenger.MessagesController;
 import org.telegram.messenger.MessagesStorage;
 import org.telegram.messenger.NotificationCenter;
-import org.pollgram.R;
+import org.decisiongram.R;
 import org.telegram.messenger.UserConfig;
 import org.telegram.ui.ActionBar.BottomSheet;
 import org.telegram.ui.Adapters.DialogsAdapter;
