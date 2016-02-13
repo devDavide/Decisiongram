@@ -1109,7 +1109,7 @@
     <!-- END MessageType descriptions -->
 
     <!-- Pollgram crash messages START -->
-    <string name="appCrashedMessage">Oh shit ! The app crashed :-( Please send me the crash info by email, so i can fix the problem as soon a spossible. Thanks you.</string>
+    <string name="appCrashedMessage">Oh no...the app crashed :-( Please send me the crash info by email, so i can fix the problem as soon as possible. Thanks you.</string>
     <string name="sendCrashEmail">Send Crash info</string>
     <string name="contactMe">Contact me</string>
     <string name="sendInfoEmail">Pollgram contact developer</string>
@@ -1194,7 +1194,7 @@
     <string name="thereAreNoDecisionInThisGroup">There are stil no decision in this group.
         \n\nPollgram\'s decisions are a powerful tool, for easily taking arrangement between the group\'s members,
         using a poll-based system.
-        \n\nPres the \"plus\" button for creating a new decision.</string>
+        \n\nPres the \" + \" button for creating a new decision.</string>
 
     <string name="createDecision">Create Decision</string>
     <string name="exitWithoutSaving">Exit without saving ?</string>
@@ -1209,14 +1209,12 @@
     <string name="longDescNotEditable">Notes are not editable.</string>
     <string name="youAreDecisionAdmin">Admin</string>
     <string name="optionHasBeenSaved">Option notes has been saved.</string>
-
+    <string name="tutorialString">Press here for managing group decision\n___________________\n\nYou can crate a new decision or option just by tapping on a message</string>
+    <string name="gotIt">Got It</string>
     <!-- END of Pollgram text -->
 
 
     <!--update text-->
     <string name="updateText">Telegram for Android has been updated. New in version 3.4.0:\n\nGIF revolution: up to 20x faster downloading/sending, autoplay, save GIFs to a dedicated tab on the sticker panel.\n\nMore about GIFs:\nhttps://telegram.org/blog/gif-revolution\n\nInline bots: A new way to add bot content to any chat. Type a bot\'s username and your query in the text field to get instant results and send them to your chat partner. Try typing “@gif dog” in your next chat. Sample bots: @gif, @wiki, @bing, @vid, @bold.\n\nMore about inline bots:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
-
-    <string name="hello_world">Hello world!</string>
-
 </resources>
