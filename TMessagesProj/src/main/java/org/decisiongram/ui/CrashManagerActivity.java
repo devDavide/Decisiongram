@@ -53,7 +53,7 @@ public class CrashManagerActivity extends Activity {
                 Intent i = new Intent(Intent.ACTION_SEND);
                 i.setType("message/rfc822");
                 i.putExtra(Intent.EXTRA_EMAIL, new String[]{getString(R.string.emailBugDestAddress)});
-                i.putExtra(Intent.EXTRA_SUBJECT, "Pollgram crash report");
+                i.putExtra(Intent.EXTRA_SUBJECT, "Decisiongram crash report");
                 i.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                 i.putExtra(Intent.EXTRA_TEXT, msgBody.toString());
                 if (logAttachmentFile != null)

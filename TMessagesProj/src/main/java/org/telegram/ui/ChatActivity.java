@@ -214,7 +214,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private TextView gifHintTextView;
     private View emojiButtonRed;
 
-    //Pollgram UI components
+    //Decisiongram UI components
     private ImageView decisionManagerButton;
 
     private ObjectAnimatorProxy pagedownButtonAnimation;
@@ -328,13 +328,13 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private final static int mute = 18;
     private final static int reply = 19;
 
-    // Pollgram IDs start
+    // Decisiongram IDs start
     private static final int MENU_ITEM_OPTION_CREATE_DECISION = 1001;
     private static final int MENU_ITEM_OPTION_CREATE_OPTION = 1002;
 
     private final static int new_decision = 20;
     private final static int show_decision = 21;
-    // Pollgram IDs end
+    // Decisiongram IDs end
 
     private final static int bot_help = 30;
     private final static int bot_settings = 31;
@@ -1015,7 +1015,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             }
         });
 
-        /// add Pollgram decision button
+        /// add Decisiongram decision button
         decisionManagerButton = new ImageView(context);
         if (isGroupChat()) { // only incase of a group chat
             decisionManagerButton.setScaleType(ImageView.ScaleType.CENTER);
@@ -6087,7 +6087,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                 } else {
                     if (currentEncryptedChat == null) {
 
-                        if (isGroupChat() && !DecisiongramFactory.getMessagesManager().isPollgram(selectedObject)) { // Pollgram custom items
+                        if (isGroupChat() && !DecisiongramFactory.getMessagesManager().isDecisiongram(selectedObject)) { // Decisiongram custom items
                             items.add(LocaleController.getString("createDecision", R.string.createDecision));
                             options.add(MENU_ITEM_OPTION_CREATE_DECISION);
 
@@ -6362,12 +6362,12 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
             MediaController.saveFile(path, getParentActivity(), selectedObject.isMusic() ? 3 : 2, fileName);
 
         } else if (option == MENU_ITEM_OPTION_CREATE_DECISION) {
-            // Pollgram create decision
+            // Decisiongram create decision
             Bundle args = DecisiongramFactory.getService().getBundleForNewDecision(currentChat, selectedObject);
             presentFragment(new NewDecisionFragment(args));
 
         } else if (option == MENU_ITEM_OPTION_CREATE_OPTION){
-            // Pollgram use it as option
+            // Decisiongram use it as option
             Bundle args = DecisiongramFactory.getService().getBundleForNewOption(currentChat,selectedObject);
             presentFragment(new SelectDecisionFragment(args));
 
@@ -6850,7 +6850,7 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
                                     chatActivityEnterView.setCommand(messageObject, str, longPress, currentChat != null && currentChat.megagroup);
                                 }
                             } else {
-                                // Pollgram decision tile link to vote manager
+                                // Decisiongram decision tile link to vote manager
                                 try {
                                     Bundle bundle = DecisiongramFactory.getService().
                                             getBundleForVotesManagerFragment(info, messageObject, url);

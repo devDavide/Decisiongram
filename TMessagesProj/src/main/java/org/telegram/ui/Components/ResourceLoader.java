@@ -15,8 +15,8 @@ import org.decisiongram.R;
 
 public class ResourceLoader {
 
-    public static Drawable backgroundDrawablePollgramMessageIn;
-    public static Drawable backgroundDrawablePollgramMessageOut;
+    public static Drawable backgroundDrawableDecisiongramMessageIn;
+    public static Drawable backgroundDrawableDecisiongramMessageOut;
     public static Drawable backgroundDrawableIn;
     public static Drawable backgroundDrawableInSelected;
     public static Drawable backgroundDrawableOut;
@@ -58,9 +58,9 @@ public class ResourceLoader {
 
     public static void loadRecources(Context context) {
         if (backgroundDrawableIn == null) {
-            backgroundDrawablePollgramMessageIn = context.getResources().getDrawable(R.drawable.msg_in_pollgram_message);
-            //backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_decisiongram_message);
-            backgroundDrawablePollgramMessageOut = context.getResources().getDrawable(R.drawable.msg_out);
+            backgroundDrawableDecisiongramMessageIn = context.getResources().getDrawable(R.drawable.msg_in_decision_message);
+            //backgroundDrawableDecisiongramMessageOut = context.getResources().getDrawable(R.drawable.msg_out_decisiongram_message);
+            backgroundDrawableDecisiongramMessageOut = context.getResources().getDrawable(R.drawable.msg_out);
 
 
             backgroundDrawableIn = context.getResources().getDrawable(R.drawable.msg_in);

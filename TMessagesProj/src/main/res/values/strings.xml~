@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     tools:ignore="MissingTranslation">
 
-    <string name="AppName">Decisiongram</string>
-    <string name="AppNameBeta">Decisiongram Beta</string>
+    <string name="AppName">Telegram Poll</string>
+    <string name="AppNameBeta">Telegram Poll Beta</string>
     <string name="LanguageName">English</string>
     <string name="LanguageNameInEnglish">English</string>
     <string name="LanguageCode">en</string>

@@ -6,19 +6,19 @@ package org.decisiongram.service;
 public class DecisiongramFactory {
 
     private static volatile DecisionDAO INSTANCE = null;
-    private static volatile DecisionService POLLGRAM_SERVICE_INSTANCE = null;
+    private static volatile DecisionService DECISIONGRAM_SERVICE_INSTANCE = null;
     private static volatile MessagesManager MESSAGEE_MANAGER_INSTANCE = null;
 
     // TODO factorize getter code
 
     public static MessagesManager getMessagesManager() {
         return new MessagesManagerImpl();
-//        PollgramMessagesManager localInstance = MESSAGEE_MANAGER_INSTANCE;
+//        DecisiongramMessagesManager localInstance = MESSAGEE_MANAGER_INSTANCE;
 //        if (localInstance == null) {
-//            synchronized (PollgramMessagesManager.class) {
+//            synchronized (DecisiongramMessagesManager.class) {
 //                localInstance = MESSAGEE_MANAGER_INSTANCE;
 //                if (localInstance == null) {
-//                    MESSAGEE_MANAGER_INSTANCE = localInstance = new PollgramMessagesManagerImpl();
+//                    MESSAGEE_MANAGER_INSTANCE = localInstance = new DecisiongramMessagesManagerImpl();
 //                }
 //            }
 //        }
@@ -27,12 +27,12 @@ public class DecisiongramFactory {
 
     public static DecisionDAO getDAO() {
         return new DecisionDAODBImpl();
-//        PollgramDAO localInstance = INSTANCE;
+//        DecisiongramDAO localInstance = INSTANCE;
 //        if (localInstance == null) {
-//            synchronized (PollgramDAO.class) {
+//            synchronized (DecisiongramDAO.class) {
 //                localInstance = INSTANCE;
 //                if (localInstance == null) {
-//                    INSTANCE = localInstance = new PollgramDAODBImpl();
+//                    INSTANCE = localInstance = new DecisiongramDAODBImpl();
 //                }
 //            }
 //        }
@@ -41,12 +41,12 @@ public class DecisiongramFactory {
 
     public static DecisionService getService() {
         return new DecisionServiceImpl();
-//        PollgramService localInstance = POLLGRAM_SERVICE_INSTANCE;
+//        DecisiongramService localInstance = DECISIONGRAM_SERVICE_INSTANCE;
 //        if (localInstance == null) {
-//            synchronized (PollgramService.class) {
-//                localInstance = POLLGRAM_SERVICE_INSTANCE;
+//            synchronized (DecisiongramService.class) {
+//                localInstance = DECISIONGRAM_SERVICE_INSTANCE;
 //                if (localInstance == null) {
-//                    POLLGRAM_SERVICE_INSTANCE = localInstance = new PollgramServiceImpl();
+//                    DECISIONGRAM_SERVICE_INSTANCE = localInstance = new DecisiongramServiceImpl();
 //                }
 //            }
 //        }

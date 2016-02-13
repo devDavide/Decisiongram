@@ -808,7 +808,7 @@ public class MessageObject {
         }
     }
 
-    private void addPollgramLinks(CharSequence charSequence) {
+    private void addDecisiongramLinks(CharSequence charSequence) {
         try {
             MessagesManager.MessageType type = msgManager.getMessageType(charSequence.toString());
             if (type == null)
@@ -872,7 +872,7 @@ public class MessageObject {
                 }
             }
         }
-        addPollgramLinks(messageText);
+        addDecisiongramLinks(messageText);
 
         if (messageText instanceof Spannable) {
             Spannable spannable = (Spannable) messageText;

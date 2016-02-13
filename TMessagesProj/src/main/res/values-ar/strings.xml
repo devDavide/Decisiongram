@@ -3,8 +3,8 @@
 <!--Translation by Khalid Alaraifi-->
 
 <resources>
-    <string name="AppName">Pollgram</string>
-    <string name="AppNameBeta">Pollgram BETA</string>
+    <string name="AppName">Decisiongram</string>
+    <string name="AppNameBeta">Decisiongram BETA</string>
     <string name="LanguageName">العربية</string>
     <string name="LanguageNameInEnglish">Arabic</string>
     <string name="LanguageCode">ar</string>

@@ -193,7 +193,7 @@ public class DecisionServiceImpl implements DecisionService {
     }
 
     @Override
-    public boolean isPollgramMessage(MessageObject message) {
+    public boolean isDecisiongramMessage(MessageObject message) {
         long groupChatId = messageManager.getMessageGroupId(message);
         if (groupChatId == -1)
             return false;
@@ -530,14 +530,14 @@ public class DecisionServiceImpl implements DecisionService {
     public void processMessages(final long dialog_id, List<MessageObject> objects) {
         long groupChatId = messageManager.getMessageGroupId(dialog_id);
         Log.i(LOG_TAG, "Messages not imported yet for group [" + groupChatId + "] importing " + objects.size() + " messages");
-        SortedSet<TimeMessageKey> timeOrderedPollgramMessages = new TreeSet<TimeMessageKey>();
+        SortedSet<TimeMessageKey> timeOrderedDecisiongramMessages = new TreeSet<TimeMessageKey>();
         for (MessageObject messageObject : objects) {
-            if (isPollgramMessage(messageObject)) {
-                timeOrderedPollgramMessages.add(new TimeMessageKey(messageObject));
+            if (isDecisiongramMessage(messageObject)) {
+                timeOrderedDecisiongramMessages.add(new TimeMessageKey(messageObject));
             }
         }
-        for (TimeMessageKey tmk : timeOrderedPollgramMessages) {
-            Log.d("Pollgram", "Parsing message date[" + tmk.messageDate + "] message["+tmk.messageObject.messageText+"]");
+        for (TimeMessageKey tmk : timeOrderedDecisiongramMessages) {
+            Log.d("Decisiongram", "Parsing message date[" + tmk.messageDate + "] message["+tmk.messageObject.messageText+"]");
             processMessage(tmk.messageObject, false);
         }
     }

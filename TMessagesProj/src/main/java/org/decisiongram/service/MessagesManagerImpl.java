@@ -32,7 +32,7 @@ import java.util.StringTokenizer;
 class MessagesManagerImpl implements MessagesManager {
     private static final String LOG_TAG = "MessageTransactions";
 
-    private static final String POLLGRAM_MESSAGE_PREFIX = "#Pollgram ";
+    private static final String DECISIONGRAM_MESSAGE_PREFIX = "#Decisiongram ";
     protected static final char QUOTE_CHAR = '\'';
     protected static final char ESCAPE_QUOTE_CHAR = '´';
     private static final char NEW_LINE = '\n';
@@ -51,7 +51,7 @@ class MessagesManagerImpl implements MessagesManager {
     String getTailingString(){
         return new StringBuilder().append(NEW_LINE).
                 append(NEW_LINE).
-                append(getResString(R.string.downloadPollgramFromMarket)).
+                append(getResString(R.string.downloadDecisiongramFromMarket)).
                 append(' ').
                 append(context.getString(R.string.appDownloadURL)).
                 toString();
@@ -301,7 +301,7 @@ class MessagesManagerImpl implements MessagesManager {
      */
     protected String buildMessage(MessageType type, String messageBody) {
         StringBuilder sb = new StringBuilder();
-        sb.append(POLLGRAM_MESSAGE_PREFIX);
+        sb.append(DECISIONGRAM_MESSAGE_PREFIX);
         sb.append(' ');
         sb.append(type.getEmoji());
         sb.append(' ');
@@ -339,9 +339,9 @@ class MessagesManagerImpl implements MessagesManager {
      */
     @Override
     public MessageType getMessageType(String msg){
-        if (msg != null && msg.startsWith(POLLGRAM_MESSAGE_PREFIX)) {
+        if (msg != null && msg.startsWith(DECISIONGRAM_MESSAGE_PREFIX)) {
             try {
-                int start = POLLGRAM_MESSAGE_PREFIX.length() + 1;
+                int start = DECISIONGRAM_MESSAGE_PREFIX.length() + 1;
                 String msgEmoji = msg.substring(start, start + 2);
                 MessageType t = MessageType.byEmoji(msgEmoji);
                 Log.d(LOG_TAG, "MessageType for emoji[" + Arrays.toString(msgEmoji.getBytes()) + "] is [" + t + "]");
@@ -355,7 +355,7 @@ class MessagesManagerImpl implements MessagesManager {
     }
 
     @Override
-    public boolean isPollgram(MessageObject msg) {
+    public boolean isDecisiongram(MessageObject msg) {
         if (msg == null || msg.messageText == null)
             return false;
         return getMessageType(msg.messageText.toString()) != null;

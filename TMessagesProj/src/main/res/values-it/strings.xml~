@@ -3,8 +3,8 @@
 <!--https://www.transifex.com/projects/p/telegram/language/it/members/-->
 
 <resources>
-    <string name="AppName">Decisiongram</string>
-    <string name="AppNameBeta">Decisiongram Beta</string>
+    <string name="AppName">Telegram Decisioni</string>
+    <string name="AppNameBeta">Telegram Decisioni Beta</string>
     <string name="LanguageName">Italiano</string>
     <string name="LanguageNameInEnglish">Italian</string>
     <string name="LanguageCode">it</string>

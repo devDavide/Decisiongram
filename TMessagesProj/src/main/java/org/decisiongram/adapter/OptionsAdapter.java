@@ -16,7 +16,7 @@ import android.widget.Toast;
 import org.decisiongram.R;
 import org.decisiongram.data.DBBean;
 import org.decisiongram.data.Option;
-import org.decisiongram.data.PollgramException;
+import org.decisiongram.data.DecisiongramException;
 import org.decisiongram.data.TextOption;
 import org.decisiongram.ui.DefaultTextWatcher;
 
@@ -53,14 +53,14 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
 
     /**
      * @return the list of the selected options
-     * @throws PollgramException if some value is invalid
+     * @throws DecisiongramException if some value is invalid
      */
-    public List<Option> getNewOptions() throws PollgramException{
+    public List<Option> getNewOptions() throws DecisiongramException {
         Set<String> titleSet = new HashSet<>();
         // check for duplicated titles
         for(Option o : options){
             if (titleSet.contains(o.getTitle())){
-                throw new PollgramException(getContext().getString(R.string.titleAlreadyPresent,o.getTitle()));
+                throw new DecisiongramException(getContext().getString(R.string.titleAlreadyPresent,o.getTitle()));
             }
             titleSet.add(o.getTitle());
         }
@@ -71,9 +71,9 @@ public class OptionsAdapter extends ArrayAdapter<Option> {
             String title = opt.getTitle();
             if (title == null || title.trim().isEmpty()) {
                 if (i == 0)
-                    throw new PollgramException(getContext().getString(R.string.emptyTitleOnLastOption));
+                    throw new DecisiongramException(getContext().getString(R.string.emptyTitleOnLastOption));
                 else
-                    throw new PollgramException(getContext().getString(R.string.emptyTitleOnOption, i + 1));
+                    throw new DecisiongramException(getContext().getString(R.string.emptyTitleOnOption, i + 1));
             }
             if (opt.getId() == DBBean.ID_NOT_SET)
                 out.add(opt);

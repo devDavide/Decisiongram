@@ -99,7 +99,7 @@ public interface DecisionService {
      * @param message
      * @return whether the messsage is a decisiongram transaction message
      */
-    boolean isPollgramMessage(MessageObject message);
+    boolean isDecisiongramMessage(MessageObject message);
 
     /**
      * @param messageObject

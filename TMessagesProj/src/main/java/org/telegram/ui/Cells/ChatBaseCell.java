@@ -836,8 +836,8 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
 
         Drawable currentBackgroundDrawable;
         if (currentMessageObject.isOutOwner()) {
-            if (DecisiongramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
-                currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageOut;
+            if (DecisiongramFactory.getMessagesManager().isDecisiongram(currentMessageObject)) {
+                currentBackgroundDrawable = ResourceLoader.backgroundDrawableDecisiongramMessageOut;
 
             } else if (isDrawSelectedBackground()) {
                 if (!media) {
@@ -854,8 +854,8 @@ public class ChatBaseCell extends BaseCell implements MediaController.FileDownlo
             }
             setDrawableBounds(currentBackgroundDrawable, layoutWidth - backgroundWidth - (!media ? 0 : AndroidUtilities.dp(9)), AndroidUtilities.dp(1), backgroundWidth, layoutHeight - AndroidUtilities.dp(2));
         } else {
-            if (DecisiongramFactory.getMessagesManager().isPollgram(currentMessageObject)) {
-                currentBackgroundDrawable = ResourceLoader.backgroundDrawablePollgramMessageIn;
+            if (DecisiongramFactory.getMessagesManager().isDecisiongram(currentMessageObject)) {
+                currentBackgroundDrawable = ResourceLoader.backgroundDrawableDecisiongramMessageIn;
             } else  if (isDrawSelectedBackground()) {
                 if (!media) {
                     currentBackgroundDrawable = ResourceLoader.backgroundDrawableInSelected;

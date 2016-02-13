@@ -16,7 +16,7 @@ import org.decisiongram.R;
 import org.decisiongram.adapter.OptionsAdapter;
 import org.decisiongram.data.Decision;
 import org.decisiongram.data.Option;
-import org.decisiongram.data.PollgramException;
+import org.decisiongram.data.DecisiongramException;
 import org.decisiongram.data.TextOption;
 import org.decisiongram.service.DecisionDAO;
 import org.decisiongram.service.DecisiongramFactory;
@@ -100,7 +100,7 @@ public class EditOptionsFragment extends BaseFragment {
                         final List<Option> deletedOptions;
                         try {
                             newOptions = optionsAdapter.getNewOptions();
-                        } catch (PollgramException e) {
+                        } catch (DecisiongramException e) {
                             Log.w(LOG_TAG, "Error in getOption", e);
                             Toast.makeText(getParentActivity(), e.getMessage(), Toast.LENGTH_LONG).show();
                             return;

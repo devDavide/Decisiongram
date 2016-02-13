@@ -23,7 +23,7 @@ public interface MessagesManager {
 
 
     /**
-     * The different messages type managed by Pollgram
+     * The different messages type managed by Decisiongram
      * Emoji codes are taken from http://apps.timwhitlock.info/emoji/tables/unicode#block-6a-additional-emoticons
      */
     enum MessageType {
@@ -77,8 +77,8 @@ public interface MessagesManager {
     void addDecisionURLSpan(MessageType type, Spannable charSequence);
 
     /**
-     * remove unnecessary part of the message, like the link for downloading Pollgram from the market
-     * that is needed just for Telegram client different than Pollgram
+     * remove unnecessary part of the message, like the link for downloading Decisiongram from the market
+     * that is needed just for Telegram client different than Decisiongram
      * @param message
      * @return
      */
@@ -106,7 +106,7 @@ public interface MessagesManager {
      * @param msg
      * @return whether this is a decisiongram message
      */
-    boolean isPollgram(MessageObject msg);
+    boolean isDecisiongram(MessageObject msg);
 
     /**
      * Build message for notify a vote transaction
