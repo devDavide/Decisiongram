@@ -1166,7 +1166,7 @@
     <string name="emptyTitleOnLastOption">Please select a title for the last option.</string>
     <string name="titleAlreadyPresent">There are more than one option, with title \'%1$s\' please remove one.</string>
     <string name="you">you</string>
-    <string name="saveDecisionQuestion">Save decision: %1$s, with %2$d options ?\nTake care: it will be no more possible to change options titles, you only will be able to add or remove options.</string>
+    <string name="saveDecisionQuestion">Save decision: %1$s, with %2$d options ?\nTake care: it will be no more possible to change options titles, you only will be able to add or remove options, or change their notes.\nSave the decision ?</string>
     <string name="addOptionToDecisionQuestion">Are you sure to add %1$d options to decision %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Are you sure to:\nAdd %1$d option\nand remove %2$d options\nfrom the decision %3$s ?</string>
 
@@ -1211,10 +1211,12 @@
     <string name="optionHasBeenSaved">Option notes has been saved.</string>
     <string name="tutorialString">Press here for managing group decision\n___________________\n\nYou can crate a new decision or option just by tapping on a message</string>
     <string name="gotIt">Got It</string>
+    <string name="editableOnlyByDecisionOwner">Editable only by the decision admin.</string>
     <!-- END of Decisiongram text -->
 
 
     <!--update text-->
     <string name="updateText">Telegram for Android has been updated. New in version 3.4.0:\n\nGIF revolution: up to 20x faster downloading/sending, autoplay, save GIFs to a dedicated tab on the sticker panel.\n\nMore about GIFs:\nhttps://telegram.org/blog/gif-revolution\n\nInline bots: A new way to add bot content to any chat. Type a bot\'s username and your query in the text field to get instant results and send them to your chat partner. Try typing “@gif dog” in your next chat. Sample bots: @gif, @wiki, @bing, @vid, @bold.\n\nMore about inline bots:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
+
 </resources>

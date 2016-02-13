@@ -100,6 +100,16 @@ public class OptionDetailFragment extends BaseFragment {
             }
         });
 
+        if (!decision.isEditable()){
+            edLongDesc.setFocusable(false);
+            edLongDesc.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Toast.makeText(context,R.string.editableOnlyByDecisionOwner, Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+
         edLongDesc.addTextChangedListener(new DefaultTextWatcher() {
             @Override
             public void afterTextChanged(Editable s) {

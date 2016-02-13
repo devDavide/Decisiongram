@@ -1161,7 +1161,7 @@
     <string name="emptyTitleOnOption">Prego selezionare un titolo per l\'opzione %1$d.</string>
     <string name="emptyTitleOnLastOption">Prego selezionare un titolo per l\'ultima opzione.</string>
     <string name="titleAlreadyPresent">Attenzione! Esiste già un opzione, con titolo \'%1$s\' prego rimuoverne una.</string>
-    <string name="saveDecisionQuestion">Salvare la decisione: %1$s, con %2$d opzioni ?\nAttenzione non sarà più possibile cambiare il titolo delle opzioni. Sarà permesso solo aggiungere o rimuovere opzioni.</string>
+    <string name="saveDecisionQuestion">Salvare la decisione: %1$s, con %2$d opzioni ?\nAttenzione non sarà più possibile cambiare il titolo delle opzioni. Sarà permesso solo aggiungere o rimuovere opzioni, o modificare le note.\nSalvare la decisione ?</string>
     <string name="addOptionToDecisionQuestion">Aggiungere %1$d opzioni alla decisione %2$s ?</string>
     <string name="addRemoveOptionToDecisionQuestion">Sei sicuro di\naggiungere %1$d opzioni \ne rimuovere %2$d opzioni\n dalla decisione %3$s ?</string>
     <string name="you">te</string>
@@ -1207,12 +1207,12 @@
     <string name="optionHasBeenSaved">Le note dell\'opzione sono state salvate</string>
     <string name="tutorialString">Premi qui per gestire le decisioni del gruppo\n___________________\n\nOppure crea nuove decisioni o opzioni semplicmente premendo su di un messaggio</string>
     <string name="gotIt">Ho capito</string>
+    <string name="editableOnlyByDecisionOwner">Modificabile solo dal amministratore della decisione</string>
     <!-- END of Decisiongram text -->
 
     <!--update text-->
     <string name="updateText">Telegram per Android si è aggiornato. Nuovo nella versione 3.4.0:\n\nRivoluzione GIF: Invio e download 20 volte più veloci, autoriproduci e salva le tue preferite nel pannello sticker.\n\nPiù info sulle GIF:\nhttps://telegram.org/blog/gif-revolution\n\nBot Inline: Un nuovo modo di aggiungere contenuti in ogni chat. Menziona un bot e la tua domanda nel campo di scrittura e ottieni risultati immediati. Prova a scrivere “@gif dog” nella tua prossima chat. Bot di esempio: @gif, @wiki, @bing, @vid, @bold\n\nPiù info sui Bot Inline:\nhttps://telegram.org/blog/inline-bots</string>
     <string name="updateBuild">704</string>
-
 
 
 </resources>
