@@ -69,6 +69,7 @@ public class VotesManagerFragment extends BaseFragment {
     private ActionBarMenu menu;
     private VotesManagerTabsFragment votesManagerTabsFragment;
     private Context context;
+    private boolean created = false;
 
     public VotesManagerFragment(Bundle bundle) {
         super(bundle);
@@ -92,12 +93,17 @@ public class VotesManagerFragment extends BaseFragment {
             finishFragment();
             return false;
         }
+        created = true;
         return super.onFragmentCreate();
     }
 
 
     @Override
     public View createView(final Context context) {
+        if (!created) {
+            Log.w(LOG_TAG,"Force create fragment");
+            onFragmentCreate();
+        }
         tvUserVoteCount = UIUtils.init(actionBar, decision.getTitle(), R.drawable.decision_icon_small);
         actionBar.setOnClickListener(new View.OnClickListener() {
             @Override
