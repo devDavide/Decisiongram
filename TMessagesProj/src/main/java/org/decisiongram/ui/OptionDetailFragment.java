@@ -19,8 +19,8 @@ import org.decisiongram.R;
 import org.decisiongram.data.Decision;
 import org.decisiongram.data.TextOption;
 import org.decisiongram.data.UsersDecisionVotes;
-import org.decisiongram.service.DecisiongramFactory;
 import org.decisiongram.service.DecisionService;
+import org.decisiongram.service.DecisiongramFactory;
 import org.telegram.ui.ActionBar.ActionBar;
 import org.telegram.ui.ActionBar.ActionBarMenuItem;
 import org.telegram.ui.ActionBar.BaseFragment;
@@ -56,6 +56,12 @@ public class OptionDetailFragment extends BaseFragment {
 
     @Override
     public boolean onFragmentCreate() {
+        return super.onFragmentCreate();
+    }
+
+    @Override
+    public View createView(final Context context) {
+        // ini fields
         long optionId = getArguments().getLong(PAR_OPTION_ID);
         long decisionId = getArguments().getLong(PAR_DECISION_ID);
         int[] members = getArguments().getIntArray(PAR_PARTICIPANT_IDS);
@@ -71,11 +77,7 @@ public class OptionDetailFragment extends BaseFragment {
         voteCount = negativeVoteCount + positiveVoteCount;
         missingVoteCount = membersCount - voteCount;
 
-        return super.onFragmentCreate();
-    }
 
-    @Override
-    public View createView(final Context context) {
         actionBar.setTitle(context.getString(R.string.optionDetailTitle));
         actionBar.setBackButtonImage(R.drawable.ic_ab_back);
         final ActionBarMenuItem saveItemMenu = actionBar.createMenu().addItem(SAVE_MENU_ITEM_ID, 0);
