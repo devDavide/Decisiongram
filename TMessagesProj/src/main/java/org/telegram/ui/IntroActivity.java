@@ -221,15 +221,16 @@ public class IntroActivity extends Activity {
                 finish();
             }
         });
-//        if (BuildVars.DEBUG_VERSION) {
-//            startMessagingButton.setOnLongClickListener(new View.OnLongClickListener() {
-//                @Override
-//                public boolean onLongClick(View v) {
-//                    ConnectionsManager.getInstance().switchBackend();
-//                    return true;
-//                }
-//            });
-//        }
+
+        if (BuildVars.DEBUG_VERSION) {
+            startMessagingButton.setOnLongClickListener(new View.OnLongClickListener() {
+                @Override
+                public boolean onLongClick(View v) {
+                    ConnectionsManager.getInstance().switchBackend();
+                    return true;
+                }
+            });
+        }
 
         justCreated = true;
     }

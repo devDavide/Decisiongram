@@ -23,7 +23,6 @@ import org.telegram.messenger.query.BotQuery;
 import org.telegram.messenger.query.SharedMediaQuery;
 import org.telegram.tgnet.ConnectionsManager;
 import org.telegram.tgnet.NativeByteBuffer;
-import org.telegram.tgnet.TLClassStore;
 import org.telegram.tgnet.TLObject;
 import org.telegram.tgnet.TLRPC;
 
@@ -167,7 +166,7 @@ public class MessagesStorage {
                 database.executeFast("CREATE TABLE bot_info(uid INTEGER PRIMARY KEY, info BLOB)").stepThis().dispose();
 
                 //version
-                database.executeFast("PRAGMA user_version = 29").stepThis().dispose();
+                database.executeFast("PRAGMA user_version = 30").stepThis().dispose();
 
                 //database.executeFast("CREATE TABLE secret_holes(uid INTEGER, seq_in INTEGER, seq_out INTEGER, data BLOB, PRIMARY KEY (uid, seq_in, seq_out));").stepThis().dispose();
                 //database.executeFast("CREATE TABLE attach_data(uid INTEGER, id INTEGER, data BLOB, PRIMARY KEY (uid, id))").stepThis().dispose();
@@ -201,7 +200,7 @@ public class MessagesStorage {
                     }
                 }
                 int version = database.executeInt("PRAGMA user_version");
-                if (version < 29) {
+                if (version < 30) {
                     updateDbToLastVersion(version);
                 }
             }
@@ -465,11 +464,6 @@ public class MessagesStorage {
                         database.executeFast("PRAGMA user_version = 23").stepThis().dispose();
                         version = 23;
                     }
-                    if (version == 23) {
-                        database.executeFast("DELETE FROM sent_files_v2 WHERE 1").stepThis().dispose();
-                        database.executeFast("PRAGMA user_version = 24").stepThis().dispose();
-                        version = 24;
-                    }
                     if (version == 24) {
                         database.executeFast("DELETE FROM media_holes_v2 WHERE uid != 0 AND type >= 0 AND start IN (0, 1)").stepThis().dispose();
                         database.executeFast("PRAGMA user_version = 25").stepThis().dispose();
@@ -488,7 +482,13 @@ public class MessagesStorage {
                     if (version == 28) {
                         database.executeFast("CREATE TABLE IF NOT EXISTS bot_recent(id INTEGER PRIMARY KEY, date INTEGER);").stepThis().dispose();
                         database.executeFast("PRAGMA user_version = 29").stepThis().dispose();
-                        //version = 29;
+                        version = 29;
+                    }
+                    if (version == 29) {
+                        database.executeFast("DELETE FROM sent_files_v2 WHERE 1").stepThis().dispose();
+                        database.executeFast("DELETE FROM download_queue WHERE 1").stepThis().dispose();
+                        database.executeFast("PRAGMA user_version = 30").stepThis().dispose();
+                        //version = 30;
                     }
                 } catch (Exception e) {
                     FileLog.e("tmessages", e);
@@ -1029,26 +1029,12 @@ public class MessagesStorage {
                                     if (message == null || message.media == null) {
                                         continue;
                                     }
-                                    if (message.media instanceof TLRPC.TL_messageMediaAudio) {
-                                        File file = FileLoader.getPathToAttach(message.media.audio);
-                                        if (file != null && file.toString().length() > 0) {
-                                            filesToDelete.add(file);
-                                        }
-                                    } else if (message.media instanceof TLRPC.TL_messageMediaPhoto) {
+                                    if (message.media instanceof TLRPC.TL_messageMediaPhoto) {
                                         for (TLRPC.PhotoSize photoSize : message.media.photo.sizes) {
                                             File file = FileLoader.getPathToAttach(photoSize);
                                             if (file != null && file.toString().length() > 0) {
                                                 filesToDelete.add(file);
                                             }
-                                        }
-                                    } else if (message.media instanceof TLRPC.TL_messageMediaVideo) {
-                                        File file = FileLoader.getPathToAttach(message.media.video);
-                                        if (file != null && file.toString().length() > 0) {
-                                            filesToDelete.add(file);
-                                        }
-                                        file = FileLoader.getPathToAttach(message.media.video.thumb);
-                                        if (file != null && file.toString().length() > 0) {
-                                            filesToDelete.add(file);
                                         }
                                     } else if (message.media instanceof TLRPC.TL_messageMediaDocument) {
                                         File file = FileLoader.getPathToAttach(message.media.document);
@@ -1288,6 +1274,7 @@ public class MessagesStorage {
                 try {
                     int minDate = Integer.MAX_VALUE;
                     SparseArray<ArrayList<Integer>> messages = new SparseArray<>();
+                    final ArrayList<Long> midsArray = new ArrayList<>();
                     StringBuilder mids = new StringBuilder();
                     SQLiteCursor cursor;
                     if (random_ids == null) {
@@ -1298,10 +1285,13 @@ public class MessagesStorage {
                     }
                     while (cursor.next()) {
                         int ttl = cursor.intValue(1);
+                        int mid = cursor.intValue(0);
+                        if (random_ids != null) {
+                            midsArray.add((long) mid);
+                        }
                         if (ttl <= 0) {
                             continue;
                         }
-                        int mid = cursor.intValue(0);
                         int date = Math.min(readTime, time) + ttl;
                         minDate = Math.min(minDate, date);
                         ArrayList<Integer> arr = messages.get(date);
@@ -1316,15 +1306,26 @@ public class MessagesStorage {
                         arr.add(mid);
                     }
                     cursor.dispose();
+
+                    if (random_ids != null) {
+                        AndroidUtilities.runOnUIThread(new Runnable() {
+                            @Override
+                            public void run() {
+                                MessagesStorage.getInstance().markMessagesContentAsRead(midsArray);
+                                NotificationCenter.getInstance().postNotificationName(NotificationCenter.messagesReadContent, midsArray);
+                            }
+                        });
+                    }
+
                     if (messages.size() != 0) {
                         database.beginTransaction();
                         SQLitePreparedStatement state = database.executeFast("REPLACE INTO enc_tasks_v2 VALUES(?, ?)");
                         for (int a = 0; a < messages.size(); a++) {
                             int key = messages.keyAt(a);
                             ArrayList<Integer> arr = messages.get(key);
-                            for (Integer mid : arr) {
+                            for (int b = 0; b < arr.size(); b++) {
                                 state.requery();
-                                state.bindInteger(1, mid);
+                                state.bindInteger(1, arr.get(b));
                                 state.bindInteger(2, key);
                                 state.step();
                             }
@@ -2117,6 +2118,36 @@ public class MessagesStorage {
         });
     }
 
+    public boolean checkMessageId(final long dialog_id, final int mid) {
+        final boolean[] result = new boolean[1];
+        final Semaphore semaphore = new Semaphore(0);
+        storageQueue.postRunnable(new Runnable() {
+            @Override
+            public void run() {
+                SQLiteCursor cursor = null;
+                try {
+                    cursor = database.queryFinalized(String.format(Locale.US, "SELECT mid FROM messages WHERE uid = %d AND mid = %d", dialog_id, mid));
+                    if (cursor.next()) {
+                        result[0] = true;
+                    }
+                } catch (Exception e) {
+                    FileLog.e("tmessages", e);
+                } finally {
+                    if (cursor != null) {
+                        cursor.dispose();
+                    }
+                }
+                semaphore.release();
+            }
+        });
+        try {
+            semaphore.acquire();
+        } catch (Exception e) {
+            FileLog.e("tmessages", e);
+        }
+        return result[0];
+    }
+
     public void getMessages(final long dialog_id, final int count, final int max_id, final int minDate, final int classGuid, final int load_type, final int important, final int loadIndex) {
         storageQueue.postRunnable(new Runnable() {
             @Override
@@ -2144,6 +2175,7 @@ public class MessagesStorage {
                     ArrayList<Integer> chatsToLoad = new ArrayList<>();
                     ArrayList<Long> replyMessages = new ArrayList<>();
                     HashMap<Integer, ArrayList<TLRPC.Message>> replyMessageOwners = new HashMap<>();
+                    HashMap<Long, ArrayList<TLRPC.Message>> replyMessageRandomOwners = new HashMap<>();
 
                     SQLiteCursor cursor;
                     int lower_id = (int) dialog_id;
@@ -2390,7 +2422,7 @@ public class MessagesStorage {
 
                                 addUsersAndChatsFromMessage(message, usersToLoad, chatsToLoad);
 
-                                if (message.reply_to_msg_id != 0) {
+                                if (message.reply_to_msg_id != 0 || message.reply_to_random_id != 0) {
                                     boolean ok = false;
                                     if (!cursor.isNull(6)) {
                                         NativeByteBuffer data2 = new NativeByteBuffer(cursor.byteArrayLength(6));
@@ -2404,19 +2436,31 @@ public class MessagesStorage {
                                         data2.reuse();
                                     }
                                     if (!ok) {
-                                        long messageId = message.reply_to_msg_id;
-                                        if (message.to_id.channel_id != 0) {
-                                            messageId |= ((long) message.to_id.channel_id) << 32;
+                                        if (message.reply_to_msg_id != 0) {
+                                            long messageId = message.reply_to_msg_id;
+                                            if (message.to_id.channel_id != 0) {
+                                                messageId |= ((long) message.to_id.channel_id) << 32;
+                                            }
+                                            if (!replyMessages.contains(messageId)) {
+                                                replyMessages.add(messageId);
+                                            }
+                                            ArrayList<TLRPC.Message> messages = replyMessageOwners.get(message.reply_to_msg_id);
+                                            if (messages == null) {
+                                                messages = new ArrayList<>();
+                                                replyMessageOwners.put(message.reply_to_msg_id, messages);
+                                            }
+                                            messages.add(message);
+                                        } else {
+                                            if (!replyMessages.contains(message.reply_to_random_id)) {
+                                                replyMessages.add(message.reply_to_random_id);
+                                            }
+                                            ArrayList<TLRPC.Message> messages = replyMessageRandomOwners.get(message.reply_to_random_id);
+                                            if (messages == null) {
+                                                messages = new ArrayList<>();
+                                                replyMessageRandomOwners.put(message.reply_to_random_id, messages);
+                                            }
+                                            messages.add(message);
                                         }
-                                        if (!replyMessages.contains(messageId)) {
-                                            replyMessages.add(messageId);
-                                        }
-                                        ArrayList<TLRPC.Message> messages = replyMessageOwners.get(message.reply_to_msg_id);
-                                        if (messages == null) {
-                                            messages = new ArrayList<>();
-                                            replyMessageOwners.put(message.reply_to_msg_id, messages);
-                                        }
-                                        messages.add(message);
                                     }
                                 }
                                 message.send_state = cursor.intValue(2);
@@ -2500,7 +2544,11 @@ public class MessagesStorage {
                     }
 
                     if (!replyMessages.isEmpty()) {
-                        cursor = database.queryFinalized(String.format(Locale.US, "SELECT data, mid, date FROM messages WHERE mid IN(%s)", TextUtils.join(",", replyMessages)));
+                        if (!replyMessageOwners.isEmpty()) {
+                            cursor = database.queryFinalized(String.format(Locale.US, "SELECT data, mid, date FROM messages WHERE mid IN(%s)", TextUtils.join(",", replyMessages)));
+                        } else {
+                            cursor = database.queryFinalized(String.format(Locale.US, "SELECT m.data, m.mid, m.date, r.random_id FROM randoms as r INNER JOIN messages as m ON r.mid = m.mid WHERE r.random_id IN(%s)", TextUtils.join(",", replyMessages)));
+                        }
                         while (cursor.next()) {
                             NativeByteBuffer data = new NativeByteBuffer(cursor.byteArrayLength(0));
                             if (data != null && cursor.byteBufferValue(0, data) != 0) {
@@ -2511,16 +2559,35 @@ public class MessagesStorage {
 
                                 addUsersAndChatsFromMessage(message, usersToLoad, chatsToLoad);
 
-                                ArrayList<TLRPC.Message> arrayList = replyMessageOwners.get(message.id);
-                                if (arrayList != null) {
-                                    for (TLRPC.Message m : arrayList) {
-                                        m.replyMessage = message;
+                                if (!replyMessageOwners.isEmpty()) {
+                                    ArrayList<TLRPC.Message> arrayList = replyMessageOwners.get(message.id);
+                                    if (arrayList != null) {
+                                        for (int a = 0; a < arrayList.size(); a++) {
+                                            arrayList.get(a).replyMessage = message;
+                                        }
+                                    }
+                                } else {
+                                    ArrayList<TLRPC.Message> arrayList = replyMessageRandomOwners.remove(cursor.longValue(3));
+                                    if (arrayList != null) {
+                                        for (int a = 0; a < arrayList.size(); a++) {
+                                            TLRPC.Message object = arrayList.get(a);
+                                            object.replyMessage = message;
+                                            object.reply_to_msg_id = message.id;
+                                        }
                                     }
                                 }
                             }
                             data.reuse();
                         }
                         cursor.dispose();
+                        if (!replyMessageRandomOwners.isEmpty()) {
+                            for (HashMap.Entry<Long, ArrayList<TLRPC.Message>> entry : replyMessageRandomOwners.entrySet()) {
+                                ArrayList<TLRPC.Message> arrayList = entry.getValue();
+                                for (int a = 0; a < arrayList.size(); a++) {
+                                    arrayList.get(a).reply_to_random_id = 0;
+                                }
+                            }
+                        }
                     }
 
                     if (!usersToLoad.isEmpty()) {
@@ -2600,9 +2667,11 @@ public class MessagesStorage {
                         if (cursor.next()) {
                             NativeByteBuffer data = new NativeByteBuffer(cursor.byteArrayLength(0));
                             if (data != null && cursor.byteBufferValue(0, data) != 0) {
-                                TLObject file = TLClassStore.Instance().TLdeserialize(data, data.readInt32(false), false);
-                                if (file != null) {
-                                    result.add(file);
+                                TLObject file = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                                if (file instanceof TLRPC.TL_messageMediaDocument) {
+                                    result.add(((TLRPC.TL_messageMediaDocument) file).document);
+                                } else if (file instanceof TLRPC.TL_messageMediaPhoto) {
+                                    result.add(((TLRPC.TL_messageMediaDocument) file).photo);
                                 }
                             }
                             data.reuse();
@@ -2635,10 +2704,23 @@ public class MessagesStorage {
                 try {
                     String id = Utilities.MD5(path);
                     if (id != null) {
+                        TLRPC.MessageMedia messageMedia = null;
+                        if (file instanceof TLRPC.Photo) {
+                            messageMedia = new TLRPC.TL_messageMediaPhoto();
+                            messageMedia.caption = "";
+                            messageMedia.photo = (TLRPC.Photo) file;
+                        } else if (file instanceof TLRPC.Document) {
+                            messageMedia = new TLRPC.TL_messageMediaDocument();
+                            messageMedia.caption = "";
+                            messageMedia.document = (TLRPC.Document) file;
+                        }
+                        if (messageMedia == null) {
+                            return;
+                        }
                         state = database.executeFast("REPLACE INTO sent_files_v2 VALUES(?, ?, ?)");
                         state.requery();
-                        NativeByteBuffer data = new NativeByteBuffer(file.getObjectSize());
-                        file.serializeToStream(data);
+                        NativeByteBuffer data = new NativeByteBuffer(messageMedia.getObjectSize());
+                        messageMedia.serializeToStream(data);
                         state.bindString(1, id);
                         state.bindInteger(2, type);
                         state.bindByteBuffer(3, data);
@@ -2739,10 +2821,8 @@ public class MessagesStorage {
             public void run() {
                 SQLitePreparedStatement state = null;
                 try {
-                    if ((chat.key_hash == null || chat.key_hash.length != 16) && chat.auth_key != null) {
-                        byte[] sha1 = Utilities.computeSHA1(chat.auth_key);
-                        chat.key_hash = new byte[16];
-                        System.arraycopy(sha1, 0, chat.key_hash, 0, chat.key_hash.length);
+                    if ((chat.key_hash == null || chat.key_hash.length < 16) && chat.auth_key != null) {
+                        chat.key_hash = AndroidUtilities.calcAuthKeyHash(chat.auth_key);
                     }
 
                     state = database.executeFast("UPDATE enc_chats SET data = ?, g = ?, authkey = ?, ttl = ?, layer = ?, seq_in = ?, seq_out = ?, use_count = ?, exchange_id = ?, key_date = ?, fprint = ?, fauthkey = ?, khash = ? WHERE uid = ?");
@@ -2857,10 +2937,8 @@ public class MessagesStorage {
             @Override
             public void run() {
                 try {
-                    if ((chat.key_hash == null || chat.key_hash.length != 16) && chat.auth_key != null) {
-                        byte[] sha1 = Utilities.computeSHA1(chat.auth_key);
-                        chat.key_hash = new byte[16];
-                        System.arraycopy(sha1, 0, chat.key_hash, 0, chat.key_hash.length);
+                    if ((chat.key_hash == null || chat.key_hash.length < 16) && chat.auth_key != null) {
+                        chat.key_hash = AndroidUtilities.calcAuthKeyHash(chat.auth_key);
                     }
                     SQLitePreparedStatement state = database.executeFast("REPLACE INTO enc_chats VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                     NativeByteBuffer data = new NativeByteBuffer(chat.getObjectSize());
@@ -2951,7 +3029,46 @@ public class MessagesStorage {
             return;
         }
         SQLitePreparedStatement state = database.executeFast("REPLACE INTO users VALUES(?, ?, ?, ?)");
-        for (TLRPC.User user : users) {
+        for (int a = 0; a < users.size(); a++) {
+            TLRPC.User user = users.get(a);
+            if (user.min) {
+                SQLiteCursor cursor = database.queryFinalized(String.format(Locale.US, "SELECT data FROM users WHERE uid = %d", user.id));
+                if (cursor.next()) {
+                    try {
+                        NativeByteBuffer data = new NativeByteBuffer(cursor.byteArrayLength(0));
+                        if (data != null && cursor.byteBufferValue(0, data) != 0) {
+                            TLRPC.User oldUser = TLRPC.User.TLdeserialize(data, data.readInt32(false), false);
+                            if (user != null) {
+                                if (user.first_name != null) {
+                                    oldUser.first_name = user.first_name;
+                                    oldUser.flags |= 2;
+                                } else {
+                                    oldUser.first_name = null;
+                                    oldUser.flags = oldUser.flags &~ 2;
+                                }
+                                if (user.last_name != null) {
+                                    oldUser.last_name = user.last_name;
+                                    oldUser.flags |= 4;
+                                } else {
+                                    oldUser.last_name = null;
+                                    oldUser.flags = oldUser.flags &~ 4;
+                                }
+                                if (user.photo != null) {
+                                    oldUser.photo = user.photo;
+                                    oldUser.flags |= 32;
+                                } else {
+                                    oldUser.photo = null;
+                                    oldUser.flags = oldUser.flags &~ 32;
+                                }
+                            }
+                            user = oldUser;
+                        }
+                        data.reuse();
+                    } catch (Exception e) {
+                        FileLog.e("tmessages", e);
+                    }
+                }
+            }
             state.requery();
             NativeByteBuffer data = new NativeByteBuffer(user.getObjectSize());
             user.serializeToStream(data);
@@ -2981,7 +3098,8 @@ public class MessagesStorage {
             return;
         }
         SQLitePreparedStatement state = database.executeFast("REPLACE INTO chats VALUES(?, ?, ?)");
-        for (TLRPC.Chat chat : chats) {
+        for (int a = 0; a < chats.size(); a++) {
+            TLRPC.Chat chat = chats.get(a);
             state.requery();
             NativeByteBuffer data = new NativeByteBuffer(chat.getObjectSize());
             chat.serializeToStream(data);
@@ -3172,7 +3290,12 @@ public class MessagesStorage {
                         downloadObject.id = cursor.longValue(0);
                         NativeByteBuffer data = new NativeByteBuffer(cursor.byteArrayLength(2));
                         if (data != null && cursor.byteBufferValue(2, data) != 0) {
-                            downloadObject.object = TLClassStore.Instance().TLdeserialize(data, data.readInt32(false), false);
+                            TLRPC.MessageMedia messageMedia = TLRPC.MessageMedia.TLdeserialize(data, data.readInt32(false), false);
+                            if (messageMedia.document != null) {
+                                downloadObject.object = messageMedia.document;
+                            } else if (messageMedia.photo != null) {
+                                downloadObject.object = FileLoader.getClosestPhotoSizeWithSize(messageMedia.photo.sizes, AndroidUtilities.getPhotoSize());
+                            }
                         }
                         data.reuse();
                         objects.add(downloadObject);
@@ -3195,10 +3318,10 @@ public class MessagesStorage {
     private int getMessageMediaType(TLRPC.Message message) {
         if (message instanceof TLRPC.TL_message_secret && (
                 message.media instanceof TLRPC.TL_messageMediaPhoto && message.ttl > 0 && message.ttl <= 60 ||
-                message.media instanceof TLRPC.TL_messageMediaAudio ||
-                message.media instanceof TLRPC.TL_messageMediaVideo)) {
+                MessageObject.isVoiceMessage(message) ||
+                MessageObject.isVideoMessage(message))) {
             return 1;
-        } else if (message.media instanceof TLRPC.TL_messageMediaPhoto || message.media instanceof TLRPC.TL_messageMediaVideo) {
+        } else if (message.media instanceof TLRPC.TL_messageMediaPhoto || MessageObject.isVideoMessage(message)) {
             return 0;
         }
         return -1;
@@ -3612,15 +3735,17 @@ public class MessagesStorage {
                 data.reuse();
 
                 if ((message.to_id.channel_id == 0 || MessageObject.isImportant(message)) && message.date >= ConnectionsManager.getInstance().getCurrentTime() - 60 * 60 && downloadMask != 0) {
-                    if (message.media instanceof TLRPC.TL_messageMediaAudio || message.media instanceof TLRPC.TL_messageMediaPhoto || message.media instanceof TLRPC.TL_messageMediaVideo || message.media instanceof TLRPC.TL_messageMediaDocument) {
+                    if (message.media instanceof TLRPC.TL_messageMediaPhoto || message.media instanceof TLRPC.TL_messageMediaDocument) {
                         int type = 0;
                         long id = 0;
-                        TLObject object = null;
-                        if (message.media instanceof TLRPC.TL_messageMediaAudio) {
-                            if ((downloadMask & MediaController.AUTODOWNLOAD_MASK_AUDIO) != 0 && message.media.audio.size < 1024 * 1024 * 5) {
-                                id = message.media.audio.id;
+                        TLRPC.MessageMedia object = null;
+                        if (MessageObject.isVoiceMessage(message)) {
+                            if ((downloadMask & MediaController.AUTODOWNLOAD_MASK_AUDIO) != 0 && message.media.document.size < 1024 * 1024 * 5) {
+                                id = message.media.document.id;
                                 type = MediaController.AUTODOWNLOAD_MASK_AUDIO;
-                                object = message.media.audio;
+                                object = new TLRPC.TL_messageMediaDocument();
+                                object.caption = "";
+                                object.document = message.media.document;
                             }
                         } else if (message.media instanceof TLRPC.TL_messageMediaPhoto) {
                             if ((downloadMask & MediaController.AUTODOWNLOAD_MASK_PHOTO) != 0) {
@@ -3628,20 +3753,26 @@ public class MessagesStorage {
                                 if (photoSize != null) {
                                     id = message.media.photo.id;
                                     type = MediaController.AUTODOWNLOAD_MASK_PHOTO;
-                                    object = photoSize;
+                                    object = new TLRPC.TL_messageMediaPhoto();
+                                    object.caption = "";
+                                    object.photo = message.media.photo;
                                 }
                             }
-                        } else if (message.media instanceof TLRPC.TL_messageMediaVideo) {
+                        } else if (MessageObject.isVideoMessage(message)) {
                             if ((downloadMask & MediaController.AUTODOWNLOAD_MASK_VIDEO) != 0) {
-                                id = message.media.video.id;
+                                id = message.media.document.id;
                                 type = MediaController.AUTODOWNLOAD_MASK_VIDEO;
-                                object = message.media.video;
+                                object = new TLRPC.TL_messageMediaDocument();
+                                object.caption = "";
+                                object.document = message.media.document;
                             }
                         } else if (message.media instanceof TLRPC.TL_messageMediaDocument && !MessageObject.isMusicMessage(message) && !MessageObject.isGifDocument(message.media.document)) {
                             if ((downloadMask & MediaController.AUTODOWNLOAD_MASK_DOCUMENT) != 0) {
                                 id = message.media.document.id;
                                 type = MediaController.AUTODOWNLOAD_MASK_DOCUMENT;
-                                object = message.media.document;
+                                object = new TLRPC.TL_messageMediaDocument();
+                                object.caption = "";
+                                object.document = message.media.document;
                             }
                         }
                         if (object != null) {
@@ -4261,26 +4392,12 @@ public class MessagesStorage {
                         if (message == null || message.media == null) {
                             continue;
                         }
-                        if (message.media instanceof TLRPC.TL_messageMediaAudio) {
-                            File file = FileLoader.getPathToAttach(message.media.audio);
-                            if (file != null && file.toString().length() > 0) {
-                                filesToDelete.add(file);
-                            }
-                        } else if (message.media instanceof TLRPC.TL_messageMediaPhoto) {
+                        if (message.media instanceof TLRPC.TL_messageMediaPhoto) {
                             for (TLRPC.PhotoSize photoSize : message.media.photo.sizes) {
                                 File file = FileLoader.getPathToAttach(photoSize);
                                 if (file != null && file.toString().length() > 0) {
                                     filesToDelete.add(file);
                                 }
-                            }
-                        } else if (message.media instanceof TLRPC.TL_messageMediaVideo) {
-                            File file = FileLoader.getPathToAttach(message.media.video);
-                            if (file != null && file.toString().length() > 0) {
-                                filesToDelete.add(file);
-                            }
-                            file = FileLoader.getPathToAttach(message.media.video.thumb);
-                            if (file != null && file.toString().length() > 0) {
-                                filesToDelete.add(file);
                             }
                         } else if (message.media instanceof TLRPC.TL_messageMediaDocument) {
                             File file = FileLoader.getPathToAttach(message.media.document);
@@ -4793,6 +4910,15 @@ public class MessagesStorage {
                             messageId |= ((long) channelId) << 32;
                         }
 
+                        if (load_type == -2) {
+                            SQLiteCursor cursor = database.queryFinalized(String.format(Locale.US, "SELECT mid FROM messages WHERE mid = %d", messageId));
+                            boolean exist = cursor.next();
+                            cursor.dispose();
+                            if (!exist) {
+                                continue;
+                            }
+                        }
+
                         if (a == 0 && createDialog) {
                             SQLitePreparedStatement state3 = database.executeFast("REPLACE INTO dialogs VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
                             state3.bindLong(1, dialog_id);
@@ -4802,7 +4928,7 @@ public class MessagesStorage {
                             state3.bindInteger(5, message.id);
                             state3.bindInteger(6, 0);
                             state3.bindLong(7, messageId);
-                            state3.bindInteger(8, 0);
+                            state3.bindInteger(8, load_type < 0 ? message.ttl : 0);
                             state3.bindInteger(9, messages.pts);
                             state3.bindInteger(10, message.date);
                             state3.step();
@@ -4810,7 +4936,7 @@ public class MessagesStorage {
                         }
 
                         boolean isImportant = MessageObject.isImportant(message);
-                        if (load_type != -1 && important == 1) {
+                        if (load_type >= 0 && important == 1) {
                             if (isImportant) {
                                 minChannelMessageId = Math.min(minChannelMessageId, message.id);
                                 maxChannelMessageId = Math.max(maxChannelMessageId, message.id);
@@ -4875,7 +5001,7 @@ public class MessagesStorage {
                         BotQuery.putBotKeyboard(dialog_id, botKeyboard);
                     }
 
-                    if (load_type != -1 && important != 0) {
+                    if (load_type >= 0 && important != 0) {
                         /*if ((messages.flags & 1) == 0) {
                             if (countBeforeImportant != 0) {
                                 if (load_type == 0) {
@@ -4980,17 +5106,17 @@ public class MessagesStorage {
             if (message.media.user_id != 0 && !usersToLoad.contains(message.media.user_id)) {
                 usersToLoad.add(message.media.user_id);
             }
-            if (message.media.audio != null && message.media.audio.user_id != 0 &&  !usersToLoad.contains(message.media.audio.user_id)) {
-                usersToLoad.add(message.media.audio.user_id);
-            }
         }
-        if (message.fwd_from_id instanceof TLRPC.TL_peerUser) {
-            if (!usersToLoad.contains(message.fwd_from_id.user_id)) {
-                usersToLoad.add(message.fwd_from_id.user_id);
+        if (message.fwd_from != null) {
+            if (message.fwd_from.from_id != 0) {
+                if (!usersToLoad.contains(message.fwd_from.from_id)) {
+                    usersToLoad.add(message.fwd_from.from_id);
+                }
             }
-        } else if (message.fwd_from_id instanceof TLRPC.TL_peerChannel) {
-            if (!chatsToLoad.contains(message.fwd_from_id.channel_id)) {
-                chatsToLoad.add(message.fwd_from_id.channel_id);
+            if (message.fwd_from.channel_id != 0) {
+                if (!chatsToLoad.contains(message.fwd_from.channel_id)) {
+                    chatsToLoad.add(message.fwd_from.channel_id);
+                }
             }
         }
         if (message.ttl < 0) {
@@ -5011,7 +5137,7 @@ public class MessagesStorage {
                     usersToLoad.add(UserConfig.getClientUserId());
                     ArrayList<Integer> chatsToLoad = new ArrayList<>();
                     ArrayList<Integer> encryptedToLoad = new ArrayList<>();
-                    SQLiteCursor cursor = database.queryFinalized(String.format(Locale.US, "SELECT d.did, d.last_mid, d.unread_count, d.date, m.data, m.read_state, m.mid, m.send_state, s.flags, m.date, d.last_mid_i, d.unread_count_i, d.pts, d.inbox_max FROM dialogs as d LEFT JOIN messages as m ON d.last_mid = m.mid LEFT JOIN dialog_settings as s ON d.did = s.did ORDER BY d.date DESC LIMIT %d,%d", offset, count));
+                    SQLiteCursor cursor = database.queryFinalized(String.format(Locale.US, "SELECT d.did, d.last_mid, d.unread_count, d.date, m.data, m.read_state, m.mid, m.send_state, s.flags, m.date, d.last_mid_i, d.unread_count_i, d.pts, d.inbox_max, d.date_i FROM dialogs as d LEFT JOIN messages as m ON d.last_mid = m.mid LEFT JOIN dialog_settings as s ON d.did = s.did ORDER BY d.date DESC LIMIT %d,%d", offset, count));
                     while (cursor.next()) {
                         TLRPC.Dialog dialog;
                         int pts = cursor.intValue(12);
@@ -5027,6 +5153,7 @@ public class MessagesStorage {
                         dialog.last_message_date = cursor.intValue(3);
                         dialog.pts = pts;
                         dialog.read_inbox_max_id = cursor.intValue(13);
+                        dialog.last_message_date_i = cursor.intValue(14);
                         dialog.top_not_important_message = cursor.intValue(10);
                         dialog.unread_not_important_count = cursor.intValue(11);
                         long flags = cursor.longValue(8);

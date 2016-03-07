@@ -138,15 +138,23 @@
             android:theme="@style/Theme.Transparent">
         </activity>
 
-        <receiver android:name="org.telegram.messenger.AutoMessageHeardReceiver">
+        <receiver android:name="org.telegram.messenger.AutoMessageHeardReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.telegram.messenger.ACTION_MESSAGE_HEARD"/>
             </intent-filter>
         </receiver>
 
-        <receiver android:name="org.telegram.messenger.AutoMessageReplyReceiver">
+        <receiver android:name="org.telegram.messenger.AutoMessageReplyReceiver"
+            android:exported="false">
             <intent-filter>
                 <action android:name="org.telegram.messenger.ACTION_MESSAGE_REPLY"/>
+            </intent-filter>
+        </receiver>
+
+        <receiver android:name="org.telegram.messenger.CallReceiver" >
+            <intent-filter>
+                <action android:name="android.intent.action.PHONE_STATE" />
             </intent-filter>
         </receiver>
 
