@@ -336,8 +336,8 @@ public class ChatActivity extends BaseFragment implements NotificationCenter.Not
     private static final int MENU_ITEM_OPTION_CREATE_DECISION = 1001;
     private static final int MENU_ITEM_OPTION_CREATE_OPTION = 1002;
 
-    private final static int new_decision = 20;
-    private final static int show_decision = 21;
+    private final static int new_decision = 1020;
+    private final static int show_decision = 1021;
     // Decisiongram IDs end
 
     private final static int bot_help = 30;
